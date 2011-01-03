@@ -4,7 +4,22 @@
 // first byte MUST always be 0x55
 #define SCX_PROTO_START_HEADER 0x55
 
-void scxproto::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
+SCXProtoAnalyzer::SCXProtoAnalyzer() :
+        m_eventDelegate() // null delegate for now
+{
+}
+
+SCXProtoAnalyzer::~SCXProtoAnalyzer()
+{
+}
+
+void SCXProtoAnalyzer::SetEventProcessorDelegate(
+        QSlotRacingEventDelegate_t a_eventDelegate)
+{
+    m_eventDelegate = a_eventDelegate;
+}
+
+void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
 {
     //TODO remove
     for (qint32 i = 0; i < a_msg->GetMsgSize(); i++)
@@ -33,85 +48,85 @@ void scxproto::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     {
     case e_SCXMsgTypeController:
     {
-        ProcessMsgController(a_msg);
+        ProcessMsgController(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeId:
     {
-        ProcessMsgId(a_msg);
+        ProcessMsgId(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeBusClearance:
     {
-        ProcessMsgBusClearance(a_msg);
+        ProcessMsgBusClearance(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeFinishLine:
     {
-        ProcessMsgFinishLine(a_msg);
+        ProcessMsgFinishLine(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeRanking:
     {
-        ProcessMsgRanking(a_msg);
+        ProcessMsgRanking(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeLapTime:
     {
-        ProcessMsgLapTime(a_msg);
+        ProcessMsgLapTime(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeLapCounter:
     {
-        ProcessMsgLapCounter(a_msg);
+        ProcessMsgLapCounter(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeQualifying:
     {
-        ProcessMsgQualifying(a_msg);
+        ProcessMsgQualifying(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeReset:
     {
-        ProcessMsgReset(a_msg);
+        ProcessMsgReset(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeStart:
     {
-        ProcessMsgStart(a_msg);
+        ProcessMsgStart(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeEnd:
     {
-        ProcessMsgEnd(a_msg);
+        ProcessMsgEnd(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeFuel:
     {
-        ProcessMsgFuel(a_msg);
+        ProcessMsgFuel(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeRefreshDisplay:
     {
-        ProcessMsgRefreshDisplay(a_msg);
+        ProcessMsgRefreshDisplay(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeBrake:
     {
-        ProcessMsgBrake(a_msg);
+        ProcessMsgBrake(pData, a_msg);
         break;
     }
 
@@ -126,183 +141,177 @@ void scxproto::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
 
 }
 
-void scxproto::ProcessMsgController(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgController(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "Controller message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgId(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgId(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "Id message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgBusClearance(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgBusClearance(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "BusClearance message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgFinishLine(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgFinishLine(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "FinishLine message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgRanking(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgRanking(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "Ranking message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgLapTime(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgLapTime(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "LapTime message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgLapCounter(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgLapCounter(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "LapCounter message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgQualifying(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgQualifying(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "Qualifying message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgReset(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgReset(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "Reset message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgStart(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgStart(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "Start message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgEnd(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgEnd(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "End message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgFuel(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgFuel(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
+    // this is the event that will be pass through to upper layers
+    QSharedPointer<QSlotRacingEventFuel> event(new QSlotRacingEventFuel);
 
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
+
+    // The bytes are divided in two nibbles (4 bit long data).
+    // The more significant nibble holds the fuel level of the car with the lower id
+    // a_pData now contains S0S1
+    event->AddFuelData(1, static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8); // player 1
+    event->AddFuelData(2, static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8); // player 2
+    a_pData ++;
+
+    // a_pData now contains S2S3
+    event->AddFuelData(3, static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8); // player 3
+    event->AddFuelData(4, static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8); // player 4
+    a_pData ++;
+
+    // a_pData now contains S4S5
+    event->AddFuelData(5, static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8); // player 5
+    event->AddFuelData(6, static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8); // player 6
+
+    // notify the event to upper layers (whoever it is)
+    m_eventDelegate(event);
 
     std::cout << "Fuel message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgRefreshDisplay(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgRefreshDisplay(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "RefreshDisplay message"
               << std::endl;
 }
 
-void scxproto::ProcessMsgBrake(const QSharedPointer<QSlotRacingMsg> &a_msg)
+void SCXProtoAnalyzer::ProcessMsgBrake(
+        const quint8* a_pData,
+        const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    const quint8* pData = a_msg->GetBuffer();
-
-    // someone must have checked the header and
-    // message type already.
-    // go past the HEADER and the message type
-    pData += 2;
+    // move past the message type
+    a_pData ++;
 
     std::cout << "Brake message"
               << std::endl;

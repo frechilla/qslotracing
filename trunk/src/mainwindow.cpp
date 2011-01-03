@@ -15,6 +15,35 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
+{
+    switch (a_event->EventType())
+    {
+    case e_QSlotRacingEvent_Fuel:
+    {
+        QSharedPointer<QSlotRacingEventFuel> fuelEvent =
+                a_event.staticCast<QSlotRacingEventFuel>();
+
+        quint8 value;
+        value = fuelEvent->GetPlayersFuel(1); // player1's percentage (from 0 to 100)
+        value = fuelEvent->GetPlayersFuel(2); // player2's percentage (from 0 to 100)
+        value = fuelEvent->GetPlayersFuel(3); // player3's percentage (from 0 to 100)
+        value = fuelEvent->GetPlayersFuel(4); // player4's percentage (from 0 to 100)
+        value = fuelEvent->GetPlayersFuel(5); // player5's percentage (from 0 to 100)
+        value = fuelEvent->GetPlayersFuel(6); // player6's percentage (from 0 to 100)
+
+        break;
+    }
+
+    default:
+    {
+        // highly unexpected
+        Q_ASSERT(0);
+    }
+
+    } // switch (a_event->EventType())
+}
+
 void MainWindow::on_pushButton_clicked()
 {
 
