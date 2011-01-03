@@ -57,10 +57,10 @@ void SCXMsgFactory::Parse(quint8* a_dataBuffer, quint32 a_bufferSize)
             // restart message index counter
             m_currentMsgIndex = 0;
 
-            if (m_msgProcessor)
-            {
-                m_msgProcessor(newSlotRacingMsg);
-            }
+            Q_ASSERT(m_msgDelegate);
+
+            // send this new message somewhere beyond the sea...
+            m_msgDelegate(newSlotRacingMsg);
         }        
     }
 }

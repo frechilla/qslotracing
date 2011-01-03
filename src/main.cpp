@@ -5,16 +5,31 @@
 #include "scxmsgfactory.h"
 #include "scxproto.h"
 
+#include "delegate.h"
 
 int main(int argc, char *argv[])
 {
-    //////////
-    // testing
+    QApplication a(argc, argv);
+    // we need to build the window first
+    MainWindow w;
+
+    // SCX protocol analyzer and message factory
+    SCXProtoAnalyzer scxAnalyzer;
     SCXMsgFactory msgFactory;
 
-    // set the function who will be processing the factory's msgs
-    msgFactory.SetMessageProcessorFunction(&scxproto::ProcessMsg);
+    // conect message factory with proto analyzer
+    msgFactory.SetMessageProcessorDelegate(
+            MakeDelegate(&SCXProtoAnalyzer::ProcessMsg, &scxAnalyzer));
 
+    // connect output events coming from SCXProtoAnalyzer to the window
+    scxAnalyzer.SetEventProcessorDelegate(
+            MakeDelegate(&MainWindow::ProcessEvent, &w));
+
+    w.show();
+
+    //////////
+    // testing. This should be triggered by the Main Window with some kind of button
+#if 0
     // list of files to be read by the ascii sniffer
     QList<QString> fileList;
     fileList.push_back("C:\\file");
@@ -28,13 +43,9 @@ int main(int argc, char *argv[])
 
     std::cout << "Messages discarded: "
               << msgFactory.GetBytesDiscardedCount() << std::endl;
-
+#endif
     // end of testing
     /////////////////
-
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
 
     return a.exec();
 }

@@ -12,7 +12,9 @@ HEADERS += src/mainwindow.h \
     src/snifferfileascii.h \
     src/qslotracingmsgfactory.h \
     src/scxproto.h \
-    src/configdialog.h
+    src/configdialog.h \
+    src/qslotracingevent.h \
+    src/delegate.h
 
 FORMS   += src/mainwindow.ui \
     src/configdialog.ui

@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSharedPointer>
+#include "qslotracingevent.h"
 
 namespace Ui {
     class MainWindow;
@@ -18,6 +20,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    /// @brief entry point for events
+    /// events will be processed by the window and the GUI will be
+    /// updated accordingly
+    /// @param shared pointer wrapping the event
+    void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
 
 private:
     Ui::MainWindow *ui;
