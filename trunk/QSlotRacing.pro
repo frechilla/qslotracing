@@ -11,3 +11,9 @@ TEMPLATE = app
 
 
 include(src/src.pri)
+
+HEADERS +=
+
+SOURCES +=
+
+FORMS +=
