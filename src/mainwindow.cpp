@@ -24,7 +24,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         QSharedPointer<QSlotRacingEventFuel> fuelEvent =
                 a_event.staticCast<QSlotRacingEventFuel>();
 
-        // GetPlayersFuel returns a percentage (from 0 to 100)
+        // GetPlayersFuel returns a value from 0 to 8
         quint8 value;
         value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer1);
         value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer2);
