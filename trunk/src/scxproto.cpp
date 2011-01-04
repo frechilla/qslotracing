@@ -267,32 +267,35 @@ void SCXProtoAnalyzer::ProcessMsgFuel(
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
     // this is the event that will be pass through to upper layers
-    QSharedPointer<QSlotRacingEventFuel> event(new QSlotRacingEventFuel);
+    QSharedPointer<QSlotRacingEventFuel> event(
+            new QSlotRacingEventFuel(a_msg->GetTimestamp()));
 
     // move past the message type
     a_pData ++;
 
-    // The bytes are divided in two nibbles (4 bit long data).
+    // The following 3 bytes bytes are divided in two nibbles (4 bit long data)
     // The more significant nibble holds the fuel level of the car with the lower id
+    // these nibbles of data contain a value from 0 to 8
+
     // a_pData now contains S0S1
     event->AddFuelData(e_QSlotRacingPlayer1,
-                       static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8);
+                       static_cast<quint8>((*a_pData) & 0xf0));
     event->AddFuelData(e_QSlotRacingPlayer2,
-                       static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8);
+                       static_cast<quint8>((*a_pData) & 0x0f));
     a_pData ++;
 
     // a_pData now contains S2S3
-    event->AddFuelData(e_QSlotRacingPlayer1,
-                       static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8);
+    event->AddFuelData(e_QSlotRacingPlayer3,
+                       static_cast<quint8>((*a_pData) & 0xf0));
     event->AddFuelData(e_QSlotRacingPlayer4,
-                       static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8);
+                       static_cast<quint8>((*a_pData) & 0x0f));
     a_pData ++;
 
     // a_pData now contains S4S5
     event->AddFuelData(e_QSlotRacingPlayer5,
-                       static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8);
+                       static_cast<quint8>((*a_pData) & 0xf0));
     event->AddFuelData(e_QSlotRacingPlayer6,
-                       static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8);
+                       static_cast<quint8>((*a_pData) & 0x0f));
 
     // notify the event to upper layers (whoever that might be)
     m_eventDelegate(event);

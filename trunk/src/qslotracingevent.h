@@ -48,8 +48,11 @@ public:
     }
 
 protected:
-    QSlotRacingEvent(QSlotRacingEventType_t a_eventType):
-            m_eventType(a_eventType)
+    /// constructor available for children classes
+    QSlotRacingEvent(QSlotRacingEventType_t a_eventType,
+                     const QTime &a_timestamp):
+            m_eventType(a_eventType),
+            m_timestamp(a_timestamp)
     {
     }
 
@@ -76,21 +79,21 @@ private:
     typedef QList< std::pair<QSlotRacingPlayer_t, quint8> > FuelDataContainerType_t;
 
 public:
-    QSlotRacingEventFuel():
-            QSlotRacingEvent(e_QSlotRacingEvent_Fuel)
+    QSlotRacingEventFuel(const QTime &a_timestamp):
+            QSlotRacingEvent(e_QSlotRacingEvent_Fuel, a_timestamp)
     {}
     ~QSlotRacingEventFuel()
     {}
 
     /// @brief store amount of fuel for a specific player
     /// @param player whose fuel value is to be stored
-    /// @param fuel value (from 0 to 100)
+    /// @param fuel value (from 0 to 8)
     void AddFuelData(QSlotRacingPlayer_t a_playersIndex, quint8 a_value)
     {
         m_fuelData.push_back(std::pair<QSlotRacingPlayer_t, quint8>(a_playersIndex, a_value));
     }
 
-    /// @return amount of fuel (from 0 to 100) of the player represented by 'a_playerIndex'
+    /// @return amount of fuel (from 0 to 8) of the player represented by 'a_playerIndex'
     ///         return a negative value if there was an error of any kind retrieving the fuel value
     /// @param player's. If that player's data is not contained in this event
     ///        the function will return a negative value
@@ -113,6 +116,10 @@ public:
 private:
     /// contains player's index and its fuel value (from 0 to 100)
     FuelDataContainerType_t m_fuelData;
+
+
+    // prevent standard constructor from being used
+    QSlotRacingEventFuel();
 };
 
 #endif // QSLOTRACINGEVENT_H
