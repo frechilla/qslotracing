@@ -19,8 +19,9 @@ typedef enum
     e_QSlotRacingPlayer4,
     e_QSlotRacingPlayer5,
     e_QSlotRacingPlayer6,
-
     // if more players are needed they are to be added here
+
+    e_QSlotRacingNoPlayer,
 } QSlotRacingPlayer_t;
 
 
@@ -79,6 +80,7 @@ private:
     typedef QList< std::pair<QSlotRacingPlayer_t, quint8> > FuelDataContainerType_t;
 
 public:
+    /// @param virtual time timestamp
     QSlotRacingEventFuel(const QTime &a_timestamp):
             QSlotRacingEvent(e_QSlotRacingEvent_Fuel, a_timestamp)
     {}
@@ -121,5 +123,62 @@ private:
     // prevent standard constructor from being used
     QSlotRacingEventFuel();
 };
+
+
+/// @brief lap event
+/// sent when a car crosses the finish line
+class QSlotRacingEventLap :
+        public QSlotRacingEvent
+{
+public:
+    /// @param virtual time timestamp
+    /// @param who triggered this lap event
+    /// @param lap time. 0 if it is unknown
+    QSlotRacingEventLap(const QTime         &a_timestamp,
+                        QSlotRacingPlayer_t  a_who,
+                        qint32               a_crossingTimes,
+                        qint32               a_lapTimeMillis = -1):
+            QSlotRacingEvent(e_QSlotRacingEvent_Fuel, a_timestamp),
+            m_player(a_who),
+            m_crossingTimes(a_crossingTimes),
+            m_lapMillis(a_lapTimeMillis)
+    {}
+    ~QSlotRacingEventLap()
+    {}
+
+    /// @return who triggered this lap event
+    inline QSlotRacingPlayer_t GetWho() const
+    {
+        return m_player;
+    }
+
+    /// @return number of times this player has crossed the finish line
+    /// negative if unknown or bogus
+    inline qint32 GetCrossingTimes() const
+    {
+        return m_crossingTimes;
+    }
+
+    /// @return lap time in milliseconds.
+    /// negative if unknown or bogus. The first crossing (race start) might give a time of 0
+    inline qint32 GetLapMillis() const
+    {
+        return m_lapMillis;
+    }
+
+private:
+    /// @brief who triggered the event
+    QSlotRacingPlayer_t m_player;
+
+    /// @brief times this player has crossed the finish line
+    qint32 m_crossingTimes;
+
+    /// @brief lap time in milliseconds
+    qint32 m_lapMillis;
+
+    // prevent standard constructor from being used
+    QSlotRacingEventLap();
+};
+
 
 #endif // QSLOTRACINGEVENT_H
