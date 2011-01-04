@@ -199,12 +199,75 @@ void SCXProtoAnalyzer::ProcessMsgRanking(
 void SCXProtoAnalyzer::ProcessMsgLapTime(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
-{
+{    
+    std::cout << "LapTime message"
+              << std::endl;
+
     // move past the message type
     a_pData ++;
 
-    std::cout << "LapTime message"
-              << std::endl;
+    // Car id (0-5)
+    QSlotRacingPlayer_t currentCar;
+    switch(*a_pData)
+    {
+    case 0:
+        currentCar = e_QSlotRacingPlayer1;
+        break;
+    case 1:
+        currentCar = e_QSlotRacingPlayer2;
+        break;
+    case 2:
+        currentCar = e_QSlotRacingPlayer3;
+        break;
+    case 3:
+        currentCar = e_QSlotRacingPlayer4;
+        break;
+    case 4:
+        currentCar = e_QSlotRacingPlayer5;
+        break;
+    case 5:
+        currentCar = e_QSlotRacingPlayer6;
+        break;
+    default:
+        currentCar = e_QSlotRacingNoPlayer;
+    }
+
+    // move now past the car id
+    a_pData ++;
+
+    // RU1 RU0: Those bytes plus bit 0 from VS result in the number of crossings
+    //          Crossings = 256 * RU1 + RU0 + Bit 0 of VS
+    //          (VS is the next byte)
+    qint32 crossings = (256*(*a_pData)) + *(a_pData + 1) + ( (*(a_pData + 2)) & 0x01);
+
+    // move now past RU1, RU0
+    a_pData += 2;
+
+    // lap time. a_pData is pointg now to byte 'VS'
+    // Z1 Z0: basevalue = 256 * Z1 + Z0
+    // VS:    when bit 3 of the VS byte is set you have to add 256 to the time value
+    qint32 basevalue = 256 * (*(a_pData + 1)) + (*(a_pData + 2));
+    if ((*a_pData & 0x08) == 0x08)
+    {
+        // third bit of VS is set
+        basevalue += 256;
+    }
+    // The lap time is basevalue multiplied by 0.01024
+    // events are sent in milliseconds (not in seconds) so we should
+    // multiply by 10.24 (or multiply by 1024 and then divide by 10
+    // to avoid floating point calculations)
+    qint32 millis = (basevalue * 1024) / 100;
+
+
+    // this is the event that will be pass through to upper layers
+    QSharedPointer<QSlotRacingEventLap> event(
+            new QSlotRacingEventLap(a_msg->GetTimestamp(),
+                                    currentCar,
+                                    crossings,
+                                    millis));
+
+    // notify the event to upper layers (whoever that might be)
+    m_eventDelegate(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgLapCounter(
@@ -265,7 +328,10 @@ void SCXProtoAnalyzer::ProcessMsgEnd(
 void SCXProtoAnalyzer::ProcessMsgFuel(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
-{
+{    
+    std::cout << "Fuel message"
+              << std::endl;
+
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventFuel> event(
             new QSlotRacingEventFuel(a_msg->GetTimestamp()));
@@ -299,9 +365,6 @@ void SCXProtoAnalyzer::ProcessMsgFuel(
 
     // notify the event to upper layers (whoever that might be)
     m_eventDelegate(event);
-
-    std::cout << "Fuel message"
-              << std::endl;
 }
 
 void SCXProtoAnalyzer::ProcessMsgRefreshDisplay(
