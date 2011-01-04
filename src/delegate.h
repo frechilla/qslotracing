@@ -2,7 +2,7 @@
 #define DELEGATE_H
 
 // have a look to http://www.codeproject.com/KB/cpp/CPPDelegate.aspx
-// to understand what is goind on here
+// to understand what is going on here
 
 /// @brief creates a static delegate
 /// points to a function which doesn't belong to any object

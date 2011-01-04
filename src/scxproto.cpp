@@ -275,20 +275,26 @@ void SCXProtoAnalyzer::ProcessMsgFuel(
     // The bytes are divided in two nibbles (4 bit long data).
     // The more significant nibble holds the fuel level of the car with the lower id
     // a_pData now contains S0S1
-    event->AddFuelData(1, static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8); // player 1
-    event->AddFuelData(2, static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8); // player 2
+    event->AddFuelData(e_QSlotRacingPlayer1,
+                       static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8);
+    event->AddFuelData(e_QSlotRacingPlayer2,
+                       static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8);
     a_pData ++;
 
     // a_pData now contains S2S3
-    event->AddFuelData(3, static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8); // player 3
-    event->AddFuelData(4, static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8); // player 4
+    event->AddFuelData(e_QSlotRacingPlayer1,
+                       static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8);
+    event->AddFuelData(e_QSlotRacingPlayer4,
+                       static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8);
     a_pData ++;
 
     // a_pData now contains S4S5
-    event->AddFuelData(5, static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8); // player 5
-    event->AddFuelData(6, static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8); // player 6
+    event->AddFuelData(e_QSlotRacingPlayer5,
+                       static_cast<quint32>((*a_pData) & 0xf0) * 100 / 8);
+    event->AddFuelData(e_QSlotRacingPlayer6,
+                       static_cast<quint32>((*a_pData) & 0x0f) * 100 / 8);
 
-    // notify the event to upper layers (whoever it is)
+    // notify the event to upper layers (whoever that might be)
     m_eventDelegate(event);
 
     std::cout << "Fuel message"
