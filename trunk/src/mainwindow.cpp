@@ -2,6 +2,12 @@
 #include "ui_mainwindow.h"
 #include "configdialog.h"
 
+#include "snifferfileascii.h"
+#include "scxmsgfactory.h"
+#include "scxproto.h"
+#include "delegate.h"
+#include <iostream>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -53,6 +59,10 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
     }
 
     } // switch (a_event->EventType())
+
+    //TODO remove
+    static ConfigDialog *diag = new ConfigDialog(this);
+    diag->exec();
 }
 
 void MainWindow::on_BtnConfigure_clicked()
@@ -1437,4 +1447,33 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
     SetCar4Fuel(value);
     SetCar5Fuel(value);
     SetCar6Fuel(value);
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    // SCX protocol analyzer and message factory
+    SCXProtoAnalyzer scxAnalyzer;
+    SCXMsgFactory msgFactory;
+
+    // conect message factory with proto analyzer
+    msgFactory.SetMessageProcessorDelegate(
+            MakeDelegate(&SCXProtoAnalyzer::ProcessMsg, &scxAnalyzer));
+
+    // connect output events coming from SCXProtoAnalyzer to the window
+    scxAnalyzer.SetEventProcessorDelegate(
+            MakeDelegate(&MainWindow::ProcessEvent, this));
+
+    // list of files to be read by the ascii sniffer
+    QList<QString> fileList;
+    fileList.push_back("C:\\file");
+    // the message factory must be passed to the ascii
+    // sniffer. bytes read by the sniffer will be passed through
+    // to the message factory
+    SnifferFileAscii asciiSniffer(msgFactory, fileList);
+
+    // start the testing. stuff will be printed on the screen!!
+    asciiSniffer.Start();
+
+    std::cout << "Messages discarded: "
+              << msgFactory.GetBytesDiscardedCount() << std::endl;
 }
