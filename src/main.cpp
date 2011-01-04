@@ -13,6 +13,12 @@ int main(int argc, char *argv[])
     // we need to build the window first
     MainWindow w;
 
+    w.show();
+
+    //////////
+    // testing. This should be triggered by the Main Window with some kind of button
+#if 0
+
     // SCX protocol analyzer and message factory
     SCXProtoAnalyzer scxAnalyzer;
     SCXMsgFactory msgFactory;
@@ -25,11 +31,6 @@ int main(int argc, char *argv[])
     scxAnalyzer.SetEventProcessorDelegate(
             MakeDelegate(&MainWindow::ProcessEvent, &w));
 
-    w.show();
-
-    //////////
-    // testing. This should be triggered by the Main Window with some kind of button
-#if 0
     // list of files to be read by the ascii sniffer
     QList<QString> fileList;
     fileList.push_back("C:\\file");

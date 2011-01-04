@@ -345,21 +345,21 @@ void SCXProtoAnalyzer::ProcessMsgFuel(
 
     // a_pData now contains S0S1
     event->AddFuelData(e_QSlotRacingPlayer1,
-                       static_cast<quint8>((*a_pData) & 0xf0));
+                       static_cast<quint8>((*a_pData) & 0xf0) >> 4);
     event->AddFuelData(e_QSlotRacingPlayer2,
                        static_cast<quint8>((*a_pData) & 0x0f));
     a_pData ++;
 
     // a_pData now contains S2S3
     event->AddFuelData(e_QSlotRacingPlayer3,
-                       static_cast<quint8>((*a_pData) & 0xf0));
+                       static_cast<quint8>((*a_pData) & 0xf0) >> 4);
     event->AddFuelData(e_QSlotRacingPlayer4,
                        static_cast<quint8>((*a_pData) & 0x0f));
     a_pData ++;
 
     // a_pData now contains S4S5
     event->AddFuelData(e_QSlotRacingPlayer5,
-                       static_cast<quint8>((*a_pData) & 0xf0));
+                       static_cast<quint8>((*a_pData) & 0xf0) >> 4);
     event->AddFuelData(e_QSlotRacingPlayer6,
                        static_cast<quint8>((*a_pData) & 0x0f));
 
