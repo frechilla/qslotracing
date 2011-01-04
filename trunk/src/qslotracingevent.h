@@ -2,13 +2,26 @@
 #define QSLOTRACINGEVENT_H
 
 #include <QList>
+#include <QTime>
 
-/// Types of events to be passed to the GUI
+/// Types of events to be passed to upper-most layers
 typedef enum
 {
-    // list of events handled by the app
     e_QSlotRacingEvent_Fuel = 0, // fuel change
 } QSlotRacingEventType_t;
+
+/// Players handled by this app
+typedef enum
+{
+    e_QSlotRacingPlayer1 = 0,
+    e_QSlotRacingPlayer2,
+    e_QSlotRacingPlayer3,
+    e_QSlotRacingPlayer4,
+    e_QSlotRacingPlayer5,
+    e_QSlotRacingPlayer6,
+
+    // if more players are needed they are to be added here
+} QSlotRacingPlayer_t;
 
 
 /// @brief base QSlotRacing event to be created by protocol parsers
@@ -21,9 +34,17 @@ public:
 
     /// @return this event type
     /// can be used to perform safe downcasting
-    inline QSlotRacingEventType_t EventType()
+    inline QSlotRacingEventType_t EventType() const
     {
         return m_eventType;
+    }
+
+    /// @return const reference to the creation time of this object
+    /// returned timestamp is based on virtual time
+    /// carried by sniffed messages (QSlotRacingMsg)
+    inline const QTime& GetTimestamp() const
+    {
+        return m_timestamp;
     }
 
 protected:
@@ -33,7 +54,15 @@ protected:
     }
 
 private:
+    /// @brief event type
     QSlotRacingEventType_t m_eventType;
+
+    /// @brief timestamp
+    QTime m_timestamp;
+
+
+    // prevent standard constructor from being used
+    QSlotRacingEvent();
 };
 
 
@@ -44,7 +73,7 @@ class QSlotRacingEventFuel :
 {
 private:
     /// type to save amount of fuel per each player
-    typedef QList< std::pair<quint8, quint8> > FuelDataContainerType_t;
+    typedef QList< std::pair<QSlotRacingPlayer_t, quint8> > FuelDataContainerType_t;
 
 public:
     QSlotRacingEventFuel():
@@ -54,24 +83,24 @@ public:
     {}
 
     /// @brief store amount of fuel for a specific player
-    /// @param index of that player whose fuel value is to be stored
+    /// @param player whose fuel value is to be stored
     /// @param fuel value (from 0 to 100)
-    void AddFuelData(quint8 m_playersIndex, quint8 a_value)
+    void AddFuelData(QSlotRacingPlayer_t a_playersIndex, quint8 a_value)
     {
-        m_fuelData.push_back(std::pair<quint8, quint8>(m_playersIndex, a_value));
+        m_fuelData.push_back(std::pair<QSlotRacingPlayer_t, quint8>(a_playersIndex, a_value));
     }
 
     /// @return amount of fuel (from 0 to 100) of the player represented by 'a_playerIndex'
     ///         return a negative value if there was an error of any kind retrieving the fuel value
-    /// @param player's index. If that player's data is not contained in this event
-    ///
-    quint8 GetPlayersFuel(quint8 m_playersIndex)
+    /// @param player's. If that player's data is not contained in this event
+    ///        the function will return a negative value
+    quint8 GetPlayersFuel(QSlotRacingPlayer_t a_playerIndex) const
     {
         for (FuelDataContainerType_t::const_iterator it = m_fuelData.begin();
              it != m_fuelData.end();
              it++)
         {
-            if (it->first == m_playersIndex)
+            if (it->first == a_playerIndex)
             {
                 return it->second;
             }
