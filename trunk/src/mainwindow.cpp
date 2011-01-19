@@ -1502,8 +1502,11 @@ void MainWindow::OpenSerialPort()
 
     /* 3. Third - open the device.
     */
-    if (m_port->open(AbstractSerial::WriteOnly | AbstractSerial::Unbuffered))
+    if (m_port->open(AbstractSerial::ReadWrite | AbstractSerial::Unbuffered))
     {
+
+        connect(m_port, SIGNAL(readyRead()), this, SLOT(slotRead()));
+
         qDebug() << "Serial device " << m_port->deviceName() << " open in " << m_port->openMode();
 
         //Here, the default current parameters (for example)
@@ -1581,6 +1584,21 @@ void MainWindow::OpenSerialPort()
         as well as the timeout values from 0 to N and find the differences. :)
        */
 
+        // Here set total timeout for read 1 ms, if open mode is Unbuffered only!
+#if defined (Q_OS_UNIX)
+        // Method setTotalReadConstantTimeout() not supported in *.nix.
+        if (m_port->openMode() & AbstractSerial::Unbuffered)
+        {
+            m_port->setCharIntervalTimeout(5000);//5 msec
+        }
+#elif defined (Q_OS_WIN)
+        if (m_port->openMode() & AbstractSerial::Unbuffered)
+        {
+            m_port->setTotalReadConstantTimeout(100);
+            qDebug() << "Estamos en WINDOWS";
+        }
+#endif
+
         //Here, the new set parameters (for example)
         qDebug() << "= New parameters =";
         qDebug() << "Device name            : " << m_port->deviceName();
@@ -1610,4 +1628,13 @@ void MainWindow::on_pushButton_3_clicked()
 
     bw = m_port->write(ba);
     qDebug() << "Writed is : " << bw << " bytes";
+}
+
+void MainWindow::slotRead()
+{
+    QByteArray ba;
+
+    ba = m_port->readAll();
+    qDebug() << "Readed is : " << ba.size() << " bytes";
+    qDebug() << "Leido: " << ba[1];
 }
