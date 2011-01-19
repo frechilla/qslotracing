@@ -16,7 +16,8 @@ HEADERS += src/mainwindow.h \
     src/configdialog.h \
     src/qslotracingevent.h \
     src/delegate.h \
-    src/recorderbinary.h
+    src/recorderbinary.h \
+    src/qserialdevice_global.h
 
 FORMS   += src/mainwindow.ui \
     src/configdialog.ui

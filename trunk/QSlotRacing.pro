@@ -11,6 +11,7 @@ TEMPLATE = app
 
 
 include(src/src.pri)
+include(src/qserialdevice/qserialdevice.pri)
 
 HEADERS +=
 
