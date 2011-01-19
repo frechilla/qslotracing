@@ -23,7 +23,7 @@ quint32 SCXMsgFactory::GetBytesDiscardedCount()
     return m_bytesDiscarded;
 }
 
-void SCXMsgFactory::Parse(quint8* a_dataBuffer, quint32 a_bufferSize)
+void SCXMsgFactory::Parse(const quint8* a_dataBuffer, quint32 a_bufferSize)
 {
     for (quint32 i = 0; i < a_bufferSize; i++)
     {

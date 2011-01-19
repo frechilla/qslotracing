@@ -3,26 +3,31 @@
 
 #include <QString>
 #include <QList>
-#include "qslotracingmsgfactory.h"
+#include "delegate.h" // delegate of the upper layer that will process
+                      // bytes sniffed by this class
 
-/// @brief class which porpuse is to emulete a serial interface
+/// @brief class which porpuse is to emulate a serial interface
 /// it reads bytes encoded in ascii from a file and encodes them into binary
 /// its output is a buffer of data bytes
 class SnifferFileAscii
 {
 public:
+    /// @brief type of the delegate where bytes sniffed are sent
+    typedef Delegate< void(const quint8*, quint32) > QSnifferDelegate_t;
+
     /// @brief constructor
-    /// @param message factory that parses those bytes sniffed by this object
     /// @param list of filenames to be read by this class
     /// that list of files will be read one by one inside the Start function
     SnifferFileAscii(
-            QSlotRacingMsgFactory& a_msgFactory,
             const QList<QString> &a_filenameList);
     virtual ~SnifferFileAscii();
 
     /// @brief start parsing the data files requested
     /// It won't return until all files have been parsed
     void Start();
+
+    /// @brief sets the delegate in charge of processing bytes sniffed by this class
+    void SetProcessorDelegate(QSnifferDelegate_t a_delegate);
 
 private:
     /// @brief list of filenames
@@ -33,8 +38,8 @@ private:
     /// when the latest character forced this object to notify a raw byte
     char m_latestAsciiProcessed;
 
-    /// @brief QSlotRacingMsfFactory which parses the sniffed bytes
-    QSlotRacingMsgFactory &m_msgFactory;
+    /// @brief function delegate where new messages will be sent
+    QSnifferDelegate_t m_byteDelegate;
 
     /// @brief parses an ascii character.
     /// it might detect a raw byte described in the ascii input. If that is the
