@@ -1,7 +1,7 @@
 #ifndef DELEGATE_H
 #define DELEGATE_H
 
-// have a look to http://www.codeproject.com/KB/cpp/CPPDelegate.aspx
+// have a look to http://www.codeproject.com/KB/cpp/CPPCallback.aspx
 // to understand what is going on here
 
 /// @brief creates a static delegate
@@ -294,5 +294,143 @@ GetDelegateFactory(R (T::*)(P1) const)
     return ConstMemberDelegateFactory1<R, T, P1>();
 }
 
+// 2 parameter version
+
+template<typename R, typename P1, typename P2>
+class Delegate<R (P1, P2)>
+{
+public:
+    static const int Arity = 2;
+    typedef R ReturnType;
+    typedef P1 Param1Type;
+    typedef P2 Param2Type;
+
+    Delegate()                    : func(0), obj(0) {}
+    Delegate(NullDelegate)        : func(0), obj(0) {}
+    Delegate(const Delegate& rhs) : func(rhs.func), obj(rhs.obj) {}
+    ~Delegate() {}
+
+    Delegate& operator=(NullDelegate)
+        { obj = 0; func = 0; return *this; }
+    Delegate& operator=(const Delegate& rhs)
+        { obj = rhs.obj; func = rhs.func; return *this; }
+
+    inline R operator()(P1 a1, P2 a2) const
+    {
+        return (*func)(obj, a1, a2);
+    }
+
+private:
+    typedef const void* Delegate::*SafeBoolType;
+public:
+    inline operator SafeBoolType() const
+        { return func != 0 ? &Delegate::obj : 0; }
+    inline bool operator!() const
+        { return func == 0; }
+
+private:
+    typedef R (*FuncType)(const void*, P1, P2);
+    Delegate(FuncType f, const void* o) : func(f), obj(o) {}
+
+private:
+    FuncType func;
+    const void* obj;
+
+    template<typename FR, typename FP1, typename FP2>
+    friend class FreeDelegateFactory2;
+    template<typename FR, class FT, typename FP1, typename FP2>
+    friend class MemberDelegateFactory2;
+    template<typename FR, class FT, typename FP1, typename FP2>
+    friend class ConstMemberDelegateFactory2;
+};
+
+template<typename R, typename P1, typename P2>
+void operator==(const Delegate<R (P1, P2)>&,
+                const Delegate<R (P1, P2)>&);
+template<typename R, typename P1, typename P2>
+void operator!=(const Delegate<R (P1, P2)>&,
+                const Delegate<R (P1, P2)>&);
+
+template<typename R, typename P1, typename P2>
+class FreeDelegateFactory2
+{
+private:
+    template<R (*Func)(P1, P2)>
+    static R Wrapper(const void*, P1 a1, P2 a2)
+    {
+        return (*Func)(a1, a2);
+    }
+
+public:
+    template<R (*Func)(P1, P2)>
+    inline static Delegate<R (P1, P2)> Bind()
+    {
+        return Delegate<R (P1, P2)>
+            (&FreeDelegateFactory2::Wrapper<Func>, 0);
+    }
+};
+
+template<typename R, typename P1, typename P2>
+inline FreeDelegateFactory2<R, P1, P2>
+GetDelegateFactory(R (*)(P1, P2))
+{
+    return FreeDelegateFactory2<R, P1, P2>();
+}
+
+template<typename R, class T, typename P1, typename P2>
+class MemberDelegateFactory2
+{
+private:
+    template<R (T::*Func)(P1, P2)>
+    static R Wrapper(const void* o, P1 a1, P2 a2)
+    {
+        T* obj = const_cast<T*>(static_cast<const T*>(o));
+        return (obj->*Func)(a1, a2);
+    }
+
+public:
+    template<R (T::*Func)(P1, P2)>
+    inline static Delegate<R (P1, P2)> Bind(T* o)
+    {
+        return Delegate<R (P1, P2)>
+            (&MemberDelegateFactory2::Wrapper<Func>,
+            static_cast<const void*>(o));
+    }
+};
+
+template<typename R, class T, typename P1, typename P2>
+inline MemberDelegateFactory2<R, T, P1, P2>
+GetDelegateFactory(R (T::*)(P1, P2))
+{
+    return MemberDelegateFactory2<R, T, P1, P2>();
+}
+
+template<typename R, class T, typename P1, typename P2>
+class ConstMemberDelegateFactory2
+{
+private:
+    template<R (T::*Func)(P1, P2) const>
+    static R Wrapper(const void* o, P1 a1, P2 a2)
+    {
+        const T* obj = static_cast<const T*>(o);
+        return (obj->*Func)(a1, a2);
+    }
+
+public:
+    template<R (T::*Func)(P1, P2) const>
+    inline static Delegate<R (P1, P2)> Bind(const T* o)
+    {
+        return Delegate<R (P1, P2)>
+            (&ConstMemberDelegateFactory2::Wrapper<Func>,
+            static_cast<const void*>(o));
+    }
+};
+
+template<typename R, class T, typename P1, typename P2>
+inline ConstMemberDelegateFactory2<R, T, P1, P2>
+GetDelegateFactory(R (T::*)(P1, P2) const)
+{
+    return ConstMemberDelegateFactory2<R, T, P1, P2>();
+}
 
 #endif // DELEGATE_H

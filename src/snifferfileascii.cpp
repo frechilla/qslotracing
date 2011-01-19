@@ -5,16 +5,19 @@
 #define LATEST_ASCII_UNSET '\0'
 
 SnifferFileAscii::SnifferFileAscii(
-        QSlotRacingMsgFactory& a_msgFactory,
         const QList<QString> &a_filenameList):
     m_filenameList(a_filenameList),
-    m_latestAsciiProcessed(LATEST_ASCII_UNSET),
-    m_msgFactory(a_msgFactory)
+    m_latestAsciiProcessed(LATEST_ASCII_UNSET)
 {
 }
 
 SnifferFileAscii::~SnifferFileAscii()
 {
+}
+
+void SnifferFileAscii::SetProcessorDelegate(QSnifferDelegate_t a_delegate)
+{
+    m_byteDelegate = a_delegate;
 }
 
 void SnifferFileAscii::Start()
@@ -98,8 +101,8 @@ void SnifferFileAscii::ProcessChar(char a_asciiCharacter)
             
             m_latestAsciiProcessed = LATEST_ASCII_UNSET;
 
-            // notify that value we've just found to the msg factory
-            m_msgFactory.Parse(&valueFound, 1);
+            // notify that value we've just found to the upper layers
+            m_byteDelegate(&valueFound, 1);
         }
 
         break;
@@ -116,8 +119,8 @@ void SnifferFileAscii::ProcessChar(char a_asciiCharacter)
 
             m_latestAsciiProcessed = LATEST_ASCII_UNSET;
 
-            // notify that value we've just found to the msg factory
-            m_msgFactory.Parse(&valueFound, 1);
+            // notify that value we've just found to the upper layers
+            m_byteDelegate(&valueFound, 1);
         }
 
         break;

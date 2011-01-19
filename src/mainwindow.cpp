@@ -1451,25 +1451,28 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
 
 void MainWindow::on_pushButton_clicked()
 {
+    // list of files to be read by the ascii sniffer
+    QList<QString> fileList;
+    fileList.push_back("C:\\file");
+    // building up the ascii sniffer
+    SnifferFileAscii asciiSniffer(fileList);
+    
     // SCX protocol analyzer and message factory
     SCXProtoAnalyzer scxAnalyzer;
     SCXMsgFactory msgFactory;
+    
+    // SCXMsgFactory will be processing all bytes sniffed
+    // by the asciiSniffer
+    asciiSniffer.SetProcessorDelegate(
+        MakeDelegate(&SCXMsgFactory::Parse, &msgFactory));
 
-    // conect message factory with proto analyzer
+    // connect message factory with proto analyzer
     msgFactory.SetMessageProcessorDelegate(
             MakeDelegate(&SCXProtoAnalyzer::ProcessMsg, &scxAnalyzer));
 
     // connect output events coming from SCXProtoAnalyzer to the window
     scxAnalyzer.SetEventProcessorDelegate(
             MakeDelegate(&MainWindow::ProcessEvent, this));
-
-    // list of files to be read by the ascii sniffer
-    QList<QString> fileList;
-    fileList.push_back("C:\\file");
-    // the message factory must be passed to the ascii
-    // sniffer. bytes read by the sniffer will be passed through
-    // to the message factory
-    SnifferFileAscii asciiSniffer(msgFactory, fileList);
 
     // start the testing. stuff will be printed on the screen!!
     asciiSniffer.Start();

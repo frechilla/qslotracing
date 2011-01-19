@@ -26,7 +26,7 @@ public:
     /// its output is one or more new QSlotRacingMsg object(s)
     /// @param a_dataBuffer points to the byte buffer to be parsed
     /// @param a_bufferSize number of bytes contained in 'a_dataBuffer'
-    virtual void Parse(quint8* a_dataBuffer, quint32 a_bufferSize) = 0;
+    virtual void Parse(const quint8* a_dataBuffer, quint32 a_bufferSize) = 0;
 
     /// @return number of bytes discarded in the parsing process
     virtual quint32 GetBytesDiscardedCount() = 0;

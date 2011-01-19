@@ -22,7 +22,7 @@ public:
     /// It might trigger one or more new QSlotRacingMsg object(s)
     /// @param a_dataBuffer points to the byte buffer to be parsed
     /// @param a_bufferSize number of bytes contained in 'a_dataBuffer'
-    void Parse(quint8* a_dataBuffer, quint32 a_bufferSize);
+    void Parse(const quint8* a_dataBuffer, quint32 a_bufferSize);
 
     /// @return number of bytes discarded in the parsing process
     quint32 GetBytesDiscardedCount();
