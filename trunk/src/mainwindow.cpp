@@ -1477,3 +1477,8 @@ void MainWindow::on_pushButton_clicked()
     std::cout << "Messages discarded: "
               << msgFactory.GetBytesDiscardedCount() << std::endl;
 }
+
+void MainWindow::on_pushButton_2_clicked()
+{
+     ui->EditLaps1->setText("2/100");
+}
