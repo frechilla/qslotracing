@@ -1,0 +1,39 @@
+[PROJECT]
+Target=interface.HEX
+Development_Mode=
+Processor=0x2420
+ToolSuite=CCS
+
+[Directories]
+Include=F:\Alberto\Aplicaciones\PICC\devices\;F:\Alberto\Aplica
+Library=
+LinkerScript=
+
+[Target Data]
+FileList=F:\Alberto\Aplicaciones\PICC\PIC Projects\SCX-Digital_curro\interface.c
+BuildTool=C-COMPILER
+OptionString=+FH
+AdditionalOptionString=
+BuildRequired=1
+
+[interface.c]
+Type=4
+Path=
+FileList=
+BuildTool=
+OptionString=
+AdditionalOptionString=
+
+[mru-list]
+1=interface.c
+
+[Windows]
+0=0000 interface.c 0 0 796 451 3 0
+
+[Opened Files]
+1=F:\Alberto\Aplicaciones\PICC\PIC Projects\SCX-Digital_curro\interface.c
+2=
+3=
+[Units]
+Count=1
+1=F:\Alberto\Aplicaciones\PICC\PIC Projects\SCX-Digital_curro\interface.c (main)
