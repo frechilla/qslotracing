@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QSharedPointer>
 #include "qslotracingevent.h"
-#include <abstractserial.h>
+#include "serial.h"
 
 namespace Ui {
     class MainWindow;
@@ -43,7 +43,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    AbstractSerial *m_port;
+    Serial m_serial;
     void OpenSerialPort(void);
 
 private slots:
