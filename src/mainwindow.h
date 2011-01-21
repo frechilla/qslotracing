@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QSharedPointer>
 #include "qslotracingevent.h"
-#include "serial.h"
+#include "snifferserial.h"
 
 namespace Ui {
     class MainWindow;

@@ -1,4 +1,4 @@
-#include "serial.h"
+#include "snifferserial.h"
 
 Serial::Serial(QObject *parent) :
     QObject(parent)
