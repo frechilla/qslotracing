@@ -10,24 +10,26 @@
 
 int main(int argc, char *argv[])
 {
-#if 0
+
     //////////
     // testing the binary recorder
+#if 0
     QList<QString> fileList;
     fileList.push_back("C:\\file");
     SnifferFileAscii asciiSniffer(fileList);
 
     // binary recorder will be processing messages sniffed
     // by the asciiSniffer
-    RecorderBinary recorder("record", 10);
+    RecorderBinary recorder("record", 1024); // rotate every kilobyte
     asciiSniffer.SetProcessorDelegate(
         MakeDelegate(&RecorderBinary::Dump, &recorder));
 
     // start the testing. stuff will be printed on the screen!!
     asciiSniffer.Start();
+#endif
     // end of testing
     /////////////////
-#endif
+
 
     QApplication a(argc, argv);
     // we need to build the window first

@@ -1,6 +1,6 @@
 #include "recorderbinary.h"
+#include <QtCore/QDebug>
 #include <QDateTime>
-#include <QTextStream>
 
 RecorderBinary::RecorderBinary(const QString &a_filenamePrefix,
                                quint32 a_rotationSize):
@@ -54,7 +54,7 @@ void RecorderBinary::Dump(const quint8* a_dataBuffer, quint32 a_bufferSize)
             a_dataBuffer += m_rotationSize - m_currentFileSize;
 
             // rotate the dumping file
-
+            RotateDumpFile();
 
             // update current file size to 0. A new file has just been created
             m_currentFileSize = 0;
@@ -85,24 +85,23 @@ void RecorderBinary::RotateDumpFile()
 
         delete m_file;
     }
-
-    // calculate new file name
-    QDateTime dateTime;
-    QTextStream filenameStream;
-
-    filenameStream << m_filenamePrefix;
-
-    filenameStream               << dateTime.date().year()
-                   << dateTime.date().month()
-                   << dateTime.date().daysInMonth()
-                   << dateTime.time().hour()
-                   << dateTime.time().minute()
-                   << dateTime.time().second()
-                   << dateTime.time().msec();
+    
+    // calculate new file name. This is all a bit weird, based on the 'arg' function
+    //     QString arg ( int a, int fieldWidth = 0, int base = 10, const QChar & fillChar = QLatin1Char( ' ' ) ) const
+    QDateTime dateTime = QDateTime::currentDateTime();
+    QString filename;
+    filename = QString("%1%2%3%4%5%6%7%8")        
+                .arg(m_filenamePrefix)
+                .arg(dateTime.date().year(),        4, 10, QChar('0'))
+                .arg(dateTime.date().month(),       2, 10, QChar('0'))
+                .arg(dateTime.date().day(),         2, 10, QChar('0'))
+                .arg(dateTime.time().hour(),        2, 10, QChar('0'))
+                .arg(dateTime.time().minute(),      2, 10, QChar('0'))
+                .arg(dateTime.time().second(),      2, 10, QChar('0'))
+                .arg(dateTime.time().msec(),        3, 10, QChar('0'));
 
     //TODO error handling
-    QString tmp = filenameStream.readAll();
-    m_file = new QFile(tmp);
+    m_file = new QFile(filename);
     if (m_file->open(QIODevice::WriteOnly) == true)
     {
         m_dataStream.setDevice(m_file);
@@ -111,5 +110,9 @@ void RecorderBinary::RotateDumpFile()
     {
         // unset the file where data will be dumped
         m_dataStream.setDevice(0);
+
+        qDebug() << "Could not open file \""
+                 << filename
+                 << "\" for writing. Binary recorder disabled";
     }
 }
