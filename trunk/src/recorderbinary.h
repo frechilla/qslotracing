@@ -23,7 +23,7 @@ public:
     ///        mm: Minute in hour. From 00 to 59
     ///        SS: Second. From 00 to 59
     ///        lll: Milliseconds in this second, from 000 to 999
-    /// @param dump file will be rotate every 'a_rotationSize' bytes
+    /// @param dump file will be rotated every 'a_rotationSize' bytes
     RecorderBinary(const QString &a_filenamePrefix,
                    quint32 a_rotationSize = BINARY_DEFAULT_ROTATION_SIZE);
     virtual ~RecorderBinary();
