@@ -34,7 +34,7 @@
 
 
 // Constants definitions
-#define     MIN_TICKS   66      // 66 ticks x 0.2us/tick = 13,2 us
+#define     MIN_TICKS   60      // 66 ticks x 0.2us/tick = 12 us
 #define     MAX_TICKS   70      // 70 ticks x 0.2us/tick = 14 us
 
 float const uSxTick = 0.2;      // 0.2 us per tick at 20MHz clock (one timer click for each 4 clock cycles)
@@ -180,6 +180,7 @@ void main()
     prev = 0;
     data = 0;
     bit = 0;
+    
     while(1)
     {
         act = input(PIN_B0);
@@ -190,66 +191,75 @@ void main()
         else if ((act == 1) && (prev == 0))
         {
             val = get_timer1();
-            if ((val <= 65) && (val >= 55))
+            if ((val <= MAX_TICKS) && (val >= MIN_TICKS))
             {
                 // Wait for 0.5 start bit + half bit 0
                 delay_us(10);
-                
+
                 // Bit 0
                 bit = input(PIN_B0);
+                bit = 1;
                 data |= bit;
                 output_a(255);
-                
+
                 // Bit 1. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
+                bit = 0;
                 bit = bit << 1;
                 data |= bit;
                 output_a(0);
-                
+
                 // Bit 2. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
+                bit = 1;
                 bit = bit << 2;
                 data |= bit;
                 output_a(255);
-                
+
                 // Bit 3. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
+                bit = 0;
                 bit = bit << 3;
                 data |= bit;
                 output_a(0);
-                
+
                 // Bit 4. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
+                bit = 1;
                 bit = bit << 4;
                 data |= bit;
                 output_a(255);
-                
+
                 // Bit 5. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
+                bit = 0;
                 bit = bit << 5;
                 data |= bit;
                 output_a(0);
-                
+
                 // Bit 6. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
+                bit = 1;
                 bit = bit << 6;
                 data |= bit;
                 output_a(255);
-                
+
                 // Bit 7. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
+                bit = 0;
                 bit = bit << 7;
                 data |= bit;
                 output_a(0);
-                
+
                 // Data is ready
+                putc('a');
                 putc(data);
             }
         }

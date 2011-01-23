@@ -34,7 +34,8 @@
 void main()
 {
     int8    val;
-    
+    char car;
+
     // Initialization
     delay_ms(400);
     disable_interrupts(global);
@@ -54,7 +55,7 @@ void main()
     setup_low_volt_detect(FALSE);
     setup_oscillator(False);
     delay_ms(400);
-
+    
     while(1)
     {
         val = input(PIN_B0);
