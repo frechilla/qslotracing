@@ -43,7 +43,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    Serial m_serial;
+    SnifferSerial m_serial;
     void OpenSerialPort(void);
 
 private slots:

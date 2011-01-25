@@ -1492,7 +1492,15 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::OpenSerialPort()
 {
-    // Open serial port
+    // set settings to open the serial port
+    m_serial.SetDeviceName("COM6");
+    m_serial.SetBaudRate(AbstractSerial::BaudRate115200);
+    m_serial.SetDataBits(AbstractSerial::DataBits8);
+    m_serial.SetParity(AbstractSerial::ParityNone);
+    m_serial.SetStopBits(AbstractSerial::StopBits1);
+    m_serial.SetFlowControl(AbstractSerial::FlowControlOff);
+    
+    // Open it!
     m_serial.OpenSerial();
 }
 
