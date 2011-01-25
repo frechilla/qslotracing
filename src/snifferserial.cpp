@@ -1,25 +1,83 @@
 #include "snifferserial.h"
 
-Serial::Serial(QObject *parent) :
-    QObject(parent)
+SnifferSerial::SnifferSerial(QObject *parent) :
+    QObject(parent),
+    m_port(0),
+    m_interfaceName(""),
+    m_baudRate(AbstractSerial::BaudRateUndefined),
+    m_dataBits(AbstractSerial::DataBitsUndefined),
+    m_parity(AbstractSerial::ParityUndefined),
+    m_stopBits(AbstractSerial::StopBitsUndefined),
+    m_flowControl(AbstractSerial::FlowControlUndefined)
 {
+    // set the prpcessor delegate to PrintBuffer by default
+    SetProcessorDelegate(MakeDelegate(&SnifferSerial::PrintBuffer, this));
 }
 
-void Serial::OpenSerial()
+SnifferSerial::~SnifferSerial()
 {
-    /* 1. First - create an instance of an object.
-    */
+    // close current serial interface before destroying this instance
+    this->Close();
+}
+
+void SnifferSerial::Close()
+{
+    if (m_port != 0)
+    {
+        delete m_port;
+        m_port = 0;
+    }
+}
+
+void SnifferSerial::SetDeviceName(const QString &a_deviceName)
+{
+    m_interfaceName = a_deviceName;
+}
+
+void SnifferSerial::SetBaudRate(AbstractSerial::BaudRate a_baudRate)
+{
+    m_baudRate = a_baudRate;
+}
+
+void SnifferSerial::SetDataBits(AbstractSerial::DataBits a_dataBits)
+{
+    m_dataBits = a_dataBits;
+}
+
+void SnifferSerial::SetParity(AbstractSerial::Parity a_parity)
+{
+    m_parity = a_parity;
+}
+
+void SnifferSerial::SetStopBits(AbstractSerial::StopBits a_stopBits)
+{
+    m_stopBits = a_stopBits;
+}
+
+void SnifferSerial::SetFlowControl(AbstractSerial::Flow a_flowControl)
+{
+    m_flowControl = a_flowControl;
+}
+
+void SnifferSerial::SetProcessorDelegate(QSnifferDelegate_t a_delegate)
+{
+    m_processorDelegate = a_delegate;
+}
+
+void SnifferSerial::OpenSerial()
+{
+    // close current interface before opening a new connection
+    this->Close();
+
+    // 1. First - create an instance of an object
     m_port = new AbstractSerial();
+    
+    // 2. Second - set the device name
+    m_port->setDeviceName(m_interfaceName);
 
-    /* 2. Second - set the device name.
-    */
-    m_port->setDeviceName("COM6");
-
-    /* 3. Third - open the device.
-    */
+    // 3. Third - open the device
     if (m_port->open(AbstractSerial::ReadWrite | AbstractSerial::Unbuffered))
     {
-
         connect(m_port, SIGNAL(readyRead()), this, SLOT(slotRead()));
 
         qDebug() << "Serial device " << m_port->deviceName() << " open in " << m_port->openMode();
@@ -36,36 +94,31 @@ void Serial::OpenSerial()
         /* 4. Fourth - now you can set the parameters. (after successfully opened port)
         */
 
-        //Here example set baud rate 115200 bit/sec (baud)
-        if (!m_port->setBaudRate(AbstractSerial::BaudRate115200))
+        //TODO proper error handling
+        if (!m_port->setBaudRate(m_baudRate))
         {
-            qDebug() << "Set baud rate " <<  AbstractSerial::BaudRate115200 << " error.";
-            delete m_port;
-            m_port = 0;
+            qDebug() << "Set baud rate " <<  m_baudRate << " error.";
+            this->Close();
         }
 
-        if (!m_port->setDataBits(AbstractSerial::DataBits8)) {
-            qDebug() << "Set data bits " <<  AbstractSerial::DataBits8 << " error.";
-            delete m_port;
-            m_port = 0;
+        if (!m_port->setDataBits(m_dataBits)) {
+            qDebug() << "Set data bits " <<  m_dataBits << " error.";
+            this->Close();
         }
 
-        if (!m_port->setParity(AbstractSerial::ParityNone)) {
-            qDebug() << "Set parity " <<  AbstractSerial::ParityNone << " error.";
-            delete m_port;
-            m_port = 0;
+        if (!m_port->setParity(m_parity)) {
+            qDebug() << "Set parity " <<  m_parity << " error.";
+            this->Close();
         }
 
-        if (!m_port->setStopBits(AbstractSerial::StopBits1)) {
-            qDebug() << "Set stop bits " <<  AbstractSerial::StopBits1 << " error.";
-            delete m_port;
-            m_port = 0;
+        if (!m_port->setStopBits(m_stopBits)) {
+            qDebug() << "Set stop bits " <<  m_stopBits << " error.";
+            this->Close();
         }
 
-        if (!m_port->setFlowControl(AbstractSerial::FlowControlOff)) {
-            qDebug() << "Set flow " <<  AbstractSerial::FlowControlOff << " error.";
-            delete m_port;
-            m_port = 0;
+        if (!m_port->setFlowControl(m_flowControl)) {
+            qDebug() << "Set flow " <<  m_flowControl << " error.";
+            this->Close();
         }
 
         /*
@@ -125,11 +178,29 @@ void Serial::OpenSerial()
     }
     else
     {
-        qDebug() << "Error opened serial device " << m_port->deviceName();
+        qDebug() << "Error opening serial device " << m_port->deviceName();
     }
 }
 
-void Serial::Write()
+void SnifferSerial::slotRead()
+{
+    QByteArray ba;
+    ba = m_port->readAll();    
+    
+    // send bytes read to upper layers
+    m_processorDelegate(reinterpret_cast<const quint8*>(ba.data()), ba.size());
+}
+
+void SnifferSerial::PrintBuffer(const quint8* a_buffer, quint32 a_bufferSize)
+{
+    qDebug() << "Readed is : " << a_bufferSize << " bytes:";
+    for (quint32 i = 0; i < a_bufferSize; i++)
+    {
+        qDebug() << a_buffer[i];
+    }
+}
+
+void SnifferSerial::Write()
 {
     QByteArray ba; //data to send
     qint64 bw = 0; //bytes really writed
@@ -143,19 +214,4 @@ void Serial::Write()
 
     bw = m_port->write(ba);
     qDebug() << "Writed is : " << bw << " bytes";
-}
-
-void Serial::slotRead()
-{
-    QByteArray ba;
-    quint8 i, tam;
-
-    ba = m_port->readAll();
-    tam = ba.size();
-    qDebug() << "Readed is : " << ba.size() << " bytes";
-    qDebug() << "Leido: ";
-    for (i=0;i<tam;i++)
-    {
-        qDebug() << ba[i];
-    }
 }
