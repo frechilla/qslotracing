@@ -180,7 +180,7 @@ void main()
     prev = 0;
     data = 0;
     bit = 0;
-    
+
     while(1)
     {
         act = input(PIN_B0);
@@ -194,7 +194,8 @@ void main()
             if ((val <= MAX_TICKS) && (val >= MIN_TICKS))
             {
                 // Wait for 0.5 start bit + half bit 0
-                delay_us(10);
+                delay_us(7);
+                data = 0;
 
                 // Bit 0
                 bit = input(PIN_B0);
@@ -205,7 +206,7 @@ void main()
                 // Bit 1. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
-                bit = 0;
+                //bit = 0;
                 bit = bit << 1;
                 data |= bit;
                 output_a(0);
@@ -213,7 +214,7 @@ void main()
                 // Bit 2. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
-                bit = 1;
+                //bit = 1;
                 bit = bit << 2;
                 data |= bit;
                 output_a(255);
@@ -221,7 +222,7 @@ void main()
                 // Bit 3. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
-                bit = 0;
+                //bit = 0;
                 bit = bit << 3;
                 data |= bit;
                 output_a(0);
@@ -229,7 +230,7 @@ void main()
                 // Bit 4. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
-                bit = 1;
+                //bit = 1;
                 bit = bit << 4;
                 data |= bit;
                 output_a(255);
@@ -237,7 +238,7 @@ void main()
                 // Bit 5. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
-                bit = 0;
+                //bit = 0;
                 bit = bit << 5;
                 data |= bit;
                 output_a(0);
@@ -245,7 +246,7 @@ void main()
                 // Bit 6. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
-                bit = 1;
+                //bit = 1;
                 bit = bit << 6;
                 data |= bit;
                 output_a(255);
@@ -253,13 +254,13 @@ void main()
                 // Bit 7. Wait 9us
                 delay_us(9);
                 bit = input(PIN_B0);
-                bit = 0;
+                //bit = 0;
                 bit = bit << 7;
                 data |= bit;
                 output_a(0);
 
                 // Data is ready
-                putc('a');
+                putc('>');
                 putc(data);
             }
         }
