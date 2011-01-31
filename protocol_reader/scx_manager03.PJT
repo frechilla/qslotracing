@@ -10,7 +10,7 @@ Library=
 LinkerScript=
 
 [Target Data]
-FileList=F:\Alberto\Aplicaciones\PICC\PIC Projects\SCX-Digital_curro\scx_manager03.c
+FileList=F:\Alberto\sourceforge\trunk\protocol_reader\scx_manager03.c
 BuildTool=C-COMPILER
 OptionString=+FH
 AdditionalOptionString=
@@ -31,9 +31,9 @@ AdditionalOptionString=
 0=0000 scx_manager03.c 0 0 796 451 3 0
 
 [Opened Files]
-1=F:\Alberto\Aplicaciones\PICC\PIC Projects\SCX-Digital_curro\scx_manager03.c
+1=F:\Alberto\sourceforge\trunk\protocol_reader\scx_manager03.c
 2=
 3=
 [Units]
 Count=1
-1=F:\Alberto\Aplicaciones\PICC\PIC Projects\SCX-Digital_curro\scx_manager03.c (main)
+1=F:\Alberto\sourceforge\trunk\protocol_reader\scx_manager03.c (main)
