@@ -37,6 +37,10 @@
 #define     MIN_TICKS   60      // 66 ticks x 0.2us/tick = 12 us
 #define     MAX_TICKS   70      // 70 ticks x 0.2us/tick = 14 us
 
+#define     BIT_DELAY   3
+#define     LOW_DELAY   7
+#define     HIGH_DELAY  7
+
 float const uSxTick = 0.2;      // 0.2 us per tick at 20MHz clock (one timer click for each 4 clock cycles)
 
 // Global variables
@@ -147,6 +151,8 @@ void main()
     int8 data;
     int8 bit;
     int16 val;
+    int8 delayval;
+    char str[5];
 
     // Initialization
     delay_ms(400);
@@ -194,17 +200,25 @@ void main()
             if ((val <= MAX_TICKS) && (val >= MIN_TICKS))
             {
                 // Wait for 0.5 start bit + half bit 0
-                delay_us(7);
+                delay_us(BIT_DELAY);
                 data = 0;
 
                 // Bit 0
                 bit = input(PIN_B0);
-                bit = 1;
+                //bit = 1;
                 data |= bit;
                 output_a(255);
 
                 // Bit 1. Wait 9us
-                delay_us(9);
+                if (bit == 1)
+                {
+                    delay_us(HIGH_DELAY);
+                }
+                else
+                {
+                    delay_us(LOW_DELAY);
+                }
+                //delay_us(delayval);
                 bit = input(PIN_B0);
                 //bit = 0;
                 bit = bit << 1;
@@ -212,7 +226,15 @@ void main()
                 output_a(0);
 
                 // Bit 2. Wait 9us
-                delay_us(9);
+                if (bit == 1)
+                {
+                    delay_us(HIGH_DELAY);
+                }
+                else
+                {
+                    delay_us(LOW_DELAY);
+                }
+                //delay_us(9);
                 bit = input(PIN_B0);
                 //bit = 1;
                 bit = bit << 2;
@@ -220,7 +242,15 @@ void main()
                 output_a(255);
 
                 // Bit 3. Wait 9us
-                delay_us(9);
+                if (bit == 1)
+                {
+                    delay_us(HIGH_DELAY);
+                }
+                else
+                {
+                    delay_us(LOW_DELAY);
+                }
+                //delay_us(9);
                 bit = input(PIN_B0);
                 //bit = 0;
                 bit = bit << 3;
@@ -228,7 +258,15 @@ void main()
                 output_a(0);
 
                 // Bit 4. Wait 9us
-                delay_us(9);
+                if (bit == 1)
+                {
+                    delay_us(HIGH_DELAY);
+                }
+                else
+                {
+                    delay_us(LOW_DELAY);
+                }
+                //delay_us(9);
                 bit = input(PIN_B0);
                 //bit = 1;
                 bit = bit << 4;
@@ -236,7 +274,15 @@ void main()
                 output_a(255);
 
                 // Bit 5. Wait 9us
-                delay_us(9);
+                if (bit == 1)
+                {
+                    delay_us(HIGH_DELAY);
+                }
+                else
+                {
+                    delay_us(LOW_DELAY);
+                }
+                //delay_us(9);
                 bit = input(PIN_B0);
                 //bit = 0;
                 bit = bit << 5;
@@ -244,7 +290,15 @@ void main()
                 output_a(0);
 
                 // Bit 6. Wait 9us
-                delay_us(9);
+                if (bit == 1)
+                {
+                    delay_us(HIGH_DELAY);
+                }
+                else
+                {
+                    delay_us(LOW_DELAY);
+                }
+                //delay_us(9);
                 bit = input(PIN_B0);
                 //bit = 1;
                 bit = bit << 6;
@@ -252,7 +306,15 @@ void main()
                 output_a(255);
 
                 // Bit 7. Wait 9us
-                delay_us(9);
+                if (bit == 1)
+                {
+                    delay_us(HIGH_DELAY);
+                }
+                else
+                {
+                    delay_us(LOW_DELAY);
+                }
+                //delay_us(9);
                 bit = input(PIN_B0);
                 //bit = 0;
                 bit = bit << 7;
@@ -261,7 +323,9 @@ void main()
 
                 // Data is ready
                 putc('>');
-                putc(data);
+                sprintf(str, "%02X", data);
+                puts(str);
+                //putc(data);
             }
         }
         prev = act;
