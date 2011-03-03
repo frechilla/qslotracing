@@ -103,6 +103,10 @@ void main()
         {
             // Reset timer value
             set_timer1(0);
+#asm
+          movlw 0xFF
+          movwf LATA    // output_a(255)
+#endasm
         }
         else if ((act == 1) && (prev == 0))
         {
@@ -117,6 +121,7 @@ void main()
             // a 3.8us del inicio del bit. La espera en nivel alto será de 7,6us y a
             // nivel bajo 10,4us
 #asm
+          clrf LATA    // output_a(0);
           // wait (32 cycles) 6,4us until mid of following bit pulse width
           // resultado esperado: distancia start bit: 12,2us, distancia a final de
           // bit, 3,8us
@@ -360,6 +365,14 @@ w_7_0:    decfsz 0,1
 
 stop:
 #endasm
+                 putc(dataByte);
+                 dataByte = 0;
+            }
+            else
+            {
+            #asm
+                clrf LATA    // output_a(0);
+            #endasm
             }
         }
         prev = act;
