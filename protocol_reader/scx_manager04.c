@@ -49,114 +49,21 @@
 float const uSxTick = 0.2;      // 0.2 us per tick at 20MHz clock (one timer click for each 4 clock cycles)
 
 // Global variables
-int1        flagINT = 0;        // Expected level for external interrupt
 int8        dataByte = 0;       // Data byte to be send through the serial port
-int8        dataByteOffset = 1; // Data byte offset for the current bit
-int1        flagStartBit = 0;   // Flag to show the presence of a start bit
-int16       ticks = 0;          // Temp variable for Timer1 value storing
-int         bitCount;       // Bit counter
 
 // For message composing
-int8        arrMsg[50];
-int8        arrRecv[50];
-int         m_nIndex;
-int         m_nLastCmd;
-int8        buff_serial[50];
-int         buff_index;
-
-int testing;
-
-
-#int_EXT
-void extern_int()
-{
-    if (flagINT == 0)
-    {
-        // Waiting for falling edge. Start tick counts
-        ext_int_edge(0, L_TO_H);
-        set_timer1(0);
-        flagINT = 1;
-    }
-    else if (flagINT == 1)
-    {
-        // Waiting for rising edge
-        ticks = get_timer1();
-        flagINT = 0;
-        // Candidate for start bit
-        flagStartBit = 1;
-    }
-}
-
-// Timer2 interrupt handler
-//
-#int_TIMER2
-TIMER2_isr()
-{
-   if (testing == 0)
-   {
-       output_a(0);
-       testing = 1;
-   }
-   else
-   {
-       output_a(255);
-       testing = 0;
-   }
-}
-
-#int_TIMER1
-timer1_isr()
-{
-   if (testing == 0)
-   {
-       output_a(0);
-       testing = 1;
-   }
-   else
-   {
-       output_a(255);
-       testing = 0;
-   }
-}
+int8        arrRecv[5];
 
 #int_RDA
 RDA_isr()
 {
 }
 
-// This function performs all the necessary initialization steps
-//
-void Init()
-{
-    // Configure external interrupt edge -> falling edge
-    ext_int_edge(0, H_TO_L);
-    flagINT = 0;
-    flagStartBit = 0;
-
-    // Initialization of command processing variables
-    m_nLastCmd          = 0;
-    memset(arrMsg, 0, 15);
-    memset(arrRecv, 0, 15);
-
-    m_nIndex = 0;
-
-    buff_index = 0;
-
-    // Interrupts enabling
-    enable_interrupts(INT_RDA);
-    enable_interrupts(INT_EXT);
-    enable_interrupts(global);
-}
-
-
 void main()
 {
     int8 act;
     int8 prev;
-    int8 data;
-    int8 bit;
     int16 val;
-    int8 delayval;
     char str[5];
 
     // Initialization
@@ -179,37 +86,41 @@ void main()
     setup_oscillator(False);
     delay_ms(400);
 
-    // Main loop
+    // Initialize PORTA output
     output_a(0);
 
-    // delay cycles 41 -> 8,8 us
-    //              40 -> 8,4 us
-    // delay_us 8      -> 8,4 us
-
     // Variables initialization
-    act = 0;
-    prev = 0;
-    data = 0;
-    bit = 0;
-    
+    act      = 0;
+    prev     = 0;
+    dataByte = 0;
+
+    // Main loop
     while(1)
     {
+        // Get current pin value
         act = input(PIN_B0);
         if ((act == 0) && (prev == 1))
         {
+            // Reset timer value
             set_timer1(0);
         }
         else if ((act == 1) && (prev == 0))
         {
+            // Get current timer value
             val = get_timer1();
+
+            // Check pulse width
             if ((val <= MAX_TICKS) && (val >= MIN_TICKS))
             {
-            // una vez ajustado el offset de inicio de lectura, comprobar
-            // los tiempos de lectura de cada bit
 
+            // resultados esperados: los flancos de subida o bajada tienen que estar
+            // a 3.8us del inicio del bit. La espera en nivel alto será de 7,6us y a
+            // nivel bajo 10,4us
 #asm
-          // esperar 5,8us
-          movlw 0x09
+          // wait (32 cycles) 6,4us until mid of following bit pulse width
+          // resultado esperado: distancia start bit: 12,2us, distancia a final de
+          // bit, 3,8us
+          movlw 0x0A
           movwf 0
 sync_0:   decfsz 0, 1
           bra sync_0
@@ -222,18 +133,22 @@ chkbit0:  movlw 0xFF
           // check bit 0
           btfss PORTB, 0
           bra bit_0_0
-          // se ha leido 1, esperar 6us, contando con el chequeo, esperar 27 ciclos
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
           // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
           // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
           movlw 0x0A
           movwf 0
 w_0_1:    decfsz 0,1
           bra w_0_1
           nop
-          nop
+          // nop replaced by bit set
+
+          // Set bit 0
+          bsf dataByte, 7
           bra chkbit1
 
-bit_0_0:  // se ha leido 0, esperar 10us, contando con los ciclos gastados
+bit_0_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
           // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
           movlw 0x0F
           movwf 0
@@ -242,31 +157,32 @@ w_0_0:    decfsz 0,1
 
           // bajar segundo flanco de lectura
 chkbit1:  clrf LATA    // output_a(0);
+          nop
 
           // check bit 1
           btfss PORTB, 0
           bra bit_1_0
-          // se ha leido 1, esperar 6us, contando con el chequeo, esperar 28 ciclos
-          // en la cuenta de la espera se tiene en cuenta el output_a(0) y el
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
           // salto al siguiente bit
-
+          // nos quedamos pasados 3.8us en el siguiente bit
           movlw 0x0A
           movwf 0
 w_1_1:    decfsz 0,1
           bra w_1_1
           nop
-          nop
-          
-          nop
+          // nop replaced by bit set
+
+          // Set bit 1
+          bsf dataByte, 6
           bra chkbit2
 
-bit_1_0:  // se ha leido 0, esperar 10us, contando con los ciclos gastados
-          // anteriormente en saltos y chequeos, quedan por esperar 45 ciclos
+bit_1_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
           movlw 0x0F
           movwf 0
 w_1_0:    decfsz 0,1
           bra w_1_0
-          nop
 
           // subir tercer flanco de lectura
 chkbit2:  movlw 0xFF
@@ -275,19 +191,23 @@ chkbit2:  movlw 0xFF
           // check bit 0
           btfss PORTB, 0
           bra bit_2_0
-          // se ha leido 1, esperar 6us, contando con el chequeo, esperar 27 ciclos
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
           // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
           // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
           movlw 0x0A
           movwf 0
 w_2_1:    decfsz 0,1
           bra w_2_1
           nop
-          nop
+          // nop replaced by bit set
+
+          // Set bit 2
+          bsf dataByte, 5
           bra chkbit3
 
-bit_2_0:  // se ha leido 0, esperar 10us, contando con los ciclos gastados
-          // anteriormente en saltos y chequeos, quedan por esperar 44 ciclos
+bit_2_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
           movlw 0x0F
           movwf 0
 w_2_0:    decfsz 0,1
@@ -295,35 +215,150 @@ w_2_0:    decfsz 0,1
 
           // bajar cuarto flanco de lectura
 chkbit3:  clrf LATA    // output_a(0);
+          nop
 
           // check bit 1
           btfss PORTB, 0
           bra bit_3_0
-          // se ha leido 1, esperar 6us, contando con el chequeo, esperar 28 ciclos
-          // en la cuenta de la espera se tiene en cuenta el output_a(0) y el
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
           // salto al siguiente bit
-
+          // nos quedamos pasados 3.8us en el siguiente bit
           movlw 0x0A
           movwf 0
 w_3_1:    decfsz 0,1
           bra w_3_1
           nop
-          nop
-          
-          nop
+          // nop replaced by bit set
+
+          // Set bit 3
+          bsf dataByte, 4
           bra chkbit4
 
-bit_3_0:  // se ha leido 0, esperar 10us, contando con los ciclos gastados
-          // anteriormente en saltos y chequeos, quedan por esperar 45 ciclos
+bit_3_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
           movlw 0x0F
           movwf 0
 w_3_0:    decfsz 0,1
           bra w_3_0
+
+          // subir quinto flanco de lectura
+chkbit4:  movlw 0xFF
+          movwf LATA    // output_a(255)
+
+          // check bit 0
+          btfss PORTB, 0
+          bra bit_4_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_4_1:    decfsz 0,1
+          bra w_4_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 4
+          bsf dataByte, 3
+          bra chkbit5
+
+bit_4_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_4_0:    decfsz 0,1
+          bra w_4_0
+
+          // bajar sexto flanco de lectura
+chkbit5:  clrf LATA    // output_a(0);
           nop
 
-chkbit4:
+          // check bit 1
+          btfss PORTB, 0
+          bra bit_5_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_5_1:    decfsz 0,1
+          bra w_5_1
+          nop
+          // nop replaced by bit set
 
+          // Set bit 5
+          bsf dataByte, 2
+          bra chkbit6
 
+bit_5_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_5_0:    decfsz 0,1
+          bra w_5_0
+
+          // subir septimo flanco de lectura
+chkbit6:  movlw 0xFF
+          movwf LATA    // output_a(255)
+
+          // check bit 0
+          btfss PORTB, 0
+          bra bit_6_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_6_1:    decfsz 0,1
+          bra w_6_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 6
+          bsf dataByte, 1
+          bra chkbit7
+
+bit_6_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_6_0:    decfsz 0,1
+          bra w_6_0
+
+          // bajar octavo flanco de lectura
+chkbit7:  clrf LATA    // output_a(0);
+          nop
+
+          // check bit 1
+          btfss PORTB, 0
+          bra bit_7_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_7_1:    decfsz 0,1
+          bra w_7_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 7
+          bsf dataByte, 0
+          bra stop
+
+bit_7_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_7_0:    decfsz 0,1
+          bra w_7_0
+
+stop:
 #endasm
             }
         }
