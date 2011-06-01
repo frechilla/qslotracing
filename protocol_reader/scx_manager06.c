@@ -1,4 +1,4 @@
-#include <18F2620.h>
+#include <18F2420.h>
 #device adc=8
 //#device ICD=TRUE
 
@@ -6,9 +6,8 @@
 #FUSES WDT128                	//Watch Dog Timer uses 1:128 Postscale
 #FUSES HS                    	//High speed Osc (> 4mhz)
 #FUSES NOPROTECT             	//Code not protected from reading
-#FUSES NOIESO                	//Internal External Switch Over mode disabled
 #FUSES NOBROWNOUT            	//No brownout reset
-#FUSES BORV21                	//Brownout reset at 2.1V
+#FUSES BORV20                	//Brownout reset at 2.0V
 #FUSES NOPUT                 	//No Power Up Timer
 #FUSES NOCPD                 	//No EE protection
 #FUSES STVREN                	//Stack full/underflow will cause reset
@@ -16,16 +15,17 @@
 #FUSES LVP                   	//Low Voltage Programming on B3(PIC16) or B5(PIC18)
 #FUSES NOWRT                 	//Program memory not write protected
 #FUSES NOWRTD                	//Data EEPROM not write protected
-#FUSES NOEBTR                	//Memory not protected from table reads
-#FUSES NOCPB                 	//No Boot Block code protection
-#FUSES NOEBTRB               	//Boot block not protected from table reads
+#FUSES IESO                  	//Internal External Switch Over mode enabled
+#FUSES FCMEN                 	//Fail-safe clock monitor enabled
+#FUSES PBADEN                	//PORTB pins are configured as analog input channels on RESET
 #FUSES NOWRTC                	//configuration not registers write protected
 #FUSES NOWRTB                	//Boot block not write protected
-#FUSES FCMEN                 	//Fail-safe clock monitor enabled
-#FUSES NOXINST               	//Extended set extension and Indexed Addressing mode disabled (Legacy mode)
-#FUSES PBADEN                	//PORTB pins are configured as analog input channels on RESET
+#FUSES NOEBTR                	//Memory not protected from table reads
+#FUSES NOEBTRB               	//Boot block not protected from table reads
+#FUSES NOCPB                 	//No Boot Block code protection
 #FUSES LPT1OSC               	//Timer1 configured for low-power operation
 #FUSES MCLR                  	//Master Clear pin enabled
+#FUSES NOXINST               	//Extended set extension and Indexed Addressing mode disabled (Legacy mode)
 
 #use delay(clock=20000000)
 #use rs232(baud=115200,parity=N,xmit=PIN_C6,rcv=PIN_C7,bits=8)
@@ -68,13 +68,259 @@ void extinterrupt()
     val = get_timer1();
     if ((val > 5000) && (synced == 0))
     {
+        disable_interrupts(INT_EXT);
+        disable_interrupts(GLOBAL);
         synced = 1;
         edge_high = 1;
     }
-    else if (synced > 0)
+    else if ((synced > 0) && (val > 50))
     {
-        synced++;
+        disable_interrupts(INT_EXT);
+        disable_interrupts(GLOBAL);
         edge_high = 1;
+    }
+    if (synced > 0)
+    {
+         delay_us(9);
+#asm
+          // wait (32 cycles) 6,4us until mid of following bit pulse width
+          // resultado esperado: distancia start bit: 12,2us, distancia a final de
+          // bit, 3,8us
+
+          // subir primer flanco de lectura
+chkbit0:  movlw 0xFF
+          movwf LATA    // output_a(255)
+
+          // check bit 0
+          btfss PORTB, 0
+          bra bit_0_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_0_1:    decfsz 0,1
+          bra w_0_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 0
+          bsf dataByte, 7
+          bra chkbit1
+
+bit_0_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_0_0:    decfsz 0,1
+          bra w_0_0
+
+          // bajar segundo flanco de lectura
+chkbit1:  clrf LATA    // output_a(0);
+          nop
+
+          // check bit 1
+          btfss PORTB, 0
+          bra bit_1_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_1_1:    decfsz 0,1
+          bra w_1_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 1
+          bsf dataByte, 6
+          bra chkbit2
+
+bit_1_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_1_0:    decfsz 0,1
+          bra w_1_0
+
+          // subir tercer flanco de lectura
+chkbit2:  movlw 0xFF
+          movwf LATA    // output_a(255)
+
+          // check bit 0
+          btfss PORTB, 0
+          bra bit_2_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_2_1:    decfsz 0,1
+          bra w_2_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 2
+          bsf dataByte, 5
+          bra chkbit3
+
+bit_2_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_2_0:    decfsz 0,1
+          bra w_2_0
+
+          // bajar cuarto flanco de lectura
+chkbit3:  clrf LATA    // output_a(0);
+          nop
+
+          // check bit 1
+          btfss PORTB, 0
+          bra bit_3_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_3_1:    decfsz 0,1
+          bra w_3_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 3
+          bsf dataByte, 4
+          bra chkbit4
+
+bit_3_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_3_0:    decfsz 0,1
+          bra w_3_0
+
+          // subir quinto flanco de lectura
+chkbit4:  movlw 0xFF
+          movwf LATA    // output_a(255)
+
+          // check bit 0
+          btfss PORTB, 0
+          bra bit_4_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_4_1:    decfsz 0,1
+          bra w_4_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 4
+          bsf dataByte, 3
+          bra chkbit5
+
+bit_4_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_4_0:    decfsz 0,1
+          bra w_4_0
+
+          // bajar sexto flanco de lectura
+chkbit5:  clrf LATA    // output_a(0);
+          nop
+
+          // check bit 1
+          btfss PORTB, 0
+          bra bit_5_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_5_1:    decfsz 0,1
+          bra w_5_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 5
+          bsf dataByte, 2
+          bra chkbit6
+
+bit_5_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_5_0:    decfsz 0,1
+          bra w_5_0
+
+          // subir septimo flanco de lectura
+chkbit6:  movlw 0xFF
+          movwf LATA    // output_a(255)
+
+          // check bit 0
+          btfss PORTB, 0
+          bra bit_6_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_6_1:    decfsz 0,1
+          bra w_6_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 6
+          bsf dataByte, 1
+          bra chkbit7
+
+bit_6_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_6_0:    decfsz 0,1
+          bra w_6_0
+
+          // bajar octavo flanco de lectura
+chkbit7:  clrf LATA    // output_a(0);
+          nop
+
+          // check bit 1
+          btfss PORTB, 0
+          bra bit_7_0
+          // se ha leido 1, esperar 7,6us, contando con el chequeo, esperar 38 ciclos
+          // en la cuenta de la espera se tiene en cuenta el output_a(255) y el
+          // salto al siguiente bit
+          // nos quedamos pasados 3.8us en el siguiente bit
+          movlw 0x0A
+          movwf 0
+w_7_1:    decfsz 0,1
+          bra w_7_1
+          nop
+          // nop replaced by bit set
+
+          // Set bit 7
+          bsf dataByte, 0
+          bra stop
+
+bit_7_0:  // se ha leido 0, esperar 10,4us, contando con los ciclos gastados
+          // anteriormente en saltos y chequeos, quedan por esperar 46 ciclos
+          movlw 0x0F
+          movwf 0
+w_7_0:    decfsz 0,1
+          bra w_7_0
+
+stop:
+#endasm
     }
 }
 
@@ -357,57 +603,90 @@ void main()
         // Wait for rising edge
         enable_interrupts(GLOBAL);
         enable_interrupts(INT_EXT);
+        clear_interrupt(INT_EXT);
         ext_int_edge(L_TO_H);
         set_timer1(0);
-        
+
         while (edge_high == 0);
-        
-        disable_interrupts(GLOBAL);
-        disable_interrupts(INT_EXT);
-        
+
         if (synced == 1)
         {
-            read_bits();
-        
-            delay_us(20);
-            clear_interrupt(INT_EXT);            
+            //read_bits();
             
             edge_high = 0;
             set_timer1(0);
+            
+            synced = 2;
         } // synced == 1
         else if (synced == 2)
         {
-            read_bits();
-            
-            delay_us(20);
-            clear_interrupt(INT_EXT);            
+            //read_bits();
 
             edge_high = 0;
             set_timer1(0);
+            synced = 3;
         }
         else if (synced == 3)
         {
-            read_bits();
-                        
-            delay_us(20);
-            clear_interrupt(INT_EXT);            
+            //read_bits();
 
             edge_high = 0;
             set_timer1(0);
-            
+            synced = 4;
+        }
+        else if (synced == 4)
+        {
+            //read_bits();
+
+            edge_high = 0;
+            set_timer1(0);
+            synced = 5;
+        }
+        else if (synced == 5)
+        {
+            //read_bits();
+
+            edge_high = 0;
+            set_timer1(0);
+            synced = 6;
+        }
+        else if (synced == 6)
+        {
+            //read_bits();
+
+            edge_high = 0;
+            set_timer1(0);
+            synced = 7;
+        }
+        else if (synced == 7)
+        {
+            //read_bits();
+
+            edge_high = 0;
+            set_timer1(0);
+            synced = 8;
+        }
+        else if (synced == 8)
+        {
+            //read_bits();
+
+            edge_high = 0;
+            set_timer1(0);
+            synced = 9;
+        }
+        else if (synced == 9)
+        {
+            //read_bits();
+
+            edge_high = 0;
+            set_timer1(0);
             synced = 0;
         }
         else
         {
-            clear_interrupt(INT_EXT);
-            
-            output_a(255);
-            delay_us(50);
-            output_a(0);
-            
             edge_high = 0;
             set_timer1(0);
-            
+
             synced = 0;
         }
         edge_high = 0;
