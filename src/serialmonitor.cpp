@@ -71,3 +71,23 @@ void SerialMonitor::on_save_clicked()
         qDebug()<<"fichero mal";
     }
 }
+
+void SerialMonitor::ReadData(const quint8* a_buffer, quint32 a_bufferSize)
+{
+    QString data;
+
+    qDebug() << "SerialMonitor::Readed is : " << a_bufferSize << " bytes:";
+    for (quint32 i = 0; i < a_bufferSize; i++)
+    {
+        qDebug() << a_buffer[i];
+    }
+
+    if (flag_show == 1)
+    {
+        for (quint32 i = 0; i < a_bufferSize; i++)
+        {
+            qDebug() << a_buffer[i];
+        }
+        //ui->data_packets->insertPlainText("AA");
+    }
+}

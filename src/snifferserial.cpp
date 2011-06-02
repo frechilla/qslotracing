@@ -185,8 +185,8 @@ void SnifferSerial::OpenSerial()
 void SnifferSerial::slotRead()
 {
     QByteArray ba;
-    ba = m_port->readAll();    
-    
+    ba = m_port->readAll();
+
     // send bytes read to upper layers
     m_processorDelegate(reinterpret_cast<const quint8*>(ba.data()), ba.size());
 }

@@ -3,7 +3,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "configdialog.h"
-#include "serialmonitor.h"
 
 #include "snifferfileascii.h"
 #include "scxmsgfactory.h"
@@ -1494,7 +1493,7 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::OpenSerialPort()
 {
     // set settings to open the serial port
-    m_serial.SetDeviceName("COM6");
+    m_serial.SetDeviceName("COM13");
     m_serial.SetBaudRate(AbstractSerial::BaudRate115200);
     m_serial.SetDataBits(AbstractSerial::DataBits8);
     m_serial.SetParity(AbstractSerial::ParityNone);
@@ -1503,6 +1502,7 @@ void MainWindow::OpenSerialPort()
     
     // Open it!
     m_serial.OpenSerial();
+    SetMainWindowDelegate();
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -1510,12 +1510,23 @@ void MainWindow::on_pushButton_3_clicked()
     m_serial.Write();
 }
 
-void MainWindow::slotRead()
+void MainWindow::slotRead(const quint8* a_buffer, quint32 a_bufferSize)
 {
+    qDebug() << "MainWindow::Readed is : " << a_bufferSize << " bytes:";
+    for (quint32 i = 0; i < a_bufferSize; i++)
+    {
+        qDebug() << a_buffer[i];
+    }
 }
 
 void MainWindow::on_serial_monitor_clicked()
 {
-    static SerialMonitor *diag = new SerialMonitor(this);
-    diag->exec();
+    //static SerialMonitor *diag = new SerialMonitor(this);
+    m_monitor.exec();
+}
+
+void MainWindow::SetMainWindowDelegate()
+{
+    //m_serial.SetProcessorDelegate(MakeDelegate(&MainWindow::slotRead, this));
+    m_serial.SetProcessorDelegate(MakeDelegate(&SerialMonitor::ReadData, &m_monitor));
 }
