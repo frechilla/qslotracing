@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "configdialog.h"
+#include "serialmonitor.h"
 
 #include "snifferfileascii.h"
 #include "scxmsgfactory.h"
@@ -1511,4 +1512,10 @@ void MainWindow::on_pushButton_3_clicked()
 
 void MainWindow::slotRead()
 {
+}
+
+void MainWindow::on_serial_monitor_clicked()
+{
+    static SerialMonitor *diag = new SerialMonitor(this);
+    diag->exec();
 }

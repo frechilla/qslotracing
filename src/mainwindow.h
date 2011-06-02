@@ -47,6 +47,7 @@ private:
     void OpenSerialPort(void);
 
 private slots:
+    void on_serial_monitor_clicked();
     void slotRead(void);
     void on_pushButton_3_clicked();
     void on_pushButton_2_clicked();
