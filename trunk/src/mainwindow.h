@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include "qslotracingevent.h"
 #include "snifferserial.h"
+#include "serialmonitor.h"
 
 namespace Ui {
     class MainWindow;
@@ -44,16 +45,19 @@ public:
 private:
     Ui::MainWindow *ui;
     SnifferSerial m_serial;
+    SerialMonitor m_monitor;
     void OpenSerialPort(void);
 
 private slots:
     void on_serial_monitor_clicked();
-    void slotRead(void);
+    void slotRead(const quint8* a_buffer, quint32 a_bufferSize);
     void on_pushButton_3_clicked();
     void on_pushButton_2_clicked();
     void on_pushButton_clicked();
     void on_horizontalSlider_valueChanged(int value);
     void on_BtnConfigure_clicked();
+
+    void SetMainWindowDelegate();
 };
 
 #endif // MAINWINDOW_H

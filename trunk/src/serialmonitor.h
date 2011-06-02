@@ -19,6 +19,8 @@ public:
 
     void AddTrace();
 
+    void ReadData(const quint8* a_buffer, quint32 a_bufferSize);
+
 private:
     Ui::SerialMonitor *ui;
     int flag_show;
