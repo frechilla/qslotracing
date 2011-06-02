@@ -26,3 +26,6 @@ HEADERS += src/mainwindow.h \
 FORMS   += src/mainwindow.ui \
     src/configdialog.ui \
     src/serialmonitor.ui
+
+RESOURCES += \
+    src/pics/tool.qrc
