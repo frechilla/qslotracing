@@ -6,6 +6,7 @@
 #include "qslotracingevent.h"
 #include "snifferserial.h"
 #include "serialmonitor.h"
+#include "configdialog.h"
 
 namespace Ui {
     class MainWindow;
@@ -46,6 +47,7 @@ private:
     Ui::MainWindow *ui;
     SnifferSerial m_serial;
     SerialMonitor m_monitor;
+    ConfigDialog m_config;
     void OpenSerialPort(void);
 
 private slots:

@@ -9,6 +9,8 @@
 #include "scxproto.h"
 #include "delegate.h"
 #include <iostream>
+#include <qpixmap.h>
+#include <qbitmap.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -71,8 +73,58 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
 void MainWindow::on_BtnConfigure_clicked()
 {
-    static ConfigDialog *diag = new ConfigDialog(this);
-    diag->exec();
+    QString    PlayerName;
+    bool       PlayerFlag;
+    int        PlayerCar;
+    m_config.exec();
+    QPixmap ferrari("ferrari");
+    QPixmap renault("renault");
+
+    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 1);
+    qDebug()<<"Player 1:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+    const    QPixmap *pix;
+
+    // Display car
+    if (PlayerCar == 0)
+    {
+
+       pix =0;
+        pix = ui->car1->pixmap();
+        ui->car1->setPixmap(renault);
+        pix = ui->car1->pixmap();
+
+    }
+    else if (PlayerCar == 1)
+    {
+        // Renault
+        ui->car1->setPixmap(renault);
+        ui->car1->show();
+    }
+    else if (PlayerCar == 2)
+    {
+        // McLaren
+        ui->car1->setPixmap(QPixmap(":/pics/ferrari.bmp"));
+    }
+    else if (PlayerCar == 3)
+    {
+        // Williams
+        ui->car1->setPixmap(QPixmap("williams"));
+    }
+
+    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 2);
+    qDebug()<<"Player 2:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+
+    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 3);
+    qDebug()<<"Player 3:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+
+    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 4);
+    qDebug()<<"Player 4:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+
+    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 5);
+    qDebug()<<"Player 5:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+
+    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 6);
+    qDebug()<<"Player 6:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 }
 
 void MainWindow::InitFuelBackground(void)

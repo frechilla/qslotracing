@@ -1,27 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <author/>
- <comment/>
- <exportmacro/>
  <class>ConfigDialog</class>
  <widget class="QDialog" name="ConfigDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>630</width>
+    <height>255</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>System configuration</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="pics/tool.qrc">
+    <normaloff>:/pics/tool.bmp</normaloff>:/pics/tool.bmp</iconset>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>20</y>
+     <x>520</x>
+     <y>130</y>
      <width>81</width>
-     <height>241</height>
+     <height>61</height>
     </rect>
    </property>
    <property name="orientation">
@@ -31,9 +33,450 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>500</x>
+     <y>30</y>
+     <width>120</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Comms</string>
+   </property>
+   <widget class="QComboBox" name="ListComms">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>COM1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM3</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM4</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM5</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM6</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM7</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM8</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM9</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM10</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM11</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM12</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM13</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>COM14</string>
+     </property>
+    </item>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="bitmapLabel">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>101</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="pics/tool.qrc">:/pics/tool.bmp</pixmap>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>20</y>
+     <width>331</width>
+     <height>211</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Select players</string>
+   </property>
+   <widget class="QLineEdit" name="EditName6">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>170</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="EditName5">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>140</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="EditName3">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>80</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkPlayer4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Player 4</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="EditName1">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>20</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkPlayer2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Player 2</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkPlayer3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Player 3</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="EditName4">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>110</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkPlayer5">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>140</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Player 5</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="EditName2">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>50</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkPlayer1">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Player 1</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkPlayer6">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>170</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Player 6</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="ListCar1">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>20</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Ferrari</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Renault</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>McLaren</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Williams</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="ListCar2">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>50</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Ferrari</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Renault</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>McLaren</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Williams</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="ListCar3">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>80</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Ferrari</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Renault</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>McLaren</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Williams</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="ListCar4">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>110</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Ferrari</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Renault</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>McLaren</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Williams</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="ListCar5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>140</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Ferrari</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Renault</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>McLaren</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Williams</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="ListCar6">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>170</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Ferrari</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Renault</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>McLaren</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Williams</string>
+     </property>
+    </item>
+   </widget>
+  </widget>
  </widget>
- <pixmapfunction/>
- <resources/>
+ <resources>
+  <include location="pics/tool.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
