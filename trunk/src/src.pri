@@ -6,7 +6,8 @@ SOURCES += src/main.cpp\
     src/scxproto.cpp \
     src/configdialog.cpp \
     src/recorderbinary.cpp \
-    src/snifferserial.cpp
+    src/snifferserial.cpp \
+    src/serialmonitor.cpp
 
 HEADERS += src/mainwindow.h \
     src/qslotracingmsg.h \
@@ -19,7 +20,9 @@ HEADERS += src/mainwindow.h \
     src/delegate.h \
     src/recorderbinary.h \
     src/qserialdevice_global.h \
-    src/snifferserial.h
+    src/snifferserial.h \
+    src/serialmonitor.h
 
 FORMS   += src/mainwindow.ui \
-    src/configdialog.ui
+    src/configdialog.ui \
+    src/serialmonitor.ui

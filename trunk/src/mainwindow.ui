@@ -1112,6 +1112,19 @@
      <string>Prueba Serie</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="serial_monitor">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>255</y>
+      <width>111</width>
+      <height>46</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Serial Monitor</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
