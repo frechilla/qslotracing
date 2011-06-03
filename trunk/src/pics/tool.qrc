@@ -5,5 +5,6 @@
         <file alias="renault">renault.bmp</file>
         <file alias="williams">williams.bmp</file>
         <file alias="ferrari">ferrari.bmp</file>
+        <file alias="empty">empty.bmp</file>
     </qresource>
 </RCC>
