@@ -10,8 +10,10 @@ SnifferSerial::SnifferSerial(QObject *parent) :
     m_stopBits(AbstractSerial::StopBitsUndefined),
     m_flowControl(AbstractSerial::FlowControlUndefined)
 {
-    // set the prpcessor delegate to PrintBuffer by default
-    SetProcessorDelegate(MakeDelegate(&SnifferSerial::PrintBuffer, this));
+#if 0
+    // add PrintBuffer to the list of processing delegates
+    AddProcessorDelegate(MakeDelegate(&SnifferSerial::PrintBuffer, this));
+#endif
 }
 
 SnifferSerial::~SnifferSerial()
@@ -59,9 +61,9 @@ void SnifferSerial::SetFlowControl(AbstractSerial::Flow a_flowControl)
     m_flowControl = a_flowControl;
 }
 
-void SnifferSerial::SetProcessorDelegate(QSnifferDelegate_t a_delegate)
+void SnifferSerial::AddProcessorDelegate(QSnifferDelegate_t a_delegate)
 {
-    m_processorDelegate = a_delegate;
+    m_processorDelegateList.push_back(a_delegate);
 }
 
 void SnifferSerial::OpenSerial()
@@ -188,7 +190,7 @@ void SnifferSerial::slotRead()
     ba = m_port->readAll();
 
     // send bytes read to upper layers
-    m_processorDelegate(reinterpret_cast<const quint8*>(ba.data()), ba.size());
+    NotifyDelegates(reinterpret_cast<const quint8*>(ba.data()), ba.size());
 }
 
 void SnifferSerial::PrintBuffer(const quint8* a_buffer, quint32 a_bufferSize)

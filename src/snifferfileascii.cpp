@@ -15,9 +15,9 @@ SnifferFileAscii::~SnifferFileAscii()
 {
 }
 
-void SnifferFileAscii::SetProcessorDelegate(QSnifferDelegate_t a_delegate)
+void SnifferFileAscii::AddProcessorDelegate(QSnifferDelegate_t a_delegate)
 {
-    m_byteDelegate = a_delegate;
+    m_byteDelegateList.push_back(a_delegate);
 }
 
 void SnifferFileAscii::Start()
@@ -102,7 +102,7 @@ void SnifferFileAscii::ProcessChar(char a_asciiCharacter)
             m_latestAsciiProcessed = LATEST_ASCII_UNSET;
 
             // notify that value we've just found to the upper layers
-            m_byteDelegate(&valueFound, 1);
+            NotifyDelegates(&valueFound, 1);
         }
 
         break;
@@ -120,7 +120,7 @@ void SnifferFileAscii::ProcessChar(char a_asciiCharacter)
             m_latestAsciiProcessed = LATEST_ASCII_UNSET;
 
             // notify that value we've just found to the upper layers
-            m_byteDelegate(&valueFound, 1);
+            NotifyDelegates(&valueFound, 1);
         }
 
         break;
