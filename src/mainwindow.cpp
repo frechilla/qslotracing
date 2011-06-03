@@ -76,49 +76,34 @@ void MainWindow::on_BtnConfigure_clicked()
     QString    PlayerName;
     bool       PlayerFlag;
     int        PlayerCar;
-    m_config.exec();
-    QPixmap ferrari("ferrari");
-    QPixmap renault("renault");
 
+    // Show configuration dialog
+    m_config.exec();
+
+    // Get configuration data
     m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 1);
     qDebug()<<"Player 1:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
-    const    QPixmap *pix;
 
-    // Display car
-    if (PlayerCar == 0)
-    {
-
-       pix =0;
-        pix = ui->car1->pixmap();
-        ui->car1->setPixmap(renault);
-        pix = ui->car1->pixmap();
-
-    }
-    else if (PlayerCar == 1)
-    {
-        // Renault
-        ui->car1->setPixmap(renault);
-        ui->car1->show();
-    }
-    else if (PlayerCar == 2)
-    {
-        // McLaren
-        ui->car1->setPixmap(QPixmap(":/pics/ferrari.bmp"));
-    }
-    else if (PlayerCar == 3)
-    {
-        // Williams
-        ui->car1->setPixmap(QPixmap("williams"));
-    }
+    // Configure players
+    ConfigurePlayer1(PlayerName, PlayerFlag, PlayerCar);
 
     m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 2);
     qDebug()<<"Player 2:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
+    // Configure players
+    ConfigurePlayer2(PlayerName, PlayerFlag, PlayerCar);
+
     m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 3);
     qDebug()<<"Player 3:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
+    // Configure players
+    ConfigurePlayer3(PlayerName, PlayerFlag, PlayerCar);
+
     m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 4);
     qDebug()<<"Player 4:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+
+    // Configure players
+    ConfigurePlayer4(PlayerName, PlayerFlag, PlayerCar);
 
     m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 5);
     qDebug()<<"Player 5:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
@@ -1584,4 +1569,217 @@ void MainWindow::SetMainWindowDelegate()
 {
     m_serial.AddProcessorDelegate(MakeDelegate(&MainWindow::slotRead, this));
     m_serial.AddProcessorDelegate(MakeDelegate(&SerialMonitor::ReadData, &m_monitor));
+}
+
+void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
+{
+    qDebug() <<"Configuring player 1: "<<player<<" "<<flag<<" "<<car;
+
+    // Configure player
+    if (flag == true)
+    {
+        // Set default position
+        ui->editPos1->setText("3");
+
+        // Display player name
+        ui->labelName1->setText(player);
+
+        // Set Default laps
+        ui->editLaps1->setText("0/0");
+
+        // Display player car
+        switch (car)
+        {
+        case 0:
+            {
+                ui->car1->setPixmap(QPixmap(":/pics/ferrari"));
+                ui->car1->show();
+                break;
+            }
+        case 1:
+            {
+                ui->car1->setPixmap(QPixmap(":/pics/renault"));
+                ui->car1->show();
+                break;
+            }
+        case 2:
+            {
+                ui->car1->setPixmap(QPixmap(":/pics/mclaren"));
+                ui->car1->show();
+                break;
+            }
+        case 3:
+            {
+                ui->car1->setPixmap(QPixmap(":/pics/williams"));
+                ui->car1->show();
+                break;
+            }
+        }
+    }
+    else
+    {
+        // Player is not enabled
+        ui->car1->setPixmap(QPixmap(":/pics/empty"));
+        ui->car2->show();
+    }
+}
+
+void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
+{
+    qDebug() <<"Configuring player 2: "<<player<<" "<<flag<<" "<<car;
+
+    // Configure player
+    if (flag == true)
+    {
+        // Set default position
+        ui->editPos2->setText("3");
+
+        // Display player name
+        ui->labelName2->setText(player);
+
+        // Set Default laps
+        ui->editLaps2->setText("0/0");
+
+        // Display player car
+        switch (car)
+        {
+        case 0:
+            {
+                ui->car2->setPixmap(QPixmap(":/pics/ferrari"));
+                ui->car2->show();
+                break;
+            }
+        case 1:
+            {
+                ui->car2->setPixmap(QPixmap(":/pics/renault"));
+                ui->car2->show();
+                break;
+            }
+        case 2:
+            {
+                ui->car2->setPixmap(QPixmap(":/pics/mclaren"));
+                ui->car2->show();
+                break;
+            }
+        case 3:
+            {
+                ui->car2->setPixmap(QPixmap(":/pics/williams"));
+                ui->car2->show();
+                break;
+            }
+        }
+    }
+    else
+    {
+        // Player is not enabled
+        ui->car2->setPixmap(QPixmap(":/pics/empty"));
+        ui->car2->show();
+    }
+}
+
+void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
+{
+    qDebug() <<"Configuring player 3: "<<player<<" "<<flag<<" "<<car;
+
+    // Configure player
+    if (flag == true)
+    {
+        // Set default position
+        ui->editPos3->setText("3");
+
+        // Display player name
+        ui->labelName3->setText(player);
+
+        // Set Default laps
+        ui->editLaps3->setText("0/0");
+
+        // Display player car
+        switch (car)
+        {
+        case 0:
+            {
+                ui->car3->setPixmap(QPixmap(":/pics/ferrari"));
+                ui->car3->show();
+                break;
+            }
+        case 1:
+            {
+                ui->car3->setPixmap(QPixmap(":/pics/renault"));
+                ui->car3->show();
+                break;
+            }
+        case 2:
+            {
+                ui->car3->setPixmap(QPixmap(":/pics/mclaren"));
+                ui->car3->show();
+                break;
+            }
+        case 3:
+            {
+                ui->car3->setPixmap(QPixmap(":/pics/williams"));
+                ui->car3->show();
+                break;
+            }
+        }
+    }
+    else
+    {
+        // Player is not enabled
+        ui->car3->setPixmap(QPixmap(":/pics/empty"));
+        ui->car3->show();
+    }
+}
+
+
+void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
+{
+    qDebug() <<"Configuring player 4: "<<player<<" "<<flag<<" "<<car;
+
+    // Configure player
+    if (flag == true)
+    {
+        // Set default position
+        ui->editPos4->setText("3");
+
+        // Display player name
+        ui->labelName4->setText(player);
+
+        // Set Default laps
+        ui->editLaps4->setText("0/0");
+
+        // Display player car
+        switch (car)
+        {
+        case 0:
+            {
+                ui->car4->setPixmap(QPixmap(":/pics/ferrari"));
+                ui->car4->show();
+                break;
+            }
+        case 1:
+            {
+                ui->car4->setPixmap(QPixmap(":/pics/renault"));
+                ui->car4->show();
+                break;
+            }
+        case 2:
+            {
+                ui->car4->setPixmap(QPixmap(":/pics/mclaren"));
+                ui->car4->show();
+                break;
+            }
+        case 3:
+            {
+                ui->car4->setPixmap(QPixmap(":/pics/williams"));
+                ui->car4->show();
+                break;
+            }
+        }
+    }
+    else
+    {
+        // Player is not enabled
+        ui->car4->setPixmap(QPixmap(":/pics/empty"));
+        ui->car4->show();
+    }
 }

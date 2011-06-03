@@ -50,6 +50,13 @@ private:
     ConfigDialog m_config;
     void OpenSerialPort(void);
 
+    void ConfigurePlayer1(QString player, bool flag, int car);
+    void ConfigurePlayer2(QString player, bool flag, int car);
+    void ConfigurePlayer3(QString player, bool flag, int car);
+    void ConfigurePlayer4(QString player, bool flag, int car);
+    void ConfigurePlayer5(QString player, bool flag, int car);
+    void ConfigurePlayer6(QString player, bool flag, int car);
+
 private slots:
     void on_serial_monitor_clicked();
     void slotRead(const quint8* a_buffer, quint32 a_bufferSize);
