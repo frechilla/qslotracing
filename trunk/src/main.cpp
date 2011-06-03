@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     RecorderBinary recorder("record", 1048576); // rotate every megabyte
     
     // conect sniffer output to recorder input
-    serialSniffer.SetProcessorDelegate(
+    serialSniffer.AddProcessorDelegate(
         MakeDelegate(&RecorderBinary::Dump, &recorder));
         
     // set up and open serial interface
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     // binary recorder will be processing messages sniffed
     // by the asciiSniffer
     RecorderBinary recorder("record", 1024); // rotate every kilobyte
-    asciiSniffer.SetProcessorDelegate(
+    asciiSniffer.AddProcessorDelegate(
         MakeDelegate(&RecorderBinary::Dump, &recorder));
 
     // start the testing. stuff will be printed on the screen!!
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 
     // SCXMsgFactory will be processing all bytes sniffed
     // by the asciiSniffer
-    asciiSniffer.SetProcessorDelegate(
+    asciiSniffer.AddProcessorDelegate(
         MakeDelegate(&SCXMsgFactory::Parse, &msgFactory));
     
     // connect message factory with proto analyzer

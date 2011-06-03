@@ -48,8 +48,9 @@ public:
     /// @brief sets flow control which will be used to open the serial interface
     void SetFlowControl(AbstractSerial::Flow a_flowControl);
     
-    /// @brief sets the delegate in charge of processing bytes sniffed by this class
-    void SetProcessorDelegate(QSnifferDelegate_t a_delegate);
+    /// @brief adds a_delegate to the list of processing delegates
+    /// All delegates in the list will be called per every byte sniffed by this class
+    void AddProcessorDelegate(QSnifferDelegate_t a_delegate);
     
 
     //TODO this is used exclusively for debug. Should be gone at some point
@@ -77,9 +78,13 @@ private:
     /// @brief flow control. Undefined by default
     AbstractSerial::Flow m_flowControl;
     
-    /// @brief function delegate where new messages will be sent
-    /// it is set by default to this->PrintBuffer
-    QSnifferDelegate_t m_processorDelegate;
+    /// @brief list of delegates where new messages will be sent
+    /// it is empty by default so the function AddProcessorDelegate
+    /// must be called at least once
+    ///
+    /// For debugging purposes you might want to add this->PrintBuffer
+    /// to ths list
+    QList<QSnifferDelegate_t> m_processorDelegateList;
     
     
     /// @brief prints the buffer received as parameter
@@ -88,6 +93,19 @@ private:
     /// @param pointer to the buffer
     /// @param number of bytes contained in the buffer
     void PrintBuffer(const quint8* a_buffer, quint32 a_bufferSize);
+
+    /// @brief calls all delegates in m_processorDelegateList
+    /// all delegates will be called with parameters a_buffer and a_bufferSize
+    inline void NotifyDelegates(const quint8* a_buffer, quint32 a_bufferSize)
+    {
+        QList<QSnifferDelegate_t>::const_iterator it;
+        for (it = m_processorDelegateList.begin();
+             it != m_processorDelegateList.end();
+             it++)
+        {
+            (*it)(a_buffer, a_bufferSize);
+        }
+    }
 
 signals:
 

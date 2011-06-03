@@ -1519,8 +1519,11 @@ void MainWindow::on_pushButton_clicked()
     
     // SCXMsgFactory will be processing all bytes sniffed
     // by the asciiSniffer
-    asciiSniffer.SetProcessorDelegate(
+    asciiSniffer.AddProcessorDelegate(
         MakeDelegate(&SCXMsgFactory::Parse, &msgFactory));
+
+    // all bytes will also be notified into the serial monitor window
+    asciiSniffer.AddProcessorDelegate(MakeDelegate(&SerialMonitor::ReadData, &m_monitor));
 
     // connect message factory with proto analyzer
     msgFactory.SetMessageProcessorDelegate(
@@ -1579,6 +1582,6 @@ void MainWindow::on_serial_monitor_clicked()
 
 void MainWindow::SetMainWindowDelegate()
 {
-    //m_serial.SetProcessorDelegate(MakeDelegate(&MainWindow::slotRead, this));
-    m_serial.SetProcessorDelegate(MakeDelegate(&SerialMonitor::ReadData, &m_monitor));
+    m_serial.AddProcessorDelegate(MakeDelegate(&MainWindow::slotRead, this));
+    m_serial.AddProcessorDelegate(MakeDelegate(&SerialMonitor::ReadData, &m_monitor));
 }

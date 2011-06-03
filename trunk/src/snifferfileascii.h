@@ -26,8 +26,9 @@ public:
     /// It won't return until all files have been parsed
     void Start();
 
-    /// @brief sets the delegate in charge of processing bytes sniffed by this class
-    void SetProcessorDelegate(QSnifferDelegate_t a_delegate);
+    /// @brief adds a_delegate to the list of processing delegates
+    /// All delegates in the list will be called per every byte sniffed by this class
+    void AddProcessorDelegate(QSnifferDelegate_t a_delegate);
 
 private:
     /// @brief list of filenames
@@ -38,8 +39,10 @@ private:
     /// when the latest character forced this object to notify a raw byte
     char m_latestAsciiProcessed;
 
-    /// @brief function delegate where new messages will be sent
-    QSnifferDelegate_t m_byteDelegate;
+    /// @brief list of delegates where new messages will be sent
+    /// it is empty by default so the function AddProcessorDelegate
+    /// must be called at least once
+    QList<QSnifferDelegate_t> m_byteDelegateList;
 
     /// @brief parses an ascii character.
     /// it might detect a raw byte described in the ascii input. If that is the
@@ -61,6 +64,19 @@ private:
     ///        [A-Fa-f0-9]
     /// @return corresponding binary value to the 'a_asciiCharacter' parameter
     quint8 asciiToRaw(char a_asciiCharacter); 
+
+    /// @brief calls all delegates in m_byteDelegateList
+    /// the delegates will be called with parameters a_buffer and a_bufferSize
+    inline void NotifyDelegates(const quint8* a_buffer, quint32 a_bufferSize)
+    {
+        QList<QSnifferDelegate_t>::const_iterator it;
+        for (it = m_byteDelegateList.begin();
+             it != m_byteDelegateList.end();
+             it++)
+        {
+            (*it)(a_buffer, a_bufferSize);
+        }
+    }
 
     // prevent this class from being constructed without the proper arguments
     SnifferFileAscii();
