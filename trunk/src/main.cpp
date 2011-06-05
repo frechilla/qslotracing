@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
     // we need to build the window first
     MainWindow w;
 
+    w.move(0,0);
     w.show();
 
     //////////

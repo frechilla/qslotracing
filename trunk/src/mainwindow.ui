@@ -6,33 +6,36 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1100</width>
-    <height>900</height>
+    <width>1200</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1100</width>
-    <height>900</height>
+    <width>1200</width>
+    <height>720</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1100</width>
-    <height>900</height>
+    <width>1200</width>
+    <height>720</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="animated">
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>45</y>
-      <width>226</width>
-      <height>71</height>
+      <y>30</y>
+      <width>176</width>
+      <height>56</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -45,9 +48,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -63,10 +66,10 @@
     <widget class="QFrame" name="FuelSegm1_2">
      <property name="geometry">
       <rect>
-       <x>35</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>30</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -82,10 +85,10 @@
     <widget class="QFrame" name="FuelSegm1_3">
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>50</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -101,10 +104,10 @@
     <widget class="QFrame" name="FuelSegm1_4">
      <property name="geometry">
       <rect>
-       <x>85</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>70</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -120,10 +123,10 @@
     <widget class="QFrame" name="FuelSegm1_5">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>90</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -139,10 +142,10 @@
     <widget class="QFrame" name="FuelSegm1_6">
      <property name="geometry">
       <rect>
-       <x>135</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>110</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -158,10 +161,10 @@
     <widget class="QFrame" name="FuelSegm1_7">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>130</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -177,10 +180,10 @@
     <widget class="QFrame" name="FuelSegm1_8">
      <property name="geometry">
       <rect>
-       <x>185</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>150</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -198,9 +201,9 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>195</y>
-      <width>226</width>
-      <height>71</height>
+      <y>130</y>
+      <width>176</width>
+      <height>56</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -213,9 +216,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -231,10 +234,10 @@
     <widget class="QFrame" name="FuelSegm2_2">
      <property name="geometry">
       <rect>
-       <x>35</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>30</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -250,10 +253,10 @@
     <widget class="QFrame" name="FuelSegm2_3">
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>50</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -269,10 +272,10 @@
     <widget class="QFrame" name="FuelSegm2_4">
      <property name="geometry">
       <rect>
-       <x>85</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>70</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -288,10 +291,10 @@
     <widget class="QFrame" name="FuelSegm2_5">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>90</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -307,10 +310,10 @@
     <widget class="QFrame" name="FuelSegm2_6">
      <property name="geometry">
       <rect>
-       <x>135</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>110</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -326,10 +329,10 @@
     <widget class="QFrame" name="FuelSegm2_7">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>130</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -345,10 +348,10 @@
     <widget class="QFrame" name="FuelSegm2_8">
      <property name="geometry">
       <rect>
-       <x>185</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>150</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -365,8 +368,8 @@
    <widget class="QSlider" name="horizontalSlider">
     <property name="geometry">
      <rect>
-      <x>535</x>
-      <y>815</y>
+      <x>910</x>
+      <y>570</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -378,181 +381,13 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QFrame" name="frame_5">
-    <property name="geometry">
-     <rect>
-      <x>235</x>
-      <y>660</y>
-      <width>226</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Panel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QFrame" name="FuelSegm5_1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QFrame" name="FuelSegm5_2">
-     <property name="geometry">
-      <rect>
-       <x>35</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QFrame" name="FuelSegm5_3">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QFrame" name="FuelSegm5_4">
-     <property name="geometry">
-      <rect>
-       <x>85</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QFrame" name="FuelSegm5_5">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QFrame" name="FuelSegm5_6">
-     <property name="geometry">
-      <rect>
-       <x>135</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QFrame" name="FuelSegm5_7">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QFrame" name="FuelSegm5_8">
-     <property name="geometry">
-      <rect>
-       <x>185</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-   </widget>
    <widget class="QFrame" name="frame_6">
     <property name="geometry">
      <rect>
-      <x>235</x>
-      <y>740</y>
-      <width>226</width>
-      <height>71</height>
+      <x>230</x>
+      <y>530</y>
+      <width>176</width>
+      <height>56</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -565,9 +400,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -583,10 +418,10 @@
     <widget class="QFrame" name="FuelSegm6_2">
      <property name="geometry">
       <rect>
-       <x>35</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>30</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -602,10 +437,10 @@
     <widget class="QFrame" name="FuelSegm6_3">
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>50</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -621,10 +456,10 @@
     <widget class="QFrame" name="FuelSegm6_4">
      <property name="geometry">
       <rect>
-       <x>85</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>70</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -640,10 +475,10 @@
     <widget class="QFrame" name="FuelSegm6_5">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>90</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -659,10 +494,10 @@
     <widget class="QFrame" name="FuelSegm6_6">
      <property name="geometry">
       <rect>
-       <x>135</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>110</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -678,10 +513,10 @@
     <widget class="QFrame" name="FuelSegm6_7">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>130</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -697,10 +532,10 @@
     <widget class="QFrame" name="FuelSegm6_8">
      <property name="geometry">
       <rect>
-       <x>185</x>
-       <y>20</y>
-       <width>21</width>
-       <height>41</height>
+       <x>150</x>
+       <y>10</y>
+       <width>17</width>
+       <height>35</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -717,8 +552,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>665</y>
+      <x>1005</x>
+      <y>455</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -730,8 +565,8 @@
    <widget class="QTextEdit" name="EditLaps1">
     <property name="geometry">
      <rect>
-      <x>785</x>
-      <y>650</y>
+      <x>855</x>
+      <y>325</y>
       <width>221</width>
       <height>64</height>
      </rect>
@@ -740,8 +575,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>865</x>
-      <y>735</y>
+      <x>1010</x>
+      <y>410</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -753,8 +588,8 @@
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>695</y>
+      <x>850</x>
+      <y>425</y>
       <width>131</width>
       <height>61</height>
      </rect>
@@ -766,8 +601,8 @@
    <widget class="QPushButton" name="serial_monitor">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>750</y>
+      <x>970</x>
+      <y>505</y>
       <width>111</width>
       <height>46</height>
      </rect>
@@ -779,10 +614,10 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>35</x>
-      <y>750</y>
-      <width>151</width>
-      <height>106</height>
+      <x>25</x>
+      <y>605</y>
+      <width>106</width>
+      <height>71</height>
      </rect>
     </property>
     <property name="title">
@@ -794,7 +629,7 @@
        <x>15</x>
        <y>20</y>
        <width>75</width>
-       <height>41</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
@@ -806,9 +641,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>30</y>
-      <width>141</width>
-      <height>86</height>
+      <y>10</y>
+      <width>105</width>
+      <height>64</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -822,15 +657,15 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>125</y>
+      <y>80</y>
       <width>171</width>
-      <height>31</height>
+      <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>18</pointsize>
+      <pointsize>14</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -846,8 +681,8 @@
     <property name="geometry">
      <rect>
       <x>25</x>
-      <y>160</y>
-      <width>931</width>
+      <y>95</y>
+      <width>1156</width>
       <height>16</height>
      </rect>
     </property>
@@ -858,10 +693,10 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>215</x>
-      <y>25</y>
-      <width>251</width>
-      <height>111</height>
+      <x>220</x>
+      <y>10</y>
+      <width>196</width>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -871,10 +706,10 @@
    <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
-      <x>485</x>
-      <y>25</y>
-      <width>136</width>
-      <height>111</height>
+      <x>425</x>
+      <y>10</y>
+      <width>126</width>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -885,8 +720,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>116</width>
-       <height>81</height>
+       <width>106</width>
+       <height>56</height>
       </rect>
      </property>
      <property name="font">
@@ -908,10 +743,10 @@
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>25</y>
+      <x>560</x>
+      <y>10</y>
       <width>236</width>
-      <height>111</height>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -923,7 +758,7 @@
        <x>10</x>
        <y>20</y>
        <width>216</width>
-       <height>81</height>
+       <height>56</height>
       </rect>
      </property>
      <property name="font">
@@ -949,8 +784,8 @@
     <property name="geometry">
      <rect>
       <x>25</x>
-      <y>310</y>
-      <width>931</width>
+      <y>195</y>
+      <width>1156</width>
       <height>16</height>
      </rect>
     </property>
@@ -962,9 +797,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>180</y>
-      <width>141</width>
-      <height>86</height>
+      <y>110</y>
+      <width>105</width>
+      <height>64</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -978,15 +813,15 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>275</y>
+      <y>180</y>
       <width>171</width>
-      <height>31</height>
+      <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>18</pointsize>
+      <pointsize>14</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1001,10 +836,10 @@
    <widget class="QGroupBox" name="groupBox_6">
     <property name="geometry">
      <rect>
-      <x>215</x>
-      <y>175</y>
-      <width>251</width>
-      <height>111</height>
+      <x>220</x>
+      <y>110</y>
+      <width>196</width>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -1014,10 +849,10 @@
    <widget class="QGroupBox" name="groupBox_5">
     <property name="geometry">
      <rect>
-      <x>485</x>
-      <y>175</y>
-      <width>136</width>
-      <height>111</height>
+      <x>425</x>
+      <y>110</y>
+      <width>126</width>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -1028,8 +863,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>116</width>
-       <height>81</height>
+       <width>106</width>
+       <height>56</height>
       </rect>
      </property>
      <property name="font">
@@ -1051,10 +886,10 @@
    <widget class="QGroupBox" name="groupBox_7">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>175</y>
+      <x>560</x>
+      <y>110</y>
       <width>236</width>
-      <height>111</height>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -1066,7 +901,7 @@
        <x>10</x>
        <y>20</y>
        <width>216</width>
-       <height>81</height>
+       <height>56</height>
       </rect>
      </property>
      <property name="font">
@@ -1092,8 +927,8 @@
     <property name="geometry">
      <rect>
       <x>25</x>
-      <y>460</y>
-      <width>931</width>
+      <y>295</y>
+      <width>1156</width>
       <height>16</height>
      </rect>
     </property>
@@ -1105,9 +940,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>330</y>
-      <width>141</width>
-      <height>86</height>
+      <y>210</y>
+      <width>105</width>
+      <height>64</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -1121,15 +956,15 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>425</y>
+      <y>280</y>
       <width>171</width>
-      <height>31</height>
+      <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>18</pointsize>
+      <pointsize>14</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1144,10 +979,10 @@
    <widget class="QGroupBox" name="groupBox_8">
     <property name="geometry">
      <rect>
-      <x>215</x>
-      <y>325</y>
-      <width>251</width>
-      <height>111</height>
+      <x>220</x>
+      <y>210</y>
+      <width>196</width>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -1156,10 +991,10 @@
     <widget class="QFrame" name="frame_3">
      <property name="geometry">
       <rect>
-       <x>15</x>
+       <x>10</x>
        <y>20</y>
-       <width>226</width>
-       <height>71</height>
+       <width>176</width>
+       <height>56</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -1172,9 +1007,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1190,10 +1025,10 @@
      <widget class="QFrame" name="FuelSegm3_2">
       <property name="geometry">
        <rect>
-        <x>35</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>30</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1209,10 +1044,10 @@
      <widget class="QFrame" name="FuelSegm3_3">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>50</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1228,10 +1063,10 @@
      <widget class="QFrame" name="FuelSegm3_4">
       <property name="geometry">
        <rect>
-        <x>85</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>70</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1247,10 +1082,10 @@
      <widget class="QFrame" name="FuelSegm3_5">
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>90</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1266,10 +1101,10 @@
      <widget class="QFrame" name="FuelSegm3_6">
       <property name="geometry">
        <rect>
-        <x>135</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>110</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1285,10 +1120,10 @@
      <widget class="QFrame" name="FuelSegm3_7">
       <property name="geometry">
        <rect>
-        <x>160</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>130</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1304,10 +1139,10 @@
      <widget class="QFrame" name="FuelSegm3_8">
       <property name="geometry">
        <rect>
-        <x>185</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>150</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1325,10 +1160,10 @@
    <widget class="QGroupBox" name="groupBox_9">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>325</y>
+      <x>560</x>
+      <y>210</y>
       <width>236</width>
-      <height>111</height>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -1340,7 +1175,7 @@
        <x>10</x>
        <y>20</y>
        <width>216</width>
-       <height>81</height>
+       <height>56</height>
       </rect>
      </property>
      <property name="font">
@@ -1365,10 +1200,10 @@
    <widget class="QGroupBox" name="groupBox_10">
     <property name="geometry">
      <rect>
-      <x>485</x>
-      <y>325</y>
-      <width>136</width>
-      <height>111</height>
+      <x>425</x>
+      <y>210</y>
+      <width>126</width>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -1379,8 +1214,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>116</width>
-       <height>81</height>
+       <width>106</width>
+       <height>56</height>
       </rect>
      </property>
      <property name="font">
@@ -1403,9 +1238,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>480</y>
-      <width>141</width>
-      <height>86</height>
+      <y>310</y>
+      <width>106</width>
+      <height>64</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -1419,15 +1254,15 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>575</y>
+      <y>380</y>
       <width>171</width>
-      <height>31</height>
+      <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>18</pointsize>
+      <pointsize>14</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1443,8 +1278,8 @@
     <property name="geometry">
      <rect>
       <x>25</x>
-      <y>610</y>
-      <width>931</width>
+      <y>395</y>
+      <width>1156</width>
       <height>16</height>
      </rect>
     </property>
@@ -1455,10 +1290,10 @@
    <widget class="QGroupBox" name="groupBox_11">
     <property name="geometry">
      <rect>
-      <x>215</x>
-      <y>475</y>
-      <width>251</width>
-      <height>111</height>
+      <x>220</x>
+      <y>310</y>
+      <width>196</width>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -1467,10 +1302,10 @@
     <widget class="QFrame" name="frame_4">
      <property name="geometry">
       <rect>
-       <x>15</x>
+       <x>10</x>
        <y>20</y>
-       <width>226</width>
-       <height>71</height>
+       <width>176</width>
+       <height>56</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -1482,10 +1317,10 @@
      <widget class="QFrame" name="FuelSegm4_1">
       <property name="geometry">
        <rect>
-        <x>5</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>10</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1502,9 +1337,9 @@
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1520,10 +1355,10 @@
      <widget class="QFrame" name="FuelSegm4_3">
       <property name="geometry">
        <rect>
-        <x>55</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>50</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1539,10 +1374,10 @@
      <widget class="QFrame" name="FuelSegm4_4">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>70</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1558,10 +1393,10 @@
      <widget class="QFrame" name="FuelSegm4_5">
       <property name="geometry">
        <rect>
-        <x>105</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>90</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1577,10 +1412,10 @@
      <widget class="QFrame" name="FuelSegm4_6">
       <property name="geometry">
        <rect>
-        <x>130</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>110</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1596,10 +1431,10 @@
      <widget class="QFrame" name="FuelSegm4_7">
       <property name="geometry">
        <rect>
-        <x>155</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>130</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1615,10 +1450,10 @@
      <widget class="QFrame" name="FuelSegm4_8">
       <property name="geometry">
        <rect>
-        <x>180</x>
-        <y>20</y>
-        <width>21</width>
-        <height>41</height>
+        <x>150</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -1636,10 +1471,10 @@
    <widget class="QGroupBox" name="groupBox_12">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>475</y>
+      <x>560</x>
+      <y>310</y>
       <width>236</width>
-      <height>111</height>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -1651,7 +1486,7 @@
        <x>10</x>
        <y>20</y>
        <width>216</width>
-       <height>81</height>
+       <height>56</height>
       </rect>
      </property>
      <property name="font">
@@ -1676,10 +1511,10 @@
    <widget class="QGroupBox" name="groupBox_13">
     <property name="geometry">
      <rect>
-      <x>485</x>
-      <y>475</y>
-      <width>136</width>
-      <height>111</height>
+      <x>425</x>
+      <y>310</y>
+      <width>126</width>
+      <height>86</height>
      </rect>
     </property>
     <property name="title">
@@ -1690,8 +1525,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>116</width>
-       <height>81</height>
+       <width>106</width>
+       <height>56</height>
       </rect>
      </property>
      <property name="font">
@@ -1710,14 +1545,468 @@
      </property>
     </widget>
    </widget>
+   <widget class="QLabel" name="car5">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>410</y>
+      <width>106</width>
+      <height>64</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelName5">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>480</y>
+      <width>171</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_14">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>410</y>
+      <width>196</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Fuel</string>
+    </property>
+    <widget class="QFrame" name="frame_5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>176</width>
+       <height>56</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QFrame" name="FuelSegm5_1">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QFrame" name="FuelSegm5_2">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QFrame" name="FuelSegm5_3">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QFrame" name="FuelSegm5_4">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QFrame" name="FuelSegm5_5">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QFrame" name="FuelSegm5_6">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QFrame" name="FuelSegm5_7">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QFrame" name="FuelSegm5_8">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>10</y>
+        <width>17</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_15">
+    <property name="geometry">
+     <rect>
+      <x>425</x>
+      <y>410</y>
+      <width>126</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Position</string>
+    </property>
+    <widget class="QLineEdit" name="editPos5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>106</width>
+       <height>56</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>48</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_16">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>410</y>
+      <width>236</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Laps</string>
+    </property>
+    <widget class="QLineEdit" name="editLaps5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>216</width>
+       <height>56</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>48</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(170, 255, 255);</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="Line" name="line_5">
+    <property name="geometry">
+     <rect>
+      <x>25</x>
+      <y>495</y>
+      <width>1156</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="car6">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>510</y>
+      <width>106</width>
+      <height>64</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelName6">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>580</y>
+      <width>171</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_17">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>510</y>
+      <width>196</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Fuel</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_18">
+    <property name="geometry">
+     <rect>
+      <x>425</x>
+      <y>510</y>
+      <width>126</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Position</string>
+    </property>
+    <widget class="QLineEdit" name="editPos6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>106</width>
+       <height>56</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>48</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_19">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>510</y>
+      <width>236</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Laps</string>
+    </property>
+    <widget class="QLineEdit" name="editLaps6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>216</width>
+       <height>56</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>48</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(170, 255, 255);</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="Line" name="line_6">
+    <property name="geometry">
+     <rect>
+      <x>25</x>
+      <y>595</y>
+      <width>1156</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1100</width>
-     <height>20</height>
+     <width>1200</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
