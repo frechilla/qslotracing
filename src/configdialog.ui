@@ -474,6 +474,28 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>checkPlayer1</tabstop>
+  <tabstop>EditName1</tabstop>
+  <tabstop>ListCar1</tabstop>
+  <tabstop>checkPlayer2</tabstop>
+  <tabstop>EditName2</tabstop>
+  <tabstop>ListCar2</tabstop>
+  <tabstop>checkPlayer3</tabstop>
+  <tabstop>EditName3</tabstop>
+  <tabstop>ListCar3</tabstop>
+  <tabstop>checkPlayer4</tabstop>
+  <tabstop>EditName4</tabstop>
+  <tabstop>ListCar4</tabstop>
+  <tabstop>checkPlayer5</tabstop>
+  <tabstop>EditName5</tabstop>
+  <tabstop>ListCar5</tabstop>
+  <tabstop>checkPlayer6</tabstop>
+  <tabstop>EditName6</tabstop>
+  <tabstop>ListCar6</tabstop>
+  <tabstop>ListComms</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="pics/tool.qrc"/>
  </resources>
