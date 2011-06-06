@@ -6,5 +6,6 @@
         <file alias="mclaren">mclaren.bmp</file>
         <file alias="renault">renault.bmp</file>
         <file alias="williams">williams.bmp</file>
+        <file alias="controller">controller.bmp</file>
     </qresource>
 </RCC>

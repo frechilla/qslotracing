@@ -629,7 +629,7 @@
        <x>15</x>
        <y>20</y>
        <width>75</width>
-       <height>31</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="text">
@@ -753,6 +753,9 @@
      <string>Laps</string>
     </property>
     <widget class="QLineEdit" name="editLaps1">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1999,6 +2002,84 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
+   <widget class="QGroupBox" name="groupBox_20">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>605</y>
+      <width>106</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Controllers</string>
+    </property>
+    <widget class="QPushButton" name="btnController">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>20</y>
+       <width>75</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="pics/tool.qrc">
+       <normaloff>:/pics/controller</normaloff>:/pics/controller</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>33</width>
+       <height>33</height>
+      </size>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="btnTestEventFuel">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>225</y>
+      <width>116</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TestEventoFuel</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_21">
+    <property name="geometry">
+     <rect>
+      <x>255</x>
+      <y>605</y>
+      <width>106</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Race Status</string>
+    </property>
+    <widget class="QLabel" name="staticStatus">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>30</y>
+       <width>46</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -2013,7 +2094,9 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="pics/tool.qrc"/>
+ </resources>
  <connections/>
  <designerdata>
   <property name="gridDeltaX">
