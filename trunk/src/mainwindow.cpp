@@ -1577,7 +1577,7 @@ void MainWindow::slotRead(const quint8* a_buffer, quint32 a_bufferSize)
 void MainWindow::on_serial_monitor_clicked()
 {
     //static SerialMonitor *diag = new SerialMonitor(this);
-    m_monitor.exec();
+    m_monitor.show();
 }
 
 void MainWindow::SetMainWindowDelegate()
@@ -1593,6 +1593,9 @@ void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
     // Configure player
     if (flag == true)
     {
+        ui->editLaps1->setStyleSheet("background-color: rgb(170, 255, 255);");
+        ui->editPos1->setStyleSheet("background-color: rgb(255, 255, 255);");
+
         // Set default position
         ui->editPos1->setText("3");
 
@@ -1636,6 +1639,10 @@ void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
         // Player is not enabled
         ui->car1->setPixmap(QPixmap(":/pics/empty"));
         ui->car2->show();
+
+        // Disable lap counter
+        ui->editLaps1->setStyleSheet("background-color: rgb(220, 220, 220);");
+        ui->editPos1->setStyleSheet("background-color: rgb(220, 220, 220);");
     }
 }
 
@@ -1646,6 +1653,9 @@ void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
     // Configure player
     if (flag == true)
     {
+        ui->editLaps2->setStyleSheet("background-color: rgb(170, 255, 255);");
+        ui->editPos2->setStyleSheet("background-color: rgb(255, 255, 255);");
+
         // Set default position
         ui->editPos2->setText("3");
 
@@ -1689,6 +1699,8 @@ void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
         // Player is not enabled
         ui->car2->setPixmap(QPixmap(":/pics/empty"));
         ui->car2->show();
+        ui->editLaps2->setStyleSheet("background-color: rgb(220, 220, 220);");
+        ui->editPos2->setStyleSheet("background-color: rgb(220, 220, 220);");
     }
 }
 
@@ -1699,6 +1711,9 @@ void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
     // Configure player
     if (flag == true)
     {
+        ui->editLaps3->setStyleSheet("background-color: rgb(170, 255, 255);");
+        ui->editPos3->setStyleSheet("background-color: rgb(255, 255, 255);");
+
         // Set default position
         ui->editPos3->setText("3");
 
@@ -1742,6 +1757,8 @@ void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
         // Player is not enabled
         ui->car3->setPixmap(QPixmap(":/pics/empty"));
         ui->car3->show();
+        ui->editLaps3->setStyleSheet("background-color: rgb(220, 220, 220);");
+        ui->editPos3->setStyleSheet("background-color: rgb(220, 220, 220);");
     }
 }
 
@@ -1753,6 +1770,9 @@ void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
     // Configure player
     if (flag == true)
     {
+        ui->editLaps4->setStyleSheet("background-color: rgb(170, 255, 255);");
+        ui->editPos4->setStyleSheet("background-color: rgb(255, 255, 255);");
+
         // Set default position
         ui->editPos4->setText("3");
 
@@ -1796,6 +1816,9 @@ void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
         // Player is not enabled
         ui->car4->setPixmap(QPixmap(":/pics/empty"));
         ui->car4->show();
+
+        ui->editLaps4->setStyleSheet("background-color: rgb(220, 220, 220);");
+        ui->editPos4->setStyleSheet("background-color: rgb(220, 220, 220);");
     }
 }
 
@@ -1806,6 +1829,9 @@ void MainWindow::ConfigurePlayer5(QString player, bool flag, int car)
     // Configure player
     if (flag == true)
     {
+        ui->editLaps5->setStyleSheet("background-color: rgb(170, 255, 255);");
+        ui->editPos5->setStyleSheet("background-color: rgb(255, 255, 255);");
+
         // Set default position
         ui->editPos5->setText("3");
 
@@ -1849,6 +1875,9 @@ void MainWindow::ConfigurePlayer5(QString player, bool flag, int car)
         // Player is not enabled
         ui->car5->setPixmap(QPixmap(":/pics/empty"));
         ui->car5->show();
+
+        ui->editLaps5->setStyleSheet("background-color: rgb(220, 220, 220);");
+        ui->editPos5->setStyleSheet("background-color: rgb(220, 220, 220);");
     }
 }
 
@@ -1859,6 +1888,9 @@ void MainWindow::ConfigurePlayer6(QString player, bool flag, int car)
     // Configure player
     if (flag == true)
     {
+        ui->editLaps6->setStyleSheet("background-color: rgb(170, 255, 255);");
+        ui->editPos6->setStyleSheet("background-color: rgb(255, 255, 255);");
+
         // Set default position
         ui->editPos6->setText("3");
 
@@ -1906,5 +1938,18 @@ void MainWindow::ConfigurePlayer6(QString player, bool flag, int car)
         // Player is not enabled
         ui->car6->setPixmap(QPixmap(":/pics/empty"));
         ui->car6->show();
+
+        ui->editLaps6->setStyleSheet("background-color: rgb(220, 220, 220);");
+        ui->editPos6->setStyleSheet("background-color: rgb(220, 220, 220);");
     }
+}
+
+void MainWindow::on_btnController_clicked()
+{
+
+}
+
+void MainWindow::on_btnTestEventFuel_clicked()
+{
+
 }

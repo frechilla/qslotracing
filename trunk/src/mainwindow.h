@@ -58,6 +58,8 @@ private:
     void ConfigurePlayer6(QString player, bool flag, int car);
 
 private slots:
+    void on_btnTestEventFuel_clicked();
+    void on_btnController_clicked();
     void on_serial_monitor_clicked();
     void slotRead(const quint8* a_buffer, quint32 a_bufferSize);
     void on_pushButton_3_clicked();
