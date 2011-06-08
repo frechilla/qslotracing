@@ -2,7 +2,6 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "configdialog.h"
 
 #include "snifferfileascii.h"
 #include "scxmsgfactory.h"
@@ -1523,7 +1522,7 @@ void MainWindow::on_pushButton_clicked()
         MakeDelegate(&SCXMsgFactory::Parse, &msgFactory));
 
     // all bytes will also be notified into the serial monitor window
-    asciiSniffer.AddProcessorDelegate(MakeDelegate(&SerialMonitor::ReadData, &m_monitor));
+    //asciiSniffer.AddProcessorDelegate(MakeDelegate(&SerialMonitor::ReadData, &m_monitor));
 
     // connect message factory with proto analyzer
     msgFactory.SetMessageProcessorDelegate(
@@ -1946,7 +1945,7 @@ void MainWindow::ConfigurePlayer6(QString player, bool flag, int car)
 
 void MainWindow::on_btnController_clicked()
 {
-
+    m_controller.show();
 }
 
 void MainWindow::on_btnTestEventFuel_clicked()

@@ -7,14 +7,13 @@ SerialMonitor::SerialMonitor(QWidget *parent) :
     ui(new Ui::SerialMonitor)
 {
     ui->setupUi(this);
+    m_file = NULL;
 
     flag_show = 0;
 }
 
 SerialMonitor::~SerialMonitor()
 {
-    delete ui;
-
     if (m_file != 0)
     {
         if (m_file->isOpen())
@@ -26,6 +25,12 @@ SerialMonitor::~SerialMonitor()
 
         qDebug() << "cerrar fichero bien";
     }
+    else
+    {
+        qDebug() << "cerrando SerialMonitor...";
+    }
+
+    delete ui;
 }
 
 void SerialMonitor::on_start_capture_clicked()

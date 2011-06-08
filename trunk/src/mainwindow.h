@@ -7,6 +7,7 @@
 #include "snifferserial.h"
 #include "serialmonitor.h"
 #include "configdialog.h"
+#include "controllerdlg.h"
 
 namespace Ui {
     class MainWindow;
@@ -48,6 +49,7 @@ private:
     SnifferSerial m_serial;
     SerialMonitor m_monitor;
     ConfigDialog m_config;
+    ControllerDlg m_controller;
     void OpenSerialPort(void);
 
     void ConfigurePlayer1(QString player, bool flag, int car);
