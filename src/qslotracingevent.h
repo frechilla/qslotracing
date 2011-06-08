@@ -8,6 +8,8 @@
 typedef enum
 {
     e_QSlotRacingEvent_Fuel = 0, // fuel change
+    e_QSlotRacingEvent_Controller, // controller package
+    e_QSlotRacingEvent_Ranking, // ranking package
 } QSlotRacingEventType_t;
 
 /// Players handled by this app
@@ -180,5 +182,68 @@ private:
     QSlotRacingEventLap();
 };
 
+/// @brief controller event
+/// sent for each controller
+class QSlotRacingEventController :
+        public QSlotRacingEvent
+{
+private:
+    /// type to save amount of fuel per each player
+    typedef QList< std::pair<QSlotRacingPlayer_t, quint8> > ControllerDataContainerType_t;
+public:
+    /// @param virtual time timestamp
+    QSlotRacingEventController(const QTime &a_timestamp):
+            QSlotRacingEvent(e_QSlotRacingEvent_Controller, a_timestamp)
+    {}
+    ~QSlotRacingEventController()
+    {}
+
+    /// @brief store amount of fuel for a specific player
+    /// @param player whose fuel value is to be stored
+    /// @param fuel value (from 0 to 8)
+    void AddControllerData(QSlotRacingPlayer_t a_playersIndex, quint8 a_value)
+    {
+        m_controllerData.push_back(std::pair<QSlotRacingPlayer_t, quint8>(a_playersIndex, a_value));
+    }
+
+private:
+    /// contains player's index and its fuel value (from 0 to 100)
+    ControllerDataContainerType_t m_controllerData;
+
+    // prevent standard constructor from being used
+    QSlotRacingEventController();
+};
+
+/// @brief ranking event
+/// sent after crossing the finish line
+class QSlotRacingEventRanking :
+        public QSlotRacingEvent
+{
+private:
+    /// type to save amount of fuel per each player
+    typedef QList< std::pair<QSlotRacingPlayer_t, quint8> > RankingDataContainerType_t;
+public:
+    /// @param virtual time timestamp
+    QSlotRacingEventRanking(const QTime &a_timestamp):
+            QSlotRacingEvent(e_QSlotRacingEvent_Controller, a_timestamp)
+    {}
+    ~QSlotRacingEventRanking()
+    {}
+
+    /// @brief store ranking data for a specific player
+    /// @param player whose ranking data is to be stored
+    /// @param ranking data
+    void AddRankingData(QSlotRacingPlayer_t a_playersIndex, quint8 a_value)
+    {
+        m_rankingData.push_back(std::pair<QSlotRacingPlayer_t, quint8>(a_playersIndex, a_value));
+    }
+
+private:
+    /// contains player's index and its fuel value (from 0 to 100)
+    RankingDataContainerType_t m_rankingData;
+
+    // prevent standard constructor from being used
+    QSlotRacingEventRanking();
+};
 
 #endif // QSLOTRACINGEVENT_H

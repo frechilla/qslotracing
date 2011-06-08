@@ -50,7 +50,7 @@ private:
     SerialMonitor m_monitor;
     ConfigDialog m_config;
     ControllerDlg m_controller;
-    void OpenSerialPort(void);
+    void OpenSerialPort(QString port);
 
     void ConfigurePlayer1(QString player, bool flag, int car);
     void ConfigurePlayer2(QString player, bool flag, int car);

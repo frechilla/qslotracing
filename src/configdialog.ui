@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="pics/tool.qrc">
-    <normaloff>:/pics/tool.bmp</normaloff>:/pics/tool.bmp</iconset>
+    <normaloff>:/pics/settings</normaloff>:/pics/settings</iconset>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -129,17 +129,17 @@
   <widget class="QLabel" name="bitmapLabel">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>101</width>
-     <height>101</height>
+     <x>10</x>
+     <y>60</y>
+     <width>128</width>
+     <height>128</height>
     </rect>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="pics/tool.qrc">:/pics/tool.bmp</pixmap>
+    <pixmap resource="pics/tool.qrc">:/pics/settings</pixmap>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBox_2">
