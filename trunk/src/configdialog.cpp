@@ -10,6 +10,9 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     ui(new Ui::ConfigDialog)
 {
     ui->setupUi(this);
+
+    // Initialize configured flag
+    m_configured = false;
 }
 
 ConfigDialog::~ConfigDialog()
@@ -19,7 +22,8 @@ ConfigDialog::~ConfigDialog()
 
 void ConfigDialog::on_buttonBox_accepted()
 {
-
+    m_configured = true;
+    m_port = ui->ListComms->currentText();
 }
 
 void ConfigDialog::GetPlayer(QString &player, bool &flag, int &car, int PlayerId)
@@ -71,3 +75,14 @@ void ConfigDialog::GetPlayer(QString &player, bool &flag, int &car, int PlayerId
     }
 ;
 }
+
+void ConfigDialog::GetConfigured(bool &configured)
+{
+    configured = m_configured;
+}
+
+void ConfigDialog::GetSerialPort(QString &port)
+{
+    port = m_port;
+}
+

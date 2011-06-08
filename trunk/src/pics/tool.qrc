@@ -7,5 +7,6 @@
         <file alias="renault">renault.bmp</file>
         <file alias="williams">williams.bmp</file>
         <file alias="controller">controller.bmp</file>
+        <file alias="settings">settings.png</file>
     </qresource>
 </RCC>

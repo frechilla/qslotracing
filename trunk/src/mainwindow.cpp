@@ -21,9 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Initialize window widgets backgrounds
     InitFuelBackground();
 
-    // Serial port initialization
-    OpenSerialPort();
-
     // Default configuration
     ConfigurePlayer1("", 0, -1);
     ConfigurePlayer2("", 0, -1);
@@ -84,46 +81,61 @@ void MainWindow::on_BtnConfigure_clicked()
     QString    PlayerName;
     bool       PlayerFlag;
     int        PlayerCar;
+    bool       configured;
+    QString    port;
 
     // Show configuration dialog
     m_config.exec();
 
-    // Get configuration data
-    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 1);
-    qDebug()<<"Player 1:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+    m_config.GetConfigured(configured);
 
-    // Configure players
-    ConfigurePlayer1(PlayerName, PlayerFlag, PlayerCar);
+    if (configured == true)
+    {
+        // Serial port initialization
+        m_config.GetSerialPort(port);
+        OpenSerialPort(port);
 
-    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 2);
-    qDebug()<<"Player 2:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        // Get configuration data
+        m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 1);
+        qDebug()<<"Player 1:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
-    // Configure players
-    ConfigurePlayer2(PlayerName, PlayerFlag, PlayerCar);
+        // Configure players
+        ConfigurePlayer1(PlayerName, PlayerFlag, PlayerCar);
 
-    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 3);
-    qDebug()<<"Player 3:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 2);
+        qDebug()<<"Player 2:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
-    // Configure players
-    ConfigurePlayer3(PlayerName, PlayerFlag, PlayerCar);
+        // Configure players
+        ConfigurePlayer2(PlayerName, PlayerFlag, PlayerCar);
 
-    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 4);
-    qDebug()<<"Player 4:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 3);
+        qDebug()<<"Player 3:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
-    // Configure players
-    ConfigurePlayer4(PlayerName, PlayerFlag, PlayerCar);
+        // Configure players
+        ConfigurePlayer3(PlayerName, PlayerFlag, PlayerCar);
 
-    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 5);
-    qDebug()<<"Player 5:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 4);
+        qDebug()<<"Player 4:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
-    // Configure players
-    ConfigurePlayer5(PlayerName, PlayerFlag, PlayerCar);
+        // Configure players
+        ConfigurePlayer4(PlayerName, PlayerFlag, PlayerCar);
 
-    m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 6);
-    qDebug()<<"Player 6:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 5);
+        qDebug()<<"Player 5:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
-    // Configure players
-    ConfigurePlayer6(PlayerName, PlayerFlag, PlayerCar);
+        // Configure players
+        ConfigurePlayer5(PlayerName, PlayerFlag, PlayerCar);
+
+        m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 6);
+        qDebug()<<"Player 6:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+
+        // Configure players
+        ConfigurePlayer6(PlayerName, PlayerFlag, PlayerCar);
+    }
+    else
+    {
+        qDebug()<<"No se ha configurado";
+    }
 }
 
 void MainWindow::InitFuelBackground(void)
@@ -1546,10 +1558,10 @@ void MainWindow::on_pushButton_2_clicked()
      m_controller.SetChange1(true);
 }
 
-void MainWindow::OpenSerialPort()
+void MainWindow::OpenSerialPort(QString port)
 {
     // set settings to open the serial port
-    m_serial.SetDeviceName("COM13");
+    m_serial.SetDeviceName(port);
     m_serial.SetBaudRate(AbstractSerial::BaudRate115200);
     m_serial.SetDataBits(AbstractSerial::DataBits8);
     m_serial.SetParity(AbstractSerial::ParityNone);
@@ -1598,7 +1610,7 @@ void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
         ui->editPos1->setStyleSheet("background-color: rgb(255, 255, 255);");
 
         // Set default position
-        ui->editPos1->setText("3");
+        ui->editPos1->setText("0");
 
         // Display player name
         ui->labelName1->setText(player);
@@ -1658,7 +1670,7 @@ void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
         ui->editPos2->setStyleSheet("background-color: rgb(255, 255, 255);");
 
         // Set default position
-        ui->editPos2->setText("3");
+        ui->editPos2->setText("0");
 
         // Display player name
         ui->labelName2->setText(player);
@@ -1716,7 +1728,7 @@ void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
         ui->editPos3->setStyleSheet("background-color: rgb(255, 255, 255);");
 
         // Set default position
-        ui->editPos3->setText("3");
+        ui->editPos3->setText("0");
 
         // Display player name
         ui->labelName3->setText(player);
@@ -1775,7 +1787,7 @@ void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
         ui->editPos4->setStyleSheet("background-color: rgb(255, 255, 255);");
 
         // Set default position
-        ui->editPos4->setText("3");
+        ui->editPos4->setText("0");
 
         // Display player name
         ui->labelName4->setText(player);
@@ -1834,7 +1846,7 @@ void MainWindow::ConfigurePlayer5(QString player, bool flag, int car)
         ui->editPos5->setStyleSheet("background-color: rgb(255, 255, 255);");
 
         // Set default position
-        ui->editPos5->setText("3");
+        ui->editPos5->setText("0");
 
         // Display player name
         ui->labelName5->setText(player);
@@ -1893,7 +1905,7 @@ void MainWindow::ConfigurePlayer6(QString player, bool flag, int car)
         ui->editPos6->setStyleSheet("background-color: rgb(255, 255, 255);");
 
         // Set default position
-        ui->editPos6->setText("3");
+        ui->editPos6->setText("0");
 
         // Display player name
         ui->labelName6->setText(player);

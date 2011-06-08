@@ -150,6 +150,38 @@ void SCXProtoAnalyzer::ProcessMsgController(
 
     std::cout << "Controller message"
               << std::endl;
+
+    // this is the event that will be pass through to upper layers
+    QSharedPointer<QSlotRacingEventController> event(
+            new QSlotRacingEventController(a_msg->GetTimestamp()));
+
+    // The following 6 bytes contain the 6 controller values according to
+    // this bit specification:
+    // Bits 7, 6: always set to '1'
+    // Bit 5: '0' lights ON - '1' lights OFF
+    // Bit 4: '0' change button pressed - '1' change button not pressed
+    // Bit 3..0: speed value.
+
+    // a_pData now contains C0
+    event->AddControllerData(e_QSlotRacingPlayer1, static_cast<quint8>(*a_pData));
+    // a_pData now contains C1
+    a_pData ++;
+    event->AddControllerData(e_QSlotRacingPlayer2, static_cast<quint8>(*a_pData));
+    // a_pData now contains C2
+    a_pData ++;
+    event->AddControllerData(e_QSlotRacingPlayer3, static_cast<quint8>(*a_pData));
+    // a_pData now contains C3
+    a_pData ++;
+    event->AddControllerData(e_QSlotRacingPlayer4, static_cast<quint8>(*a_pData));
+    // a_pData now contains C4
+    a_pData ++;
+    event->AddControllerData(e_QSlotRacingPlayer5, static_cast<quint8>(*a_pData));
+    // a_pData now contains C5
+    a_pData ++;
+    event->AddControllerData(e_QSlotRacingPlayer6, static_cast<quint8>(*a_pData));
+
+    // notify the event to upper layers (whoever that might be)
+    m_eventDelegate(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgId(
@@ -194,6 +226,44 @@ void SCXProtoAnalyzer::ProcessMsgRanking(
 
     std::cout << "Ranking message"
               << std::endl;
+
+    // this is the event that will be pass through to upper layers
+    QSharedPointer<QSlotRacingEventRanking> event(
+            new QSlotRacingEventRanking(a_msg->GetTimestamp()));
+
+    // The following 6 bytes indicates current ranking, depending on byte position
+    // Byte 0: position 1 data
+    // Byte 1: position 2 data
+    // Byte 2: position 3 data
+    // Byte 3: position 4 data
+    // Byte 4: position 5 data
+    // Byte 5: position 6 data
+    // Each byte bit format is as follows:
+    // Bit 7: '1' unless more that 15 laps behind leader
+    // Bit 6..3: laps behind leader
+    // bit 2..0: car id
+
+    // a_pData now contains P1
+    event->AddRankingData(e_QSlotRacingPlayer1, static_cast<quint8>(*a_pData));
+    // a_pData now contains P2
+    a_pData ++;
+    event->AddRankingData(e_QSlotRacingPlayer2, static_cast<quint8>(*a_pData));
+    // a_pData now contains P3
+    a_pData ++;
+    event->AddRankingData(e_QSlotRacingPlayer3, static_cast<quint8>(*a_pData));
+    // a_pData now contains P4
+    a_pData ++;
+    event->AddRankingData(e_QSlotRacingPlayer4, static_cast<quint8>(*a_pData));
+    // a_pData now contains P5
+    a_pData ++;
+    event->AddRankingData(e_QSlotRacingPlayer5, static_cast<quint8>(*a_pData));
+    // a_pData now contains P6
+    a_pData ++;
+    event->AddRankingData(e_QSlotRacingPlayer6, static_cast<quint8>(*a_pData));
+
+    // notify the event to upper layers (whoever that might be)
+    m_eventDelegate(event);
+
 }
 
 void SCXProtoAnalyzer::ProcessMsgLapTime(
