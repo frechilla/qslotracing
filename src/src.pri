@@ -8,7 +8,8 @@ SOURCES += src/main.cpp\
     src/recorderbinary.cpp \
     src/snifferserial.cpp \
     src/serialmonitor.cpp \
-    src/controllerdlg.cpp
+    src/controllerdlg.cpp \
+    src/thread_example.cpp
 
 HEADERS += src/mainwindow.h \
     src/qslotracingmsg.h \
@@ -22,7 +23,8 @@ HEADERS += src/mainwindow.h \
     src/qserialdevice_global.h \
     src/snifferserial.h \
     src/serialmonitor.h \
-    src/controllerdlg.h
+    src/controllerdlg.h \
+    src/thread_example.h
 
 FORMS   += src/mainwindow.ui \
     src/configdialog.ui \

@@ -562,29 +562,6 @@
      <string>Prueba ASCII</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="EditLaps1">
-    <property name="geometry">
-     <rect>
-      <x>855</x>
-      <y>325</y>
-      <width>221</width>
-      <height>64</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>1010</x>
-      <y>410</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
@@ -596,19 +573,6 @@
     </property>
     <property name="text">
      <string>Prueba Serie</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="serial_monitor">
-    <property name="geometry">
-     <rect>
-      <x>970</x>
-      <y>505</y>
-      <width>111</width>
-      <height>46</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Serial Monitor</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
@@ -665,7 +629,7 @@
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>14</pointsize>
+      <pointsize>13</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -824,7 +788,7 @@
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>14</pointsize>
+      <pointsize>13</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -967,7 +931,7 @@
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>14</pointsize>
+      <pointsize>13</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1265,7 +1229,7 @@
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>14</pointsize>
+      <pointsize>13</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1576,7 +1540,7 @@
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>14</pointsize>
+      <pointsize>13</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1887,7 +1851,7 @@
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>14</pointsize>
+      <pointsize>13</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -2080,6 +2044,32 @@
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="groupBox_22">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>605</y>
+      <width>106</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Serial monitoring</string>
+    </property>
+    <widget class="QPushButton" name="serial_monitor">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>86</width>
+       <height>36</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Serial Monitor</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -2087,7 +2077,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
