@@ -190,7 +190,13 @@ class QSlotRacingEventController :
 {
 private:
     /// type to save amount of fuel per each player
-    typedef QList< std::pair<QSlotRacingPlayer_t, quint8> > ControllerDataContainerType_t;
+    typedef struct
+    {
+        bool      lights;
+        bool      lane_change;
+        quint8    speed;
+    } ControllerType_t;
+    typedef QList< std::pair<QSlotRacingPlayer_t, ControllerType_t> > ControllerDataContainerType_t;
 public:
     /// @param virtual time timestamp
     QSlotRacingEventController(const QTime &a_timestamp):
@@ -199,12 +205,84 @@ public:
     ~QSlotRacingEventController()
     {}
 
-    /// @brief store amount of fuel for a specific player
-    /// @param player whose fuel value is to be stored
-    /// @param fuel value (from 0 to 8)
+    /// @brief store controller data for a specific player
+    /// @param player whose controller data is to be stored
+    /// @param controller data (byte containing lights, lane change and speed fields)
     void AddControllerData(QSlotRacingPlayer_t a_playersIndex, quint8 a_value)
     {
-        m_controllerData.push_back(std::pair<QSlotRacingPlayer_t, quint8>(a_playersIndex, a_value));
+        ControllerType_t controller_data;
+
+        // Check controller data
+        if ((a_value & 0xC0) == 0xC0)
+        {
+            // Check lights ON/OFF
+            if ((a_value & 0x20) == 0x20)
+            {
+                // Lights OFF
+                controller_data.lights = false;
+            }
+            else
+            {
+                // Lights ON
+                controller_data.lights = true;
+            }
+
+            // Check lane change
+            if ((a_value & 0x10) == 0x10)
+            {
+                // Lane change not pressed
+                controller_data.lane_change = false;
+            }
+            else
+            {
+                // Lane change pressed
+                controller_data.lane_change = true;
+            }
+
+            // Get speed value
+            controller_data.speed = (a_value & 0x0F);
+
+            // Store data
+            m_controllerData.push_back(std::pair<QSlotRacingPlayer_t, ControllerType_t>(a_playersIndex, controller_data));
+        }
+        else
+        {
+            // Data is incorrect. Do nothing
+        }
+    }
+
+    /// @return controller data of the player represented by 'a_playerIndex'
+    ///         return a negative value if there was an error of any kind retrieving the controller data
+    /// @param player's. If that player's data is not contained in this event
+    ///        the function will return a negative value
+    quint8 GetPlayersControllerData(QSlotRacingPlayer_t a_playerIndex, bool &lights, bool &lane_change, quint8 &speed) const
+    {
+        ControllerType_t controller_data;
+        quint8           ret = -1;
+
+        for (ControllerDataContainerType_t::const_iterator it = m_controllerData.begin();
+             it != m_controllerData.end();
+             it++)
+        {
+            if (it->first == a_playerIndex)
+            {
+                controller_data = it->second;
+
+                // Get lights data
+                lights = controller_data.lights;
+
+                // Get lane change data
+                lane_change = controller_data.lane_change;
+
+                // Get speed data
+                speed = controller_data.speed;
+
+                ret = 0;
+            }
+        }
+
+        // not found in controller data. Return a negative value
+        return ret;
     }
 
 private:

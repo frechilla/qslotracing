@@ -36,7 +36,7 @@ SerialMonitor::~SerialMonitor()
 void SerialMonitor::on_start_capture_clicked()
 {
     flag_show = 1;
-    ui->data_packets->insertPlainText("AAFF555555\n");
+    ui->data_packets->insertPlainText("Starting capture...\n");
 }
 
 void SerialMonitor::on_stop_capture_clicked()
@@ -79,6 +79,9 @@ void SerialMonitor::on_save_clicked()
 
 void SerialMonitor::ReadData(QByteArray a_buffer)
 {
+    QString strData;
+    char    data[5];
+
     qDebug() << "SerialMonitor::Readed is : " << a_buffer.count() << " bytes:";
     for (qint32 i = 0; i < a_buffer.count(); i++)
     {
@@ -87,10 +90,21 @@ void SerialMonitor::ReadData(QByteArray a_buffer)
 
     if (flag_show == 1)
     {
+        strData = "";
+        memset(data, 0, 5);
         for (qint32 i = 0; i < a_buffer.count(); i++)
         {
+            qDebug() <<"antes" ;
             qDebug() << a_buffer.data()[i];
+            strData = QString("%1").arg(a_buffer.data()[i], 2, 16);
+            qDebug() << "convertido "<<strData;
+            strData = "";
+            //sprintf(data, "%02X", (int)a_buffer.data()[i]);
+            //strData.fromAscii(data);
+            //qDebug()<<"data converted "<<data;
+            //ui->data_packets->insertPlainText(strData);
         }
+        ui->data_packets->insertPlainText("\n");
         //ui->data_packets->insertPlainText("AA");
     }
 }

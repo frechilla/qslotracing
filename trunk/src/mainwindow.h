@@ -8,6 +8,7 @@
 #include "serialmonitor.h"
 #include "configdialog.h"
 #include "controllerdlg.h"
+#include "thread_example.h"
 
 namespace Ui {
     class MainWindow;
@@ -38,6 +39,8 @@ public:
     void SetCar5Fuel(quint8 value);
     void SetCar6Fuel(quint8 value);
 
+    void SetController1(bool lights, bool lane_change, quint8 speed);
+
 private:
     Ui::MainWindow *ui;
     SnifferSerial m_serial;
@@ -45,6 +48,10 @@ private:
     ConfigDialog m_config;
     ControllerDlg m_controller;
     void OpenSerialPort(QString port);
+
+    Thread producerThread;
+    GenEventos producer;
+
 
     void ConfigurePlayer1(QString player, bool flag, int car);
     void ConfigurePlayer2(QString player, bool flag, int car);
@@ -65,12 +72,13 @@ private slots:
     void on_serial_monitor_clicked();
     void slotRead(QByteArray);
     void on_pushButton_3_clicked();
-    void on_pushButton_2_clicked();
     void on_pushButton_clicked();
     void on_horizontalSlider_valueChanged(int value);
     void on_BtnConfigure_clicked();
 
     void SetMainWindowDelegate();
+public slots:
+    void consume(QByteArray *data);
 };
 
 #endif // MAINWINDOW_H

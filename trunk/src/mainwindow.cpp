@@ -9,6 +9,7 @@
 #include <iostream>
 #include <qpixmap.h>
 #include <qbitmap.h>
+#include <qmessagebox.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -61,7 +62,26 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
         break;
     } // case e_QSlotRacingEvent_Fuel
+    case e_QSlotRacingEvent_Controller:
+    {
+        QSharedPointer<QSlotRacingEventController> controllerEvent =
+                a_event.staticCast<QSlotRacingEventController>();
 
+        quint8 retValue;
+        bool   lights;
+        bool   lane_change;
+        quint8 speed;
+
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer1, lights, lane_change, speed);
+        qDebug()<<" Controller 1: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        SetController1(lights, lane_change, speed);
+
+        break;
+    } // case e_QSlotRacingEvent_Controller
+    case e_QSlotRacingEvent_Ranking:
+    {
+        break;
+    } // case e_QSlotRacingEvent_Ranking
     default:
     {
         // highly unexpected
@@ -71,8 +91,9 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
     } // switch (a_event->EventType())
 
     //TODO remove
-    //static ConfigDialog *diag = new ConfigDialog(this);
-    //diag->exec();
+    QMessageBox msg;
+    msg.exec();
+
 }
 
 void MainWindow::on_BtnConfigure_clicked()
@@ -1555,13 +1576,6 @@ void MainWindow::on_pushButton_clicked()
               << msgFactory.GetBytesDiscardedCount() << std::endl;
 }
 
-void MainWindow::on_pushButton_2_clicked()
-{
-     ui->EditLaps1->setText("2/100");
-
-     m_controller.SetChange1(true);
-}
-
 void MainWindow::OpenSerialPort(QString port)
 {
     // set settings to open the serial port
@@ -1966,7 +1980,31 @@ void MainWindow::on_btnController_clicked()
     m_controller.show();
 }
 
+
+
 void MainWindow::on_btnTestEventFuel_clicked()
 {
+    qDebug()<<"conectar con productor";;
+    this->connect(&producer, SIGNAL(produced(QByteArray*)),SLOT(consume(QByteArray*)));
 
+    qDebug()<<"generar thread";
+    producer.moveToThread(&producerThread);
+    qDebug()<<"corriendo...";
+
+    producer.connect(&producerThread,SIGNAL(started()),SLOT(gen_event()));
+    qDebug()<<"conectado y produciendo...";
+
+    producerThread.start();
+    //producer.connect(&producerThread,SIGNAL(finished()),SLOT(quit()));
+}
+
+void MainWindow::consume(QByteArray *data)
+{
+    SetCar1Fuel(2);
+}
+
+void MainWindow::SetController1(bool lights, bool lane_change, quint8 speed)
+{
+    m_controller.SetGas1(speed);
+    m_controller.SetChange1(lane_change);
 }
