@@ -198,7 +198,7 @@ void SnifferSerial::PrintBuffer(QByteArray ba)
     qDebug() << "Read is : " << ba.size() << " bytes:";
     for (qint32 i = 0; i < ba.size(); i++)
     {
-        qDebug() << ba.data()[i];
+        qDebug() << ba.at(i);
     }
 }
 

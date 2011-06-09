@@ -33,7 +33,7 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
             // look for the start header on current buffer
             if (a_dataBuffer.data()[i] == SCX_PROTO_START_HEADER)
             {
-                m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.data()[i];
+                m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.at(i);
             }
             else
             {
@@ -43,7 +43,7 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
         }
         else
         {
-            m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.data()[i];
+            m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.at(i);
         }
 
         // check if we already built up a message

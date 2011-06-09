@@ -49,6 +49,8 @@ private:
     ControllerDlg m_controller;
     void OpenSerialPort(QString port);
 
+
+
     Thread producerThread;
     GenEventos producer;
 

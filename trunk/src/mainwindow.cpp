@@ -1542,7 +1542,7 @@ void MainWindow::on_pushButton_clicked()
     QList<QString> fileList;
     fileList.push_back("C:\\file");
     // building up the ascii sniffer
-    SnifferFileAscii asciiSniffer(fileList);
+    SnifferFileAscii asciiSniffer;
     
     // SCX protocol analyzer and message factory
     SCXProtoAnalyzer scxAnalyzer;
@@ -1569,11 +1569,13 @@ void MainWindow::on_pushButton_clicked()
                   SIGNAL(ProtoEvent(QSharedPointer<QSlotRacingEvent>)),
                   SLOT(ProcessEvent(QSharedPointer<QSlotRacingEvent>)));
 
-    // start the testing. stuff will be printed on the screen!!
-    asciiSniffer.Start();
+    // start the testing. a byte will be read each 10ms
+    asciiSniffer.Start(10);
 
-    std::cout << "Messages discarded: "
-              << msgFactory.GetBytesDiscardedCount() << std::endl;
+    //TODO this is some good stuff to see how much data we are discarding
+    // it should used to fill up some textbox somewhere
+    //std::cout << "Messages discarded: "
+    //          << msgFactory.GetBytesDiscardedCount() << std::endl;
 }
 
 void MainWindow::OpenSerialPort(QString port)
