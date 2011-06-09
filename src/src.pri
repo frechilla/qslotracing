@@ -18,7 +18,6 @@ HEADERS += src/mainwindow.h \
     src/scxproto.h \
     src/configdialog.h \
     src/qslotracingevent.h \
-    src/delegate.h \
     src/recorderbinary.h \
     src/qserialdevice_global.h \
     src/snifferserial.h \

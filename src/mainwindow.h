@@ -25,12 +25,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    /// @brief entry point for events
-    /// events will be processed by the window and the GUI will be
-    /// updated accordingly
-    /// @param shared pointer wrapping the event
-    void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
-
     /// @brief initializes fuel devices background color
     /// @param none
     void InitFuelBackground(void);
@@ -60,10 +54,16 @@ private:
     void ConfigurePlayer6(QString player, bool flag, int car);
 
 private slots:
+    /// @brief entry point for events
+    /// events will be processed by the window and the GUI will be
+    /// updated accordingly
+    /// @param shared pointer wrapping the event
+    void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
+
     void on_btnTestEventFuel_clicked();
     void on_btnController_clicked();
     void on_serial_monitor_clicked();
-    void slotRead(const quint8* a_buffer, quint32 a_bufferSize);
+    void slotRead(QByteArray);
     void on_pushButton_3_clicked();
     void on_pushButton_2_clicked();
     void on_pushButton_clicked();

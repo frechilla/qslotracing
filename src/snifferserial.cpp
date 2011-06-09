@@ -11,8 +11,8 @@ SnifferSerial::SnifferSerial(QObject *parent) :
     m_flowControl(AbstractSerial::FlowControlUndefined)
 {
 #if 0
-    // add PrintBuffer to the list of processing delegates
-    AddProcessorDelegate(MakeDelegate(&SnifferSerial::PrintBuffer, this));
+    // add PrintBuffer to the list of slots
+    this->connect(this, SIGNAL(bytesRead(QByteArray)), SLOT(PrintBuffer(QByteArray)));
 #endif
 }
 
@@ -61,11 +61,6 @@ void SnifferSerial::SetFlowControl(AbstractSerial::Flow a_flowControl)
     m_flowControl = a_flowControl;
 }
 
-void SnifferSerial::AddProcessorDelegate(QSnifferDelegate_t a_delegate)
-{
-    m_processorDelegateList.push_back(a_delegate);
-}
-
 void SnifferSerial::OpenSerial()
 {
     // close current interface before opening a new connection
@@ -80,12 +75,12 @@ void SnifferSerial::OpenSerial()
     // 3. Third - open the device
     if (m_port->open(AbstractSerial::ReadWrite | AbstractSerial::Unbuffered))
     {
-        connect(m_port, SIGNAL(readyRead()), this, SLOT(slotRead()));
+        this->connect(m_port, SIGNAL(readyRead()), SLOT(slotRead()));
 
         qDebug() << "Serial device " << m_port->deviceName() << " open in " << m_port->openMode();
 
-        //Here, the default current parameters (for example)
-        qDebug() << "= Default parameters =";
+        //Here, the current parameters
+        qDebug() << "= Current parameters =";
         qDebug() << "Device name            : " << m_port->deviceName();
         qDebug() << "Baud rate              : " << m_port->baudRate();
         qDebug() << "Data bits              : " << m_port->dataBits();
@@ -101,26 +96,31 @@ void SnifferSerial::OpenSerial()
         {
             qDebug() << "Set baud rate " <<  m_baudRate << " error.";
             this->Close();
+            return;
         }
 
         if (!m_port->setDataBits(m_dataBits)) {
             qDebug() << "Set data bits " <<  m_dataBits << " error.";
             this->Close();
+            return;
         }
 
         if (!m_port->setParity(m_parity)) {
             qDebug() << "Set parity " <<  m_parity << " error.";
             this->Close();
+            return;
         }
 
         if (!m_port->setStopBits(m_stopBits)) {
             qDebug() << "Set stop bits " <<  m_stopBits << " error.";
             this->Close();
+            return;
         }
 
         if (!m_port->setFlowControl(m_flowControl)) {
             qDebug() << "Set flow " <<  m_flowControl << " error.";
             this->Close();
+            return;
         }
 
         /*
@@ -165,7 +165,7 @@ void SnifferSerial::OpenSerial()
         if (m_port->openMode() & AbstractSerial::Unbuffered)
         {
             m_port->setTotalReadConstantTimeout(100);
-            qDebug() << "Estamos en WINDOWS";
+            qDebug() << "Running in WINDOWS";
         }
 #endif
 
@@ -190,15 +190,15 @@ void SnifferSerial::slotRead()
     ba = m_port->readAll();
 
     // send bytes read to upper layers
-    NotifyDelegates(reinterpret_cast<const quint8*>(ba.data()), ba.size());
+    emit(bytesRead(ba));
 }
 
-void SnifferSerial::PrintBuffer(const quint8* a_buffer, quint32 a_bufferSize)
+void SnifferSerial::PrintBuffer(QByteArray ba)
 {
-    qDebug() << "Readed is : " << a_bufferSize << " bytes:";
-    for (quint32 i = 0; i < a_bufferSize; i++)
+    qDebug() << "Read is : " << ba.size() << " bytes:";
+    for (qint32 i = 0; i < ba.size(); i++)
     {
-        qDebug() << a_buffer[i];
+        qDebug() << ba.data()[i];
     }
 }
 
@@ -215,5 +215,5 @@ void SnifferSerial::Write()
     bw = 4;
 
     bw = m_port->write(ba);
-    qDebug() << "Writed is : " << bw << " bytes";
+    qDebug() << "Written is : " << bw << " bytes";
 }

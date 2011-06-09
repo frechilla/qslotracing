@@ -77,21 +77,19 @@ void SerialMonitor::on_save_clicked()
     }
 }
 
-void SerialMonitor::ReadData(const quint8* a_buffer, quint32 a_bufferSize)
+void SerialMonitor::ReadData(QByteArray a_buffer)
 {
-    QString data;
-
-    qDebug() << "SerialMonitor::Readed is : " << a_bufferSize << " bytes:";
-    for (quint32 i = 0; i < a_bufferSize; i++)
+    qDebug() << "SerialMonitor::Readed is : " << a_buffer.count() << " bytes:";
+    for (qint32 i = 0; i < a_buffer.count(); i++)
     {
-        qDebug() << a_buffer[i];
+        qDebug() << a_buffer.data()[i];
     }
 
     if (flag_show == 1)
     {
-        for (quint32 i = 0; i < a_bufferSize; i++)
+        for (qint32 i = 0; i < a_buffer.count(); i++)
         {
-            qDebug() << a_buffer[i];
+            qDebug() << a_buffer.data()[i];
         }
         //ui->data_packets->insertPlainText("AA");
     }

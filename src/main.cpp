@@ -5,7 +5,6 @@
 #include "scxmsgfactory.h"
 #include "scxproto.h"
 
-#include "delegate.h"
 #include "recorderbinary.h"
 #include "snifferserial.h"
 

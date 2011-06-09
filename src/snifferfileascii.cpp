@@ -1,23 +1,25 @@
+#include "snifferfileascii.h"
 #include <QTextStream>
 #include <QFile>
-#include "snifferfileascii.h"
+#include <QDebug>
 
 #define LATEST_ASCII_UNSET '\0'
 
 SnifferFileAscii::SnifferFileAscii(
-        const QList<QString> &a_filenameList):
+        const QList<QString> &a_filenameList,
+        QObject *parent):
+    QObject(parent),
     m_filenameList(a_filenameList),
     m_latestAsciiProcessed(LATEST_ASCII_UNSET)
 {
+#if 0
+    // add PrintBuffer to the list of slots
+    this->connect(this, SIGNAL(bytesRead(QByteArray)), SLOT(PrintBuffer(QByteArray)));
+#endif
 }
 
 SnifferFileAscii::~SnifferFileAscii()
 {
-}
-
-void SnifferFileAscii::AddProcessorDelegate(QSnifferDelegate_t a_delegate)
-{
-    m_byteDelegateList.push_back(a_delegate);
 }
 
 void SnifferFileAscii::Start()
@@ -69,6 +71,8 @@ void SnifferFileAscii::Start()
 
 void SnifferFileAscii::ProcessChar(char a_asciiCharacter)
 {
+    quint8 valueFound;
+
     switch(a_asciiCharacter)
     {
     case '0': // let it fall down
@@ -96,13 +100,14 @@ void SnifferFileAscii::ProcessChar(char a_asciiCharacter)
         }
         else
         {
-            quint8 valueFound = asciiToRaw(m_latestAsciiProcessed) << 4;
+            valueFound = asciiToRaw(m_latestAsciiProcessed) << 4;
             valueFound |= asciiToRaw(a_asciiCharacter);
             
             m_latestAsciiProcessed = LATEST_ASCII_UNSET;
 
             // notify that value we've just found to the upper layers
-            NotifyDelegates(&valueFound, 1);
+            QByteArray ba(reinterpret_cast<const char*>(&valueFound), 1);
+            emit bytesRead(ba);
         }
 
         break;
@@ -115,12 +120,13 @@ void SnifferFileAscii::ProcessChar(char a_asciiCharacter)
         {                                   
             // that uenxpected character is understood as a separator
             // notify latest char received
-            quint8 valueFound = asciiToRaw(m_latestAsciiProcessed);
+            valueFound = asciiToRaw(m_latestAsciiProcessed);
 
             m_latestAsciiProcessed = LATEST_ASCII_UNSET;
 
             // notify that value we've just found to the upper layers
-            NotifyDelegates(&valueFound, 1);
+            QByteArray ba(reinterpret_cast<const char*>(&valueFound), 1);
+            emit bytesRead(ba);
         }
 
         break;
@@ -177,4 +183,13 @@ quint8 SnifferFileAscii::asciiToRaw(char a_asciiCharacter)
         Q_ASSERT(0);
         return 0x00;
     } // switch(a_asciiCharacter)
+}
+
+void SnifferFileAscii::PrintBuffer(QByteArray ba)
+{
+    qDebug() << "Read is : " << ba.size() << " bytes:";
+    for (qint32 i = 0; i < ba.size(); i++)
+    {
+        qDebug() << ba.data()[i];
+    }
 }

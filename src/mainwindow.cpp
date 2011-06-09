@@ -6,7 +6,6 @@
 #include "snifferfileascii.h"
 #include "scxmsgfactory.h"
 #include "scxproto.h"
-#include "delegate.h"
 #include <iostream>
 #include <qpixmap.h>
 #include <qbitmap.h>
@@ -72,8 +71,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
     } // switch (a_event->EventType())
 
     //TODO remove
-    static ConfigDialog *diag = new ConfigDialog(this);
-    diag->exec();
+    //static ConfigDialog *diag = new ConfigDialog(this);
+    //diag->exec();
 }
 
 void MainWindow::on_BtnConfigure_clicked()
@@ -1530,19 +1529,24 @@ void MainWindow::on_pushButton_clicked()
     
     // SCXMsgFactory will be processing all bytes sniffed
     // by the asciiSniffer
-    asciiSniffer.AddProcessorDelegate(
-        MakeDelegate(&SCXMsgFactory::Parse, &msgFactory));
+    msgFactory.connect(&asciiSniffer,
+                       SIGNAL(bytesRead(QByteArray)),
+                       SLOT(Parse(QByteArray)));
 
     // all bytes will also be notified into the serial monitor window
-    //asciiSniffer.AddProcessorDelegate(MakeDelegate(&SerialMonitor::ReadData, &m_monitor));
+    m_monitor.connect(&asciiSniffer,
+                      SIGNAL(bytesRead(QByteArray)),
+                      SLOT(ReadData(QByteArray)));
 
     // connect message factory with proto analyzer
-    msgFactory.SetMessageProcessorDelegate(
-            MakeDelegate(&SCXProtoAnalyzer::ProcessMsg, &scxAnalyzer));
+    scxAnalyzer.connect(&msgFactory,
+                        SIGNAL(MsgParsed(QSharedPointer<QSlotRacingMsg>)),
+                        SLOT(ProcessMsg(QSharedPointer<QSlotRacingMsg>)));
 
     // connect output events coming from SCXProtoAnalyzer to the window
-    scxAnalyzer.SetEventProcessorDelegate(
-            MakeDelegate(&MainWindow::ProcessEvent, this));
+    this->connect(&scxAnalyzer,
+                  SIGNAL(ProtoEvent(QSharedPointer<QSlotRacingEvent>)),
+                  SLOT(ProcessEvent(QSharedPointer<QSlotRacingEvent>)));
 
     // start the testing. stuff will be printed on the screen!!
     asciiSniffer.Start();
@@ -1578,12 +1582,12 @@ void MainWindow::on_pushButton_3_clicked()
     m_serial.Write();
 }
 
-void MainWindow::slotRead(const quint8* a_buffer, quint32 a_bufferSize)
+void MainWindow::slotRead(QByteArray ba)
 {
-    qDebug() << "MainWindow::Readed is : " << a_bufferSize << " bytes:";
-    for (quint32 i = 0; i < a_bufferSize; i++)
+    qDebug() << "MainWindow::Readed is : " << ba.size() << " bytes:";
+    for (qint32 i = 0; i < ba.size(); i++)
     {
-        qDebug() << a_buffer[i];
+        qDebug() << ba.data()[i];
     }
 }
 
@@ -1595,8 +1599,8 @@ void MainWindow::on_serial_monitor_clicked()
 
 void MainWindow::SetMainWindowDelegate()
 {
-    m_serial.AddProcessorDelegate(MakeDelegate(&MainWindow::slotRead, this));
-    m_serial.AddProcessorDelegate(MakeDelegate(&SerialMonitor::ReadData, &m_monitor));
+    this->connect(&m_serial, SIGNAL(bytesRead(QByteArray)), SLOT(slotRead(QByteArray)));
+    m_monitor.connect(&m_serial, SIGNAL(bytesRead(QByteArray)), SLOT(ReadData(QByteArray)));
 }
 
 void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
