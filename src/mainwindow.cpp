@@ -3,9 +3,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "snifferfileascii.h"
-#include "scxmsgfactory.h"
-#include "scxproto.h"
 #include <iostream>
 #include <qpixmap.h>
 #include <qbitmap.h>
@@ -68,14 +65,33 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 a_event.staticCast<QSlotRacingEventController>();
 
         quint8 retValue;
-        bool   lights;
-        bool   lane_change;
-        quint8 speed;
+        bool   lights = false;
+        bool   lane_change = false;
+        quint8 speed = 0;
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer1, lights, lane_change, speed);
         qDebug()<<" Controller 1: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         SetController1(lights, lane_change, speed);
 
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer2, lights, lane_change, speed);
+        qDebug()<<" Controller 2: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        SetController2(lights, lane_change, speed);
+
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer3, lights, lane_change, speed);
+        qDebug()<<" Controller 3: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        SetController3(lights, lane_change, speed);
+
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer4, lights, lane_change, speed);
+        qDebug()<<" Controller 4: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        SetController4(lights, lane_change, speed);
+
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer5, lights, lane_change, speed);
+        qDebug()<<" Controller 5: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        SetController5(lights, lane_change, speed);
+
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer6, lights, lane_change, speed);
+        qDebug()<<" Controller 6: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        SetController6(lights, lane_change, speed);
         break;
     } // case e_QSlotRacingEvent_Controller
     case e_QSlotRacingEvent_Ranking:
@@ -91,8 +107,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
     } // switch (a_event->EventType())
 
     //TODO remove
-    QMessageBox msg;
-    msg.exec();
+    //QMessageBox msg;
+    //msg.exec();
 
 }
 
@@ -1526,51 +1542,39 @@ void MainWindow::SetCar6Fuel(quint8 value)
     }
 }
 
-void MainWindow::on_horizontalSlider_valueChanged(int value)
-{
-    SetCar1Fuel(value);
-    SetCar2Fuel(value);
-    SetCar3Fuel(value);
-    SetCar4Fuel(value);
-    SetCar5Fuel(value);
-    SetCar6Fuel(value);
-}
-
 void MainWindow::on_pushButton_clicked()
 {
     // list of files to be read by the ascii sniffer
     QList<QString> fileList;
     fileList.push_back("C:\\file");
+    m_asciiSniffer.AddAsciiFile("C:\\file");
     // building up the ascii sniffer
-    SnifferFileAscii asciiSniffer;
     
     // SCX protocol analyzer and message factory
-    SCXProtoAnalyzer scxAnalyzer;
-    SCXMsgFactory msgFactory;
     
     // SCXMsgFactory will be processing all bytes sniffed
     // by the asciiSniffer
-    msgFactory.connect(&asciiSniffer,
+    m_msgFactory.connect(&m_asciiSniffer,
                        SIGNAL(bytesRead(QByteArray)),
                        SLOT(Parse(QByteArray)));
 
     // all bytes will also be notified into the serial monitor window
-    m_monitor.connect(&asciiSniffer,
+    m_monitor.connect(&m_asciiSniffer,
                       SIGNAL(bytesRead(QByteArray)),
                       SLOT(ReadData(QByteArray)));
 
     // connect message factory with proto analyzer
-    scxAnalyzer.connect(&msgFactory,
+    m_scxAnalyzer.connect(&m_msgFactory,
                         SIGNAL(MsgParsed(QSharedPointer<QSlotRacingMsg>)),
                         SLOT(ProcessMsg(QSharedPointer<QSlotRacingMsg>)));
 
     // connect output events coming from SCXProtoAnalyzer to the window
-    this->connect(&scxAnalyzer,
+    this->connect(&m_scxAnalyzer,
                   SIGNAL(ProtoEvent(QSharedPointer<QSlotRacingEvent>)),
                   SLOT(ProcessEvent(QSharedPointer<QSlotRacingEvent>)));
 
-    // start the testing. a byte will be read each 10ms
-    asciiSniffer.Start(10);
+    // start the testing. a byte will be read each 5ms
+    m_asciiSniffer.Start(5);
 
     //TODO this is some good stuff to see how much data we are discarding
     // it should used to fill up some textbox somewhere
@@ -1982,31 +1986,44 @@ void MainWindow::on_btnController_clicked()
     m_controller.show();
 }
 
-
-
-void MainWindow::on_btnTestEventFuel_clicked()
-{
-    qDebug()<<"conectar con productor";;
-    this->connect(&producer, SIGNAL(produced(QByteArray*)),SLOT(consume(QByteArray*)));
-
-    qDebug()<<"generar thread";
-    producer.moveToThread(&producerThread);
-    qDebug()<<"corriendo...";
-
-    producer.connect(&producerThread,SIGNAL(started()),SLOT(gen_event()));
-    qDebug()<<"conectado y produciendo...";
-
-    producerThread.start();
-    //producer.connect(&producerThread,SIGNAL(finished()),SLOT(quit()));
-}
-
-void MainWindow::consume(QByteArray *data)
-{
-    SetCar1Fuel(2);
-}
-
 void MainWindow::SetController1(bool lights, bool lane_change, quint8 speed)
 {
     m_controller.SetGas1(speed);
     m_controller.SetChange1(lane_change);
+}
+
+void MainWindow::SetController2(bool lights, bool lane_change, quint8 speed)
+{
+    m_controller.SetGas2(speed);
+    m_controller.SetChange2(lane_change);
+}
+
+void MainWindow::SetController3(bool lights, bool lane_change, quint8 speed)
+{
+    m_controller.SetGas3(speed);
+    m_controller.SetChange3(lane_change);
+}
+
+void MainWindow::SetController4(bool lights, bool lane_change, quint8 speed)
+{
+    m_controller.SetGas4(speed);
+    m_controller.SetChange4(lane_change);
+}
+
+void MainWindow::SetController5(bool lights, bool lane_change, quint8 speed)
+{
+    m_controller.SetGas5(speed);
+    m_controller.SetChange5(lane_change);
+}
+
+void MainWindow::SetController6(bool lights, bool lane_change, quint8 speed)
+{
+    m_controller.SetGas6(speed);
+    m_controller.SetChange6(lane_change);
+}
+
+void MainWindow::on_btnStats_clicked()
+{
+    // TODO: Use http://qwt.sourceforge.net/ for creating graphs
+    m_statsdlg.show();
 }

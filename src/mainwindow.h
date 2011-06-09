@@ -8,7 +8,10 @@
 #include "serialmonitor.h"
 #include "configdialog.h"
 #include "controllerdlg.h"
-#include "thread_example.h"
+#include "statsdialog.h"
+#include "snifferfileascii.h"
+#include "scxmsgfactory.h"
+#include "scxproto.h"
 
 namespace Ui {
     class MainWindow;
@@ -40,26 +43,61 @@ public:
     void SetCar6Fuel(quint8 value);
 
     void SetController1(bool lights, bool lane_change, quint8 speed);
+    void SetController2(bool lights, bool lane_change, quint8 speed);
+    void SetController3(bool lights, bool lane_change, quint8 speed);
+    void SetController4(bool lights, bool lane_change, quint8 speed);
+    void SetController5(bool lights, bool lane_change, quint8 speed);
+    void SetController6(bool lights, bool lane_change, quint8 speed);
 
 private:
+    // Member variables
     Ui::MainWindow *ui;
     SnifferSerial m_serial;
     SerialMonitor m_monitor;
     ConfigDialog m_config;
     ControllerDlg m_controller;
+    StatsDialog m_statsdlg;
+
+    SnifferFileAscii m_asciiSniffer;
+    SCXProtoAnalyzer m_scxAnalyzer;
+    SCXMsgFactory    m_msgFactory;
+
     void OpenSerialPort(QString port);
 
-
-
-    Thread producerThread;
-    GenEventos producer;
-
-
+    /// @brief configuration procedure for Player 1
+    /// @param player name
+    /// @param player active flag
+    /// @param player car ID
     void ConfigurePlayer1(QString player, bool flag, int car);
+
+    /// @brief configuration procedure for Player 2
+    /// @param player name
+    /// @param player active flag
+    /// @param player car ID
     void ConfigurePlayer2(QString player, bool flag, int car);
+
+    /// @brief configuration procedure for Player 3
+    /// @param player name
+    /// @param player active flag
+    /// @param player car ID
     void ConfigurePlayer3(QString player, bool flag, int car);
+
+    /// @brief configuration procedure for Player 4
+    /// @param player name
+    /// @param player active flag
+    /// @param player car ID
     void ConfigurePlayer4(QString player, bool flag, int car);
+
+    /// @brief configuration procedure for Player 5
+    /// @param player name
+    /// @param player active flag
+    /// @param player car ID
     void ConfigurePlayer5(QString player, bool flag, int car);
+
+    /// @brief configuration procedure for Player 6
+    /// @param player name
+    /// @param player active flag
+    /// @param player car ID
     void ConfigurePlayer6(QString player, bool flag, int car);
 
 private slots:
@@ -69,18 +107,17 @@ private slots:
     /// @param shared pointer wrapping the event
     void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
 
-    void on_btnTestEventFuel_clicked();
+    void on_BtnConfigure_clicked();
+    void on_btnStats_clicked();
     void on_btnController_clicked();
     void on_serial_monitor_clicked();
     void slotRead(QByteArray);
+
+    // TODO: remove?
     void on_pushButton_3_clicked();
     void on_pushButton_clicked();
-    void on_horizontalSlider_valueChanged(int value);
-    void on_BtnConfigure_clicked();
 
     void SetMainWindowDelegate();
-public slots:
-    void consume(QByteArray *data);
 };
 
 #endif // MAINWINDOW_H

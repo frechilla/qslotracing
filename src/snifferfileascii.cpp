@@ -82,31 +82,22 @@ void SnifferFileAscii::Start(int msec)
 
 void SnifferFileAscii::ReadByteFromFile()
 {
-    // 1. check that the current text stream works
+    // 1. check that the current text stream works.
+    //    try to open a file from the list.
     while ((m_openedFileStream == 0) ||
            (m_openedFileStream->status() != QTextStream::Ok))
     {
+        // Clean from a previous state
         if (m_openedFileStream != 0)
         {
             delete m_openedFileStream;
             m_openedFileStream = 0;
         }
 
+        // Check if we are at the bottom of the list
         if (m_itFilename == m_filenameList.end())
         {
             qDebug() << "SnifferFileAscii: There's no more filenames to parse";
-
-            if (m_timer.isActive())
-            {
-                m_timer.stop();
-            }
-            return;
-        }
-
-        m_itFilename++;
-        if (m_itFilename == m_filenameList.end())
-        {
-            qDebug() << "SnifferFileAscii: Hit the end of the filenames list";
 
             if (m_timer.isActive())
             {
@@ -126,7 +117,26 @@ void SnifferFileAscii::ReadByteFromFile()
         }
 
         m_openedFileStream = new QTextStream(m_currentOpenedFile);
-    }
+
+        // Increment for next iteration
+        m_itFilename++;
+
+        /*
+         This code is not needed since the loop will iterate over the files
+        m_itFilename++;
+        if (m_itFilename == m_filenameList.end())
+        {
+            qDebug() << "SnifferFileAscii: Hit the end of the filenames list";
+
+            if (m_timer.isActive())
+            {
+                m_timer.stop();
+            }
+            return;
+        }
+        */
+
+    } // while
 
     // 2. parse the current textstream to find a byte to be issued
     QChar thisCharacter;
@@ -150,6 +160,7 @@ void SnifferFileAscii::ReadByteFromFile()
             {
                 // a new signal was emitted. Each call to
                 // ReadByteFromFile must return just one byte
+
                 return;
             }
         }
