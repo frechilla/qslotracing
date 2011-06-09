@@ -1,20 +1,20 @@
 #ifndef SCXPROTO_H
 #define SCXPROTO_H
 
+#include <QObject>
 #include <QSharedPointer>
 #include "qslotracingmsg.h"
-#include "delegate.h"
 #include "qslotracingevent.h"
 
 /// @brief class with a few methods to parse SCX messages
 /// based on the info found in:
 ///     http://eng.slotbaer.de/SCX/DatProt.html
-class SCXProtoAnalyzer
+class SCXProtoAnalyzer : public QObject
 {
+    Q_OBJECT
 public:
-    /// @brief type of the delegate where new events are sent
-    typedef Delegate<void(QSharedPointer<QSlotRacingEvent>)> QSlotRacingEventDelegate_t;
 
+    /// @brief types of SCX messages
     typedef enum
     {
         e_SCXMsgTypeController     = 0xff, // tells the car what speed to set and whether the lane change switch is pressed
@@ -34,24 +34,10 @@ public:
 
     } SCXProtoMsgType_t;
 
-    /// @brief default constructor will do it
-    SCXProtoAnalyzer();
+    SCXProtoAnalyzer(QObject *parent = 0);
     virtual ~SCXProtoAnalyzer();
 
-    /// @brief process a QSlotRacingMsg assuming it is part of the SCX protocol
-    /// It will notify to whoever is listening what "events" this message
-    /// triggers (they might be 0 or more)
-    /// @param a_msg the message
-    void ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg);
-
-    /// @brief sets the function delegate which will be processing the new events
-    /// @param delegate to the function
-    void SetEventProcessorDelegate(QSlotRacingEventDelegate_t a_eventDelegate);
-
 private:
-    /// @brief delegate which is expected to be in charge of processing each event
-    QSlotRacingEventDelegate_t m_eventDelegate;
-
     // methods to parse specific message types
     void ProcessMsgController(
             const quint8* a_pData,
@@ -95,6 +81,18 @@ private:
     void ProcessMsgBrake(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+
+signals:
+    void ProtoEvent(QSharedPointer<QSlotRacingEvent>);
+
+public slots:
+    /// @brief process a QSlotRacingMsg assuming it is part of the SCX protocol
+    /// It will notify to whoever is listening what "events" this message
+    /// triggers (they might be 0 or more)
+    /// it emits a "ProtoEvent" signal per event to notify the listeners
+    /// @param a_msg the message
+    void ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg);
 
 }; // class SCXProtoAnalyzer
 

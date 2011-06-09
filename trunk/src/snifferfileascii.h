@@ -1,34 +1,30 @@
 #ifndef SNIFFERFILEASCII_H
 #define SNIFFERFILEASCII_H
 
+#include <QObject>
 #include <QString>
 #include <QList>
-#include "delegate.h" // delegate of the upper layer that will process
-                      // bytes sniffed by this class
+#include <QByteArray>
 
 /// @brief class which porpuse is to emulate a serial interface
 /// it reads bytes encoded in ascii from a file and encodes them into binary
 /// its output is a buffer of data bytes
-class SnifferFileAscii
+class SnifferFileAscii : public QObject
 {
+    Q_OBJECT
 public:
-    /// @brief type of the delegate where bytes sniffed are sent
-    typedef Delegate< void(const quint8*, quint32) > QSnifferDelegate_t;
 
     /// @brief constructor
     /// @param list of filenames to be read by this class
     /// that list of files will be read one by one inside the Start function
-    SnifferFileAscii(
-            const QList<QString> &a_filenameList);
+    explicit SnifferFileAscii(
+            const QList<QString> &a_filenameList,
+            QObject *parent = 0);
     virtual ~SnifferFileAscii();
 
     /// @brief start parsing the data files requested
     /// It won't return until all files have been parsed
     void Start();
-
-    /// @brief adds a_delegate to the list of processing delegates
-    /// All delegates in the list will be called per every byte sniffed by this class
-    void AddProcessorDelegate(QSnifferDelegate_t a_delegate);
 
 private:
     /// @brief list of filenames
@@ -38,11 +34,6 @@ private:
     /// it is set to '\0' when the latest character is not [A-F0-9] or 
     /// when the latest character forced this object to notify a raw byte
     char m_latestAsciiProcessed;
-
-    /// @brief list of delegates where new messages will be sent
-    /// it is empty by default so the function AddProcessorDelegate
-    /// must be called at least once
-    QList<QSnifferDelegate_t> m_byteDelegateList;
 
     /// @brief parses an ascii character.
     /// it might detect a raw byte described in the ascii input. If that is the
@@ -63,25 +54,18 @@ private:
     /// @param an ascii chracter. It MUST satisfy the following regex 
     ///        [A-Fa-f0-9]
     /// @return corresponding binary value to the 'a_asciiCharacter' parameter
-    quint8 asciiToRaw(char a_asciiCharacter); 
+    quint8 asciiToRaw(char a_asciiCharacter);
 
-    /// @brief calls all delegates in m_byteDelegateList
-    /// the delegates will be called with parameters a_buffer and a_bufferSize
-    inline void NotifyDelegates(const quint8* a_buffer, quint32 a_bufferSize)
-    {
-        QList<QSnifferDelegate_t>::const_iterator it;
-        for (it = m_byteDelegateList.begin();
-             it != m_byteDelegateList.end();
-             it++)
-        {
-            (*it)(a_buffer, a_bufferSize);
-        }
-    }
 
-    // prevent this class from being constructed without the proper arguments
-    SnifferFileAscii();
-    SnifferFileAscii(const SnifferFileAscii &a_src);
-    SnifferFileAscii& operator=(const SnifferFileAscii &a_src);
+
+signals:
+    void bytesRead(QByteArray ba);
+
+private slots:
+    /// @brief prints the buffer received as parameter
+    /// it can be used as a dummy slot to print the sniffed stuff
+    /// @param data buffer
+    void PrintBuffer(QByteArray);
 };
 
 #endif // SNIFFERFILEASCII_H

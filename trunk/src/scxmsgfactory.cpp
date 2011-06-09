@@ -2,8 +2,8 @@
 
 #define SCX_PROTO_START_HEADER 0x55
 
-SCXMsgFactory::SCXMsgFactory() :
-        QSlotRacingMsgFactory(),
+SCXMsgFactory::SCXMsgFactory(QObject *parent) :
+        QSlotRacingMsgFactory(parent),
         m_currentMsgIndex(0),
         m_bytesDiscarded(0)
 {
@@ -23,17 +23,17 @@ quint32 SCXMsgFactory::GetBytesDiscardedCount()
     return m_bytesDiscarded;
 }
 
-void SCXMsgFactory::Parse(const quint8* a_dataBuffer, quint32 a_bufferSize)
+void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
 {
-    for (quint32 i = 0; i < a_bufferSize; i++)
+    for (qint32 i = 0; i < a_dataBuffer.count(); i++)
     {
         if (m_currentMsgIndex == 0)
         {
             // current message has no data at all
             // look for the start header on current buffer
-            if (a_dataBuffer[i] == SCX_PROTO_START_HEADER)
+            if (a_dataBuffer.data()[i] == SCX_PROTO_START_HEADER)
             {
-                m_currentMsg[m_currentMsgIndex++] = a_dataBuffer[i];
+                m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.data()[i];
             }
             else
             {
@@ -43,7 +43,7 @@ void SCXMsgFactory::Parse(const quint8* a_dataBuffer, quint32 a_bufferSize)
         }
         else
         {
-            m_currentMsg[m_currentMsgIndex++] = a_dataBuffer[i];
+            m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.data()[i];
         }
 
         // check if we already built up a message
@@ -57,10 +57,8 @@ void SCXMsgFactory::Parse(const quint8* a_dataBuffer, quint32 a_bufferSize)
             // restart message index counter
             m_currentMsgIndex = 0;
 
-            Q_ASSERT(m_msgDelegate);
-
             // send this new message somewhere beyond the sea...
-            m_msgDelegate(newSlotRacingMsg);
+            emit MsgParsed(newSlotRacingMsg);
         }        
     }
 }

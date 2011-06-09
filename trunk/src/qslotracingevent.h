@@ -7,9 +7,10 @@
 /// Types of events to be passed to upper-most layers
 typedef enum
 {
-    e_QSlotRacingEvent_Fuel = 0, // fuel change
+    e_QSlotRacingEvent_Fuel = 0,   // fuel change
+    e_QSlotRacingEvent_Lap,        // finish line crossed
     e_QSlotRacingEvent_Controller, // controller package
-    e_QSlotRacingEvent_Ranking, // ranking package
+    e_QSlotRacingEvent_Ranking,    // ranking package
 } QSlotRacingEventType_t;
 
 /// Players handled by this app
@@ -140,7 +141,7 @@ public:
                         QSlotRacingPlayer_t  a_who,
                         qint32               a_crossingTimes,
                         qint32               a_lapTimeMillis = -1):
-            QSlotRacingEvent(e_QSlotRacingEvent_Fuel, a_timestamp),
+            QSlotRacingEvent(e_QSlotRacingEvent_Lap, a_timestamp),
             m_player(a_who),
             m_crossingTimes(a_crossingTimes),
             m_lapMillis(a_lapTimeMillis)
@@ -182,8 +183,8 @@ private:
     QSlotRacingEventLap();
 };
 
+
 /// @brief controller event
-/// sent for each controller
 class QSlotRacingEventController :
         public QSlotRacingEvent
 {
@@ -214,8 +215,8 @@ private:
     QSlotRacingEventController();
 };
 
+
 /// @brief ranking event
-/// sent after crossing the finish line
 class QSlotRacingEventRanking :
         public QSlotRacingEvent
 {
@@ -225,7 +226,7 @@ private:
 public:
     /// @param virtual time timestamp
     QSlotRacingEventRanking(const QTime &a_timestamp):
-            QSlotRacingEvent(e_QSlotRacingEvent_Controller, a_timestamp)
+            QSlotRacingEvent(e_QSlotRacingEvent_Ranking, a_timestamp)
     {}
     ~QSlotRacingEventRanking()
     {}

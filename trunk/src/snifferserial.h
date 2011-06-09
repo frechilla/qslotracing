@@ -3,8 +3,7 @@
 
 #include <QObject>
 #include <abstractserial.h>
-#include "delegate.h" // delegate of the upper layer that will process
-                      // bytes sniffed by this class
+
 
 /// @brief class which porpuse is to retrieve bytes off a serial interface
 /// it reads bytes from the serial interface and outputs them as a buffer of bytes
@@ -12,9 +11,6 @@ class SnifferSerial : public QObject
 {
     Q_OBJECT
 public:
-    /// @brief type of the delegate where bytes sniffed are sent
-    typedef Delegate< void(const quint8*, quint32) > QSnifferDelegate_t;
-    
 
     explicit SnifferSerial(QObject *parent = 0);
     /// @brief destroys current instance
@@ -48,10 +44,6 @@ public:
     /// @brief sets flow control which will be used to open the serial interface
     void SetFlowControl(AbstractSerial::Flow a_flowControl);
     
-    /// @brief adds a_delegate to the list of processing delegates
-    /// All delegates in the list will be called per every byte sniffed by this class
-    void AddProcessorDelegate(QSnifferDelegate_t a_delegate);
-    
 
     //TODO this is used exclusively for debug. Should be gone at some point
     void Write();
@@ -78,41 +70,18 @@ private:
     /// @brief flow control. Undefined by default
     AbstractSerial::Flow m_flowControl;
     
-    /// @brief list of delegates where new messages will be sent
-    /// it is empty by default so the function AddProcessorDelegate
-    /// must be called at least once
-    ///
-    /// For debugging purposes you might want to add this->PrintBuffer
-    /// to ths list
-    QList<QSnifferDelegate_t> m_processorDelegateList;
-    
-    
-    /// @brief prints the buffer received as parameter
-    /// it can be used as a dummy delegate when data sniffed is not expected
-    /// to be processed by anyone else than this funcion
-    /// @param pointer to the buffer
-    /// @param number of bytes contained in the buffer
-    void PrintBuffer(const quint8* a_buffer, quint32 a_bufferSize);
-
-    /// @brief calls all delegates in m_processorDelegateList
-    /// all delegates will be called with parameters a_buffer and a_bufferSize
-    inline void NotifyDelegates(const quint8* a_buffer, quint32 a_bufferSize)
-    {
-        QList<QSnifferDelegate_t>::const_iterator it;
-        for (it = m_processorDelegateList.begin();
-             it != m_processorDelegateList.end();
-             it++)
-        {
-            (*it)(a_buffer, a_bufferSize);
-        }
-    }
-
 signals:
+    void bytesRead(QByteArray ba);
 
-public slots:
+private slots:
     /// @brief this is the handler called whenever data is received on the
     ///        serial interface
     void slotRead(void);
+
+    /// @brief prints the buffer received as parameter
+    /// it can be used as a dummy slot to print the sniffed stuff
+    /// @param data buffer
+    void PrintBuffer(QByteArray);
 };
 
 #endif // SERIAL_H

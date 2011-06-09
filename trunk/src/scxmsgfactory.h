@@ -15,14 +15,14 @@
 class SCXMsgFactory : public QSlotRacingMsgFactory
 {
 public:
-    SCXMsgFactory();
+    SCXMsgFactory(QObject *parent = 0);
     virtual ~SCXMsgFactory();
 
     /// @brief parses a buffer of bytes of size 'a_bufferSize'
     /// It might trigger one or more new QSlotRacingMsg object(s)
-    /// @param a_dataBuffer points to the byte buffer to be parsed
-    /// @param a_bufferSize number of bytes contained in 'a_dataBuffer'
-    void Parse(const quint8* a_dataBuffer, quint32 a_bufferSize);
+    /// emitting the MsgParsed signal(s)
+    /// @param a_dataBuffer byte buffer to be parsed
+    void Parse(QByteArray a_dataBuffer);
 
     /// @return number of bytes discarded in the parsing process
     quint32 GetBytesDiscardedCount();
@@ -36,10 +36,6 @@ private:
 
     /// @brief number of bytes discarded in the parsing process
     quint32 m_bytesDiscarded;
-
-    /// @brief wraps up m_currentMsg into a QSlotRacingMsg
-    /// It also sends it wherever is expected to
-    void CreateNewQSlotRacingMsg();
 };
 
 #endif // SCXMSGFACTORY_H

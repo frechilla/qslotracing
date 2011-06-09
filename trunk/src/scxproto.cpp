@@ -4,19 +4,13 @@
 // first byte MUST always be 0x55
 #define SCX_PROTO_START_HEADER 0x55
 
-SCXProtoAnalyzer::SCXProtoAnalyzer() :
-        m_eventDelegate() // null delegate for now
+SCXProtoAnalyzer::SCXProtoAnalyzer(QObject *parent) :
+        QObject(parent)
 {
 }
 
 SCXProtoAnalyzer::~SCXProtoAnalyzer()
 {
-}
-
-void SCXProtoAnalyzer::SetEventProcessorDelegate(
-        QSlotRacingEventDelegate_t a_eventDelegate)
-{
-    m_eventDelegate = a_eventDelegate;
 }
 
 void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
@@ -181,7 +175,7 @@ void SCXProtoAnalyzer::ProcessMsgController(
     event->AddControllerData(e_QSlotRacingPlayer6, static_cast<quint8>(*a_pData));
 
     // notify the event to upper layers (whoever that might be)
-    m_eventDelegate(event);
+    emit ProtoEvent(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgId(
@@ -262,7 +256,7 @@ void SCXProtoAnalyzer::ProcessMsgRanking(
     event->AddRankingData(e_QSlotRacingPlayer6, static_cast<quint8>(*a_pData));
 
     // notify the event to upper layers (whoever that might be)
-    m_eventDelegate(event);
+    emit ProtoEvent(event);
 
 }
 
@@ -337,7 +331,7 @@ void SCXProtoAnalyzer::ProcessMsgLapTime(
                                     millis));
 
     // notify the event to upper layers (whoever that might be)
-    m_eventDelegate(event);
+    emit ProtoEvent(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgLapCounter(
@@ -434,7 +428,7 @@ void SCXProtoAnalyzer::ProcessMsgFuel(
                        static_cast<quint8>((*a_pData) & 0x0f));
 
     // notify the event to upper layers (whoever that might be)
-    m_eventDelegate(event);
+    emit ProtoEvent(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgRefreshDisplay(

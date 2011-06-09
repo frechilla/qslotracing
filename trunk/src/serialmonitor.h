@@ -17,14 +17,15 @@ public:
     explicit SerialMonitor(QWidget *parent = 0);
     ~SerialMonitor();
 
-    void AddTrace();
-
-    void ReadData(const quint8* a_buffer, quint32 a_bufferSize);
+    void AddTrace();    
 
 private:
     Ui::SerialMonitor *ui;
     int flag_show;
     QFile* m_file;
+
+public slots:
+    void ReadData(QByteArray a_buffer);
 
 private slots:
     void on_save_clicked();
