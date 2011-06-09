@@ -365,22 +365,6 @@
      </property>
     </widget>
    </widget>
-   <widget class="QSlider" name="horizontalSlider">
-    <property name="geometry">
-     <rect>
-      <x>910</x>
-      <y>570</y>
-      <width>160</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>8</number>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
    <widget class="QFrame" name="frame_6">
     <property name="geometry">
      <rect>
@@ -553,13 +537,13 @@
     <property name="geometry">
      <rect>
       <x>1005</x>
-      <y>455</y>
-      <width>75</width>
-      <height>23</height>
+      <y>442</y>
+      <width>131</width>
+      <height>36</height>
      </rect>
     </property>
     <property name="text">
-     <string>Prueba ASCII</string>
+     <string>Prueba DEMO fichero</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_3">
@@ -2002,19 +1986,6 @@
      </property>
     </widget>
    </widget>
-   <widget class="QPushButton" name="btnTestEventFuel">
-    <property name="geometry">
-     <rect>
-      <x>910</x>
-      <y>225</y>
-      <width>116</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TestEventoFuel</string>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox_21">
     <property name="geometry">
      <rect>
@@ -2070,6 +2041,32 @@
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="groupBox_23">
+    <property name="geometry">
+     <rect>
+      <x>485</x>
+      <y>605</y>
+      <width>106</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Stats (beta)</string>
+    </property>
+    <widget class="QPushButton" name="btnStats">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>86</width>
+       <height>36</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Stats (beta)</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -2077,7 +2074,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
