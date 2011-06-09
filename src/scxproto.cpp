@@ -18,6 +18,7 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     //TODO remove
     for (qint32 i = 0; i < a_msg->GetMsgSize(); i++)
     {
+        std::cout << "SCXProtoAnalyzer::ProcessMsg: ";
         std::cout << std::hex
                   << static_cast<quint32>(a_msg->GetMsg()[i])
                   << " ";

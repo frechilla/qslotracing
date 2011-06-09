@@ -96,7 +96,7 @@ void SerialMonitor::ReadData(QByteArray a_buffer)
         {
             qDebug() <<"antes" ;
             qDebug() << a_buffer.data()[i];
-            strData = QString("%1").arg(a_buffer.data()[i], 2, 16);
+            //strData = QString("%1").arg(a_buffer.data()[i], 2, 16);
             qDebug() << "convertido "<<strData;
             strData = "";
             //sprintf(data, "%02X", (int)a_buffer.data()[i]);
