@@ -189,7 +189,7 @@ class QSlotRacingEventController :
         public QSlotRacingEvent
 {
 private:
-    /// type to save amount of fuel per each player
+    /// type to save controller data per each player
     typedef struct
     {
         bool      lights;
@@ -299,8 +299,15 @@ class QSlotRacingEventRanking :
         public QSlotRacingEvent
 {
 private:
-    /// type to save amount of fuel per each player
-    typedef QList< std::pair<QSlotRacingPlayer_t, quint8> > RankingDataContainerType_t;
+    /// type to save ranking data per each player
+    typedef struct
+    {
+        bool      moreThan15Laps;
+        bool      carFlag;
+        quint8    lapsBehind;
+        quint8    car_id;
+    } RankingType_t;
+    typedef QList< std::pair<quint8, RankingType_t> > RankingDataContainerType_t;
 public:
     /// @param virtual time timestamp
     QSlotRacingEventRanking(const QTime &a_timestamp):
@@ -310,11 +317,123 @@ public:
     {}
 
     /// @brief store ranking data for a specific player
-    /// @param player whose ranking data is to be stored
+    /// @param ranking position
     /// @param ranking data
-    void AddRankingData(QSlotRacingPlayer_t a_playersIndex, quint8 a_value)
+    void AddRankingData(quint8 pos, quint8 a_value)
     {
-        m_rankingData.push_back(std::pair<QSlotRacingPlayer_t, quint8>(a_playersIndex, a_value));
+        RankingType_t ranking_data;
+
+        // Check ranking data
+        if (a_value == 0xFF)
+        {
+            // No car for this position
+            ranking_data.carFlag = false;
+        }
+        else
+        {
+            // Set car flag
+            ranking_data.carFlag = true;
+
+            // Check for >15 laps behind
+            if ((a_value & 0x80) == 0)
+            {
+                // More than 15 laps behind
+                ranking_data.moreThan15Laps = true;
+
+                // Get car ID
+                ranking_data.car_id = (a_value & 0x07);
+            }
+            else
+            {
+                // Set no more than 15 laps behind
+                ranking_data.moreThan15Laps = false;
+
+                // Get number of laps behind
+                ranking_data.lapsBehind = (a_value & 0x78) >> 3;
+
+                // Get car ID
+                ranking_data.car_id = (a_value & 0x07);
+            }
+        }
+
+        // Store ranking data
+        m_rankingData.push_back(std::pair<quint8, RankingType_t>(pos, ranking_data));
+    }
+
+    /// @return controller data of the player represented by 'a_playerIndex'
+    ///         return a negative value if there was an error of any kind retrieving the controller data
+    /// @param player's. If that player's data is not contained in this event
+    ///        the function will return a negative value
+    quint8 GetRankingDataByPos(quint8 pos, bool &moreThan15, bool &car_flag, quint8 &laps_behind, quint8 &car_id) const
+    {
+        RankingType_t ranking_data;
+        quint8        ret = -1;
+
+        for (RankingDataContainerType_t::const_iterator it = m_rankingData.begin();
+             it != m_rankingData.end();
+             it++)
+        {
+            if (it->first == pos)
+            {
+                ranking_data = it->second;
+
+                // Get more than 15 laps behind flag
+                moreThan15 = ranking_data.moreThan15Laps;
+
+                // Get car flag
+                car_flag = ranking_data.carFlag;
+
+                // Get laps behind
+                laps_behind = ranking_data.lapsBehind;
+
+                // Get car ID
+                car_id = ranking_data.car_id;
+
+                ret = 0;
+            }
+        }
+
+        // not found in controller data. Return a negative value
+        return ret;
+    }
+
+    quint8 GetRankingDataByCar(quint8 car_id, quint8 &pos, bool &moreThan15, bool &car_flag, quint8 &laps_behind) const
+    {
+        RankingType_t ranking_data;
+        quint8        ret = -1;
+        bool          found;
+        RankingDataContainerType_t::const_iterator it;
+
+        // Initialization
+        found = false;
+        pos = 0;
+        moreThan15 = true;
+        car_flag = false;
+        laps_behind = 0;
+
+        it = m_rankingData.begin();
+        while ((found != true) && (it != m_rankingData.end()))
+        {
+            // Check for car Id
+            ranking_data = it->second;
+            if (ranking_data.car_id == car_id)
+            {
+                // Car Id found. Set flag and return data
+                found = true;
+                ret = 0;
+
+                pos = it->first;
+                moreThan15 = ranking_data.moreThan15Laps;
+                car_flag = ranking_data.carFlag;
+                laps_behind = ranking_data.lapsBehind;
+            }
+
+            // Next item
+            it++;
+        }
+
+        // not found in controller data. Return a negative value
+        return ret;
     }
 
 private:

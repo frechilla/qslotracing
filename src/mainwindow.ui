@@ -664,6 +664,9 @@
      <string>Position</string>
     </property>
     <widget class="QLineEdit" name="editPos1">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -675,7 +678,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>48</pointsize>
+       <pointsize>40</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -810,6 +813,9 @@
      <string>Position</string>
     </property>
     <widget class="QLineEdit" name="editPos2">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -821,7 +827,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>48</pointsize>
+       <pointsize>40</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -1161,6 +1167,9 @@
      <string>Position</string>
     </property>
     <widget class="QLineEdit" name="editPos3">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1172,7 +1181,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>48</pointsize>
+       <pointsize>40</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -1472,6 +1481,9 @@
      <string>Position</string>
     </property>
     <widget class="QLineEdit" name="editPos4">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1483,7 +1495,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>48</pointsize>
+       <pointsize>40</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -1730,6 +1742,9 @@
      <string>Position</string>
     </property>
     <widget class="QLineEdit" name="editPos5">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1741,7 +1756,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>48</pointsize>
+       <pointsize>40</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -1873,6 +1888,9 @@
      <string>Position</string>
     </property>
     <widget class="QLineEdit" name="editPos6">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1884,7 +1902,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>48</pointsize>
+       <pointsize>40</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -2074,7 +2092,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

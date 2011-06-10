@@ -113,6 +113,8 @@ private:
     /// @param player car ID
     void ConfigurePlayer6(QString player, bool flag, int car);
 
+    void UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool moreThan15, quint8 lapsBehind);
+
 private slots:
     /// @brief entry point for events
     /// events will be processed by the window and the GUI will be

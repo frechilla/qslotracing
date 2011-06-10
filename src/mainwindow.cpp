@@ -126,32 +126,96 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         quint8 speed = 0;
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer1, lights, lane_change, speed);
-        qDebug()<<" Controller 1: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        //qDebug()<<" Controller 1: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         SetController1(lights, lane_change, speed);
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer2, lights, lane_change, speed);
-        qDebug()<<" Controller 2: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        //qDebug()<<" Controller 2: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         SetController2(lights, lane_change, speed);
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer3, lights, lane_change, speed);
-        qDebug()<<" Controller 3: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        //qDebug()<<" Controller 3: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         SetController3(lights, lane_change, speed);
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer4, lights, lane_change, speed);
-        qDebug()<<" Controller 4: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        //qDebug()<<" Controller 4: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         SetController4(lights, lane_change, speed);
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer5, lights, lane_change, speed);
-        qDebug()<<" Controller 5: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        //qDebug()<<" Controller 5: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         SetController5(lights, lane_change, speed);
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer6, lights, lane_change, speed);
-        qDebug()<<" Controller 6: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
+        //qDebug()<<" Controller 6: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         SetController6(lights, lane_change, speed);
         break;
     } // case e_QSlotRacingEvent_Controller
     case e_QSlotRacingEvent_Ranking:
     {
+        QSharedPointer<QSlotRacingEventRanking> rankingEvent =
+                a_event.staticCast<QSlotRacingEventRanking>();
+
+        //quint8 carId;
+        quint8 pos;
+        quint8 retValue;
+        bool   moreThan15;
+        bool   carFlag;
+        quint8 lapsBehind;
+
+        // Get data from position 1
+        retValue = rankingEvent->GetRankingDataByCar(1, pos, moreThan15, carFlag, lapsBehind);
+        //qDebug()<<"CAR 1: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
+        //retValue = rankingEvent->GetRankingDataByPos(1, moreThan15, carFlag, lapsBehind, carId);
+        //qDebug()<<"Pos 1: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
+
+        // Update position from retrieved carId
+        UpdateCarPosition(1, pos, carFlag, moreThan15, lapsBehind);
+
+        // Get data from position 2
+        retValue = rankingEvent->GetRankingDataByCar(2, pos, moreThan15, carFlag, lapsBehind);
+        //qDebug()<<"CAR 2: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
+        //retValue = rankingEvent->GetRankingDataByPos(2, moreThan15, carFlag, lapsBehind, carId);
+        //qDebug()<<"Pos 2: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
+
+        // Update position from retrieved carId
+        UpdateCarPosition(2, pos, carFlag, moreThan15, lapsBehind);
+
+        // Get data from position 3
+        retValue = rankingEvent->GetRankingDataByCar(3, pos, moreThan15, carFlag, lapsBehind);
+        //qDebug()<<"CAR 3: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
+        //retValue = rankingEvent->GetRankingDataByPos(3, moreThan15, carFlag, lapsBehind, carId);
+        //qDebug()<<"Pos 3: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
+
+        // Update position from retrieved carId
+        UpdateCarPosition(3, pos, carFlag, moreThan15, lapsBehind);
+
+        // Get data from position 4
+        retValue = rankingEvent->GetRankingDataByCar(4, pos, moreThan15, carFlag, lapsBehind);
+        //qDebug()<<"CAR 4: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
+        //retValue = rankingEvent->GetRankingDataByPos(4, moreThan15, carFlag, lapsBehind, carId);
+        //qDebug()<<"Pos 4: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
+
+        // Update position from retrieved carId
+        UpdateCarPosition(4, pos, carFlag, moreThan15, lapsBehind);
+
+        // Get data from position 5
+        retValue = rankingEvent->GetRankingDataByCar(5, pos, moreThan15, carFlag, lapsBehind);
+        //qDebug()<<"CAR 5: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
+        //retValue = rankingEvent->GetRankingDataByPos(5, moreThan15, carFlag, lapsBehind, carId);
+        //qDebug()<<"Pos 5: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
+
+        // Update position from retrieved carId
+        UpdateCarPosition(5, pos, carFlag, moreThan15, lapsBehind);
+
+        // Get data from position 6
+        retValue = rankingEvent->GetRankingDataByCar(6, pos, moreThan15, carFlag, lapsBehind);
+        //qDebug()<<"CAR 6: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
+        //retValue = rankingEvent->GetRankingDataByPos(6, moreThan15, carFlag, lapsBehind, carId);
+        //qDebug()<<"Pos 6: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
+
+        // Update position from retrieved carId
+        UpdateCarPosition(6, pos, carFlag, moreThan15, lapsBehind);
+
         break;
     } // case e_QSlotRacingEvent_Ranking
     default:
@@ -189,37 +253,37 @@ void MainWindow::on_BtnConfigure_clicked()
 
         // Get configuration data
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 1);
-        qDebug()<<"Player 1:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        //qDebug()<<"Player 1:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer1(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 2);
-        qDebug()<<"Player 2:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        //qDebug()<<"Player 2:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer2(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 3);
-        qDebug()<<"Player 3:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        //qDebug()<<"Player 3:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer3(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 4);
-        qDebug()<<"Player 4:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        //qDebug()<<"Player 4:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer4(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 5);
-        qDebug()<<"Player 5:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        //qDebug()<<"Player 5:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer5(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 6);
-        qDebug()<<"Player 6:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
+        //qDebug()<<"Player 6:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer6(PlayerName, PlayerFlag, PlayerCar);
@@ -1649,7 +1713,7 @@ void MainWindow::on_serial_monitor_clicked()
 
 void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
 {
-    qDebug() <<"Configuring player 1: "<<player<<" "<<flag<<" "<<car;
+    //qDebug() <<"Configuring player 1: "<<player<<" "<<flag<<" "<<car;
 
     // Configure player
     if (flag == true)
@@ -1709,7 +1773,7 @@ void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
 
 void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
 {
-    qDebug() <<"Configuring player 2: "<<player<<" "<<flag<<" "<<car;
+    //qDebug() <<"Configuring player 2: "<<player<<" "<<flag<<" "<<car;
 
     // Configure player
     if (flag == true)
@@ -1767,7 +1831,7 @@ void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
 
 void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
 {
-    qDebug() <<"Configuring player 3: "<<player<<" "<<flag<<" "<<car;
+    //qDebug() <<"Configuring player 3: "<<player<<" "<<flag<<" "<<car;
 
     // Configure player
     if (flag == true)
@@ -1826,7 +1890,7 @@ void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
 
 void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
 {
-    qDebug() <<"Configuring player 4: "<<player<<" "<<flag<<" "<<car;
+    //qDebug() <<"Configuring player 4: "<<player<<" "<<flag<<" "<<car;
 
     // Configure player
     if (flag == true)
@@ -1885,7 +1949,7 @@ void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
 
 void MainWindow::ConfigurePlayer5(QString player, bool flag, int car)
 {
-    qDebug() <<"Configuring player 5: "<<player<<" "<<flag<<" "<<car;
+    //qDebug() <<"Configuring player 5: "<<player<<" "<<flag<<" "<<car;
 
     // Configure player
     if (flag == true)
@@ -1944,7 +2008,7 @@ void MainWindow::ConfigurePlayer5(QString player, bool flag, int car)
 
 void MainWindow::ConfigurePlayer6(QString player, bool flag, int car)
 {
-    qDebug() <<"Configuring player 6: "<<player<<" "<<flag<<" "<<car;
+    //qDebug() <<"Configuring player 6: "<<player<<" "<<flag<<" "<<car;
 
     // Configure player
     if (flag == true)
@@ -2050,4 +2114,185 @@ void MainWindow::on_btnStats_clicked()
 {
     // TODO: Use http://qwt.sourceforge.net/ for creating graphs
     m_statsdlg.show();
+}
+
+void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool moreThan15, quint8 lapsBehind)
+{
+    QString    data;
+    char       posStr[5];
+
+    memset(posStr, 0, 5);
+
+    //qDebug()<<"Update pos: (carId)"<<carId<<" (pos)"<<pos<<" (carFlag)"<<carFlag<<" (moreThan15)"<<moreThan15<<" (lapsBehind)"<<lapsBehind;
+    switch(carId)
+    {
+    case 1:
+        {
+            ui->editPos1->setStyleSheet("color: rgb(0, 0, 0);");
+            // Check position status
+            if (carFlag == false)
+            {
+                // No car at this position
+                ui->editPos1->setText("E");
+            }
+            else if (moreThan15 == true)
+            {
+                ui->editPos1->setStyleSheet("color: rgb(255, 0, 0);");
+                ui->editPos1->setText("+15");
+            }
+            else if (lapsBehind > 0)
+            {
+                sprintf(posStr, "+%d", lapsBehind);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos1->setText(data);
+            }
+            else
+            {
+                sprintf(posStr, "%d", pos);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos1->setText(data);
+            }
+            break;
+        }
+    case 2:
+        {
+            ui->editPos2->setStyleSheet("color: rgb(0, 0, 0);");
+            // Check position status
+            if (carFlag == false)
+            {
+                // No car at this position
+                ui->editPos2->setText("E");
+            }
+            else if (moreThan15 == true)
+            {
+                ui->editPos2->setStyleSheet("color: rgb(255, 0, 0);");
+                ui->editPos2->setText("+15");
+            }
+            else if (lapsBehind > 0)
+            {
+                sprintf(posStr, "+%d", lapsBehind);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos2->setText(data);
+            }
+            else
+            {
+                sprintf(posStr, "%d", pos);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos2->setText(data);
+            }
+            break;
+        }
+    case 3:
+        {
+            ui->editPos3->setStyleSheet("color: rgb(0, 0, 0);");
+            // Check position status
+            if (carFlag == false)
+            {
+                // No car at this position
+                ui->editPos3->setText("E");
+            }
+            else if (moreThan15 == true)
+            {
+                ui->editPos3->setStyleSheet("color: rgb(255, 0, 0);");
+                ui->editPos3->setText("+15");
+            }
+            else if (lapsBehind > 0)
+            {
+                sprintf(posStr, "+%d", lapsBehind);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos3->setText(data);
+            }
+            else
+            {
+                sprintf(posStr, "%d", pos);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos3->setText(data);
+            }
+            break;
+        }
+    case 4:
+        {
+            ui->editPos4->setStyleSheet("color: rgb(0, 0, 0);");
+            // Check position status
+            if (carFlag == false)
+            {
+                // No car at this position
+                ui->editPos4->setText("E");
+            }
+            else if (moreThan15 == true)
+            {
+                ui->editPos4->setStyleSheet("color: rgb(255, 0, 0);");
+                ui->editPos4->setText("+15");
+            }
+            else if (lapsBehind > 0)
+            {
+                sprintf(posStr, "+%d", lapsBehind);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos4->setText(data);
+            }
+            else
+            {
+                sprintf(posStr, "%d", pos);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos4->setText(data);
+            }
+            break;
+        }
+    case 5:
+        {
+            ui->editPos5->setStyleSheet("color: rgb(0, 0, 0);");
+            // Check position status
+            if (carFlag == false)
+            {
+                // No car at this position
+                ui->editPos5->setText("E");
+            }
+            else if (moreThan15 == true)
+            {
+                ui->editPos5->setStyleSheet("color: rgb(255, 0, 0);");
+                ui->editPos5->setText("+15");
+            }
+            else if (lapsBehind > 0)
+            {
+                sprintf(posStr, "+%d", lapsBehind);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos5->setText(data);
+            }
+            else
+            {
+                sprintf(posStr, "%d", pos);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos5->setText(data);
+            }
+            break;
+        }
+    case 6:
+        {
+            ui->editPos6->setStyleSheet("color: rgb(0, 0, 0);");
+            // Check position status
+            if (carFlag == false)
+            {
+                // No car at this position
+                ui->editPos6->setText("E");
+            }
+            else if (moreThan15 == true)
+            {
+                ui->editPos6->setStyleSheet("color: rgb(255, 0, 0);");
+                ui->editPos6->setText("+15");
+            }
+            else if (lapsBehind > 0)
+            {
+                sprintf(posStr, "+%d", lapsBehind);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos6->setText(data);
+            }
+            else
+            {
+                sprintf(posStr, "%d", pos);
+                data = QString::fromLocal8Bit(posStr);
+                ui->editPos6->setText(data);
+            }
+            break;
+        }
+    }
 }

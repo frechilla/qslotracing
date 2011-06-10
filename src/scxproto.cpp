@@ -239,22 +239,22 @@ void SCXProtoAnalyzer::ProcessMsgRanking(
     // bit 2..0: car id
 
     // a_pData now contains P1
-    event->AddRankingData(e_QSlotRacingPlayer1, static_cast<quint8>(*a_pData));
+    event->AddRankingData(1, static_cast<quint8>(*a_pData));
     // a_pData now contains P2
     a_pData ++;
-    event->AddRankingData(e_QSlotRacingPlayer2, static_cast<quint8>(*a_pData));
+    event->AddRankingData(2, static_cast<quint8>(*a_pData));
     // a_pData now contains P3
     a_pData ++;
-    event->AddRankingData(e_QSlotRacingPlayer3, static_cast<quint8>(*a_pData));
+    event->AddRankingData(3, static_cast<quint8>(*a_pData));
     // a_pData now contains P4
     a_pData ++;
-    event->AddRankingData(e_QSlotRacingPlayer4, static_cast<quint8>(*a_pData));
+    event->AddRankingData(4, static_cast<quint8>(*a_pData));
     // a_pData now contains P5
     a_pData ++;
-    event->AddRankingData(e_QSlotRacingPlayer5, static_cast<quint8>(*a_pData));
+    event->AddRankingData(5, static_cast<quint8>(*a_pData));
     // a_pData now contains P6
     a_pData ++;
-    event->AddRankingData(e_QSlotRacingPlayer6, static_cast<quint8>(*a_pData));
+    event->AddRankingData(6, static_cast<quint8>(*a_pData));
 
     // notify the event to upper layers (whoever that might be)
     emit ProtoEvent(event);
@@ -452,4 +452,47 @@ void SCXProtoAnalyzer::ProcessMsgBrake(
 
     std::cout << "Brake message"
               << std::endl;
+}
+
+
+void SCXProtoAnalyzer::BuildTableCRC()
+{
+    int i;
+    unsigned char table[8];
+
+    table[0] = 0x31;
+
+    for (i = 1; i < 8; i++)
+    {
+            int n = 2 * table[i - 1];
+
+            table[i] = (n >= 256) ?n ^ 0x31 : n;
+    }
+
+    for (i = 0; i < 256; i++)
+    {
+            crcTable[i] = 0;
+            if (i & 1) crcTable[i] ^= table[0];
+            if (i & 2) crcTable[i] ^= table[1];
+            if (i & 4) crcTable[i] ^= table[2];
+            if (i & 8) crcTable[i] ^= table[3];
+            if (i & 16) crcTable[i] ^= table[4];
+            if (i & 32) crcTable[i] ^= table[5];
+            if (i & 64) crcTable[i] ^= table[6];
+            if (i & 128) crcTable[i] ^= table[7];
+    }
+}
+
+unsigned char SCXProtoAnalyzer::Crc(unsigned char* buffer, int count)
+{
+    int i;
+    unsigned char result = 0;
+
+    for (i = 0; i < count - 1; i++) {
+            unsigned char idx = buffer[i] ^ result;
+
+            result = crcTable[idx];
+    }
+
+    return result ^ 0xBB;
 }
