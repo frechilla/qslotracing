@@ -22,9 +22,6 @@ public:
     virtual ~QSlotRacingMsgFactory()
     {}
 
-    /// @return number of bytes discarded in the parsing process
-    virtual quint32 GetBytesDiscardedCount() = 0;
-
 
 signals:
     /// @brief signal sent when a brand new QSlotRacingMsg is parsed
