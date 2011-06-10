@@ -10,10 +10,17 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_serialSniffer(parent),
+    m_asciiSniffer(parent),
+    m_msgFactory(parent),
+    m_scxAnalyzer(parent)
 {
     ui->setupUi(this);
     setStyleSheet("QProgressBar:horizontal {border: 1px solid gray;border-radius: 3px;background: black;padding: 1px;text-align: right;margin-right: 10ex; }QProgressBar::chunk:horizontal {background: qlineargradient(x1: 0, y1: 0.5, x2: 3, y2: 0.5, stop: 0 lightgreen, stop: 1 black); margin-right: 2px; /* space */ width: 10px; }");
+
+    // Initialize protocol stacks (basically connect slots to signals)
+    InitializeProtoStack();
 
     // Initialize window widgets backgrounds
     InitFuelBackground();
@@ -31,6 +38,55 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::InitializeProtoStack()
+{
+    ///////////
+    //TODO This is DEBUG code. File(s) should be read from some sort of GUI element
+    m_asciiSniffer.AddAsciiFile("C:\\file");
+    ///////////
+
+    // SCXMsgFactory will be processing all bytes sniffed
+    // by the sniffers (both serial and ascii)
+    m_msgFactory.connect(&m_serialSniffer,
+                       SIGNAL(bytesRead(QByteArray)),
+                       SLOT(Parse(QByteArray)));
+
+    m_msgFactory.connect(&m_asciiSniffer,
+                       SIGNAL(bytesRead(QByteArray)),
+                       SLOT(Parse(QByteArray)));
+
+
+    // all sniffed bytes will also be notified into the serial monitor window
+    // again, for both serial and ascii sniffers
+    m_monitor.connect(&m_serialSniffer,
+                      SIGNAL(bytesRead(QByteArray)),
+                      SLOT(ReadData(QByteArray)));
+
+    m_monitor.connect(&m_asciiSniffer,
+                      SIGNAL(bytesRead(QByteArray)),
+                      SLOT(ReadData(QByteArray)));
+
+
+    // Message factory output will be sent into the proto analyzer
+    m_scxAnalyzer.connect(&m_msgFactory,
+                        SIGNAL(MsgParsed(QSharedPointer<QSlotRacingMsg>)),
+                        SLOT(ProcessMsg(QSharedPointer<QSlotRacingMsg>)));
+
+
+    // Events coming from the SCXProtoAnalyzer will be processed by this window
+    this->connect(&m_scxAnalyzer,
+                  SIGNAL(ProtoEvent(QSharedPointer<QSlotRacingEvent>)),
+                  SLOT(ProcessEvent(QSharedPointer<QSlotRacingEvent>)));
+
+
+    //TODO DEBUG code
+    // serial sniffer is also connected to MainWindow::slotRead
+    // it should be deleted at some point
+    this->connect(&m_serialSniffer,
+                  SIGNAL(bytesRead(QByteArray)),
+                  SLOT(slotRead(QByteArray)));
 }
 
 void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
@@ -1544,37 +1600,12 @@ void MainWindow::SetCar6Fuel(quint8 value)
 
 void MainWindow::on_pushButton_clicked()
 {
-    // list of files to be read by the ascii sniffer
-    QList<QString> fileList;
-    fileList.push_back("C:\\file");
-    m_asciiSniffer.AddAsciiFile("C:\\file");
-    // building up the ascii sniffer
-    
-    // SCX protocol analyzer and message factory
-    
-    // SCXMsgFactory will be processing all bytes sniffed
-    // by the asciiSniffer
-    m_msgFactory.connect(&m_asciiSniffer,
-                       SIGNAL(bytesRead(QByteArray)),
-                       SLOT(Parse(QByteArray)));
+    // objects have been already initialized in InitializeProtoStack
 
-    // all bytes will also be notified into the serial monitor window
-    m_monitor.connect(&m_asciiSniffer,
-                      SIGNAL(bytesRead(QByteArray)),
-                      SLOT(ReadData(QByteArray)));
+    // start the testing. a byte will be read each 25ms
+    m_asciiSniffer.Start(25);
 
-    // connect message factory with proto analyzer
-    m_scxAnalyzer.connect(&m_msgFactory,
-                        SIGNAL(MsgParsed(QSharedPointer<QSlotRacingMsg>)),
-                        SLOT(ProcessMsg(QSharedPointer<QSlotRacingMsg>)));
-
-    // connect output events coming from SCXProtoAnalyzer to the window
-    this->connect(&m_scxAnalyzer,
-                  SIGNAL(ProtoEvent(QSharedPointer<QSlotRacingEvent>)),
-                  SLOT(ProcessEvent(QSharedPointer<QSlotRacingEvent>)));
-
-    // start the testing. a byte will be read each 5ms
-    m_asciiSniffer.Start(5);
+    //TODO would be nice to be able to stop the ascii sniffer
 
     //TODO this is some good stuff to see how much data we are discarding
     // it should used to fill up some textbox somewhere
@@ -1585,29 +1616,28 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::OpenSerialPort(QString port)
 {
     // set settings to open the serial port
-    m_serial.SetDeviceName(port);
-    m_serial.SetBaudRate(AbstractSerial::BaudRate115200);
-    m_serial.SetDataBits(AbstractSerial::DataBits8);
-    m_serial.SetParity(AbstractSerial::ParityNone);
-    m_serial.SetStopBits(AbstractSerial::StopBits1);
-    m_serial.SetFlowControl(AbstractSerial::FlowControlOff);
+    m_serialSniffer.SetDeviceName(port);
+    m_serialSniffer.SetBaudRate(AbstractSerial::BaudRate115200);
+    m_serialSniffer.SetDataBits(AbstractSerial::DataBits8);
+    m_serialSniffer.SetParity(AbstractSerial::ParityNone);
+    m_serialSniffer.SetStopBits(AbstractSerial::StopBits1);
+    m_serialSniffer.SetFlowControl(AbstractSerial::FlowControlOff);
     
     // Open it!
-    m_serial.OpenSerial();
-    SetMainWindowDelegate();
+    m_serialSniffer.OpenSerial();
 }
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    m_serial.Write();
+    m_serialSniffer.Write();
 }
 
 void MainWindow::slotRead(QByteArray ba)
 {
-    qDebug() << "MainWindow::Readed is : " << ba.size() << " bytes:";
+    qDebug() << "MainWindow::slotRead is : " << ba.size() << " bytes:";
     for (qint32 i = 0; i < ba.size(); i++)
     {
-        qDebug() << ba.data()[i];
+        qDebug() << "MainWindow::slotRead: " << ba.at(i);
     }
 }
 
@@ -1615,12 +1645,6 @@ void MainWindow::on_serial_monitor_clicked()
 {
     //static SerialMonitor *diag = new SerialMonitor(this);
     m_monitor.show();
-}
-
-void MainWindow::SetMainWindowDelegate()
-{
-    this->connect(&m_serial, SIGNAL(bytesRead(QByteArray)), SLOT(slotRead(QByteArray)));
-    m_monitor.connect(&m_serial, SIGNAL(bytesRead(QByteArray)), SLOT(ReadData(QByteArray)));
 }
 
 void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
