@@ -128,31 +128,50 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         quint8 retValue;
         bool   lights = false;
         bool   lane_change = false;
+        bool   valid = false;
         quint8 speed = 0;
 
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer1, lights, lane_change, speed);
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer1, valid, lights, lane_change, speed);
         //qDebug()<<" Controller 1: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
-        SetController1(lights, lane_change, speed);
+        if (valid == true)
+        {
+            SetController1(lights, lane_change, speed);
+        }
 
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer2, lights, lane_change, speed);
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer2, valid, lights, lane_change, speed);
         //qDebug()<<" Controller 2: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
-        SetController2(lights, lane_change, speed);
+        if (valid == true)
+        {
+            SetController2(lights, lane_change, speed);
+        }
 
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer3, lights, lane_change, speed);
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer3, valid, lights, lane_change, speed);
         //qDebug()<<" Controller 3: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
-        SetController3(lights, lane_change, speed);
+        if (valid == true)
+        {
+            SetController3(lights, lane_change, speed);
+        }
 
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer4, lights, lane_change, speed);
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer4, valid, lights, lane_change, speed);
         //qDebug()<<" Controller 4: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
-        SetController4(lights, lane_change, speed);
+        if (valid == true)
+        {
+            SetController4(lights, lane_change, speed);
+        }
 
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer5, lights, lane_change, speed);
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer5, valid, lights, lane_change, speed);
         //qDebug()<<" Controller 5: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
-        SetController5(lights, lane_change, speed);
+        if (valid == true)
+        {
+            SetController5(lights, lane_change, speed);
+        }
 
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer6, lights, lane_change, speed);
+        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer6, valid, lights, lane_change, speed);
         //qDebug()<<" Controller 6: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
-        SetController6(lights, lane_change, speed);
+        if (valid == true)
+        {
+            SetController6(lights, lane_change, speed);
+        }
         break;
     } // case e_QSlotRacingEvent_Controller
     case e_QSlotRacingEvent_Ranking:
@@ -223,6 +242,32 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
         break;
     } // case e_QSlotRacingEvent_Ranking
+    case e_QSlotRacingEvent_LapCounter:
+    {
+        QSharedPointer<QSlotRacingEventLapCounter> lapCounterEvent =
+                a_event.staticCast<QSlotRacingEventLapCounter>();
+
+        quint8  retValue;
+
+        // Get event laps
+        retValue = lapCounterEvent->GetLapCounterData(m_CountingDir, m_LapsCounter);
+
+        // Update laps for all drivers
+        UpdateLaps();
+        break;
+    }
+    case e_QSlotRacingEvent_Lap:
+    {
+        QSharedPointer<QSlotRacingEventLapCounter> lapCounterEvent =
+                a_event.staticCast<QSlotRacingEventLapCounter>();
+
+        //quint8  retValue;
+
+        // Get event laps
+        //retValue = lapCounterEvent->GetLapCounterData(m_CountingDir, m_LapsCounter);
+
+        break;
+    }
     default:
     {
         // highly unexpected
@@ -2300,4 +2345,25 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
             break;
         }
     }
+}
+
+void MainWindow::UpdateLaps()
+{
+    QString    text;
+    char       data[10];
+
+    // Initialization
+    memset(data, 0, 10);
+
+    // Format string
+    sprintf(data, "0/%d", m_LapsCounter);
+    text = QString::fromLocal8Bit(data);
+
+    // Display data for all drivers
+    ui->editLaps1->setText(text);
+    ui->editLaps2->setText(text);
+    ui->editLaps3->setText(text);
+    ui->editLaps4->setText(text);
+    ui->editLaps5->setText(text);
+    ui->editLaps6->setText(text);
 }

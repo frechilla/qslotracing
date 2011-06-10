@@ -186,8 +186,8 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
 
     default:
         // unknown message. No further processing can be done
-        qDebug() << "Unknown message type: "
-                  << std::hex << static_cast<quint32>(*pData);
+        std::cout << "Unknown message type: "
+                << std::hex << static_cast<quint32>(*pData)<<std::endl;
 
         m_statCounters.Increment(eStatEntry_MsgBadType, 1);
         return;
@@ -376,13 +376,10 @@ void SCXProtoAnalyzer::ProcessMsgLapTime(
     // to avoid floating point calculations)
     qint32 millis = (basevalue * 1024) / 100;
 
-
-    // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventLap> event(
-            new QSlotRacingEventLap(a_msg->GetTimestamp(),
-                                    currentCar,
-                                    crossings,
-                                    millis));
+            new QSlotRacingEventLap(a_msg->GetTimestamp()));
+
+    event->AddLapData(currentCar, crossings, millis);
 
     // notify the event to upper layers (whoever that might be)
     emit ProtoEvent(event);
@@ -392,10 +389,34 @@ void SCXProtoAnalyzer::ProcessMsgLapCounter(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
+    quint8 direction;
+    quint8 byte0;
+    quint8 byte1;
+    quint8 byte2;
+
+    // this is the event that will be pass through to upper layers
+    QSharedPointer<QSlotRacingEventLapCounter> event(
+            new QSlotRacingEventLapCounter(a_msg->GetTimestamp()));
+
     // move past the message type
     a_pData ++;
 
-    qDebug() << "LapCounter message";
+    // Get counting direction
+    direction = static_cast<quint8>(*a_pData);
+
+    // Get laps data bytes
+    a_pData ++;
+    byte2 = static_cast<quint8>(*a_pData);
+    a_pData ++;
+    byte1 = static_cast<quint8>(*a_pData);
+    a_pData ++;
+    byte0 = static_cast<quint8>(*a_pData);
+
+    // Add event data
+    event->AddLapCounterData(direction, byte2, byte1, byte0);
+
+    // notify the event to upper layers (whoever that might be)
+    emit ProtoEvent(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgQualifying(

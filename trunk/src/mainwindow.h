@@ -70,6 +70,12 @@ private:
     /// SCX protocol analyzer. Takes in QSlotRacingMsg's and create QSlotRacingEvent's
     SCXProtoAnalyzer m_scxAnalyzer;
 
+    // Laps counting direction
+    quint8 m_CountingDir;
+
+    // Laps counter
+    quint32 m_LapsCounter;
+
     /// @brief initialize all objects related to sniffing and protocol decoding
     /// Connects also all signals to the expected slots
     /// WARNING: should be ONLY called once
@@ -114,6 +120,8 @@ private:
     void ConfigurePlayer6(QString player, bool flag, int car);
 
     void UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool moreThan15, quint8 lapsBehind);
+
+    void UpdateLaps();
 
 private slots:
     /// @brief entry point for events

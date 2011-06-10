@@ -11,6 +11,7 @@ typedef enum
     e_QSlotRacingEvent_Lap,        // finish line crossed
     e_QSlotRacingEvent_Controller, // controller package
     e_QSlotRacingEvent_Ranking,    // ranking package
+    e_QSlotRacingEvent_LapCounter    // lap counter package
 } QSlotRacingEventType_t;
 
 /// Players handled by this app
@@ -128,6 +129,7 @@ private:
 };
 
 
+/*
 /// @brief lap event
 /// sent when a car crosses the finish line
 class QSlotRacingEventLap :
@@ -137,6 +139,7 @@ public:
     /// @param virtual time timestamp
     /// @param who triggered this lap event
     /// @param lap time. 0 if it is unknown
+    /// @param virtual time timestamp
     QSlotRacingEventLap(const QTime         &a_timestamp,
                         QSlotRacingPlayer_t  a_who,
                         qint32               a_crossingTimes,
@@ -182,7 +185,7 @@ private:
     // prevent standard constructor from being used
     QSlotRacingEventLap();
 };
-
+*/
 
 /// @brief controller event
 class QSlotRacingEventController :
@@ -192,6 +195,7 @@ private:
     /// type to save controller data per each player
     typedef struct
     {
+        bool      valid;
         bool      lights;
         bool      lane_change;
         quint8    speed;
@@ -202,6 +206,7 @@ public:
     QSlotRacingEventController(const QTime &a_timestamp):
             QSlotRacingEvent(e_QSlotRacingEvent_Controller, a_timestamp)
     {}
+
     ~QSlotRacingEventController()
     {}
 
@@ -215,6 +220,8 @@ public:
         // Check controller data
         if ((a_value & 0xC0) == 0xC0)
         {
+            controller_data.valid = true;
+
             // Check lights ON/OFF
             if ((a_value & 0x20) == 0x20)
             {
@@ -241,21 +248,22 @@ public:
 
             // Get speed value
             controller_data.speed = (a_value & 0x0F);
-
-            // Store data
-            m_controllerData.push_back(std::pair<QSlotRacingPlayer_t, ControllerType_t>(a_playersIndex, controller_data));
         }
         else
         {
             // Data is incorrect. Do nothing
+            controller_data.valid = false;
         }
+
+        // Store data
+        m_controllerData.push_back(std::pair<QSlotRacingPlayer_t, ControllerType_t>(a_playersIndex, controller_data));
     }
 
     /// @return controller data of the player represented by 'a_playerIndex'
     ///         return a negative value if there was an error of any kind retrieving the controller data
     /// @param player's. If that player's data is not contained in this event
     ///        the function will return a negative value
-    quint8 GetPlayersControllerData(QSlotRacingPlayer_t a_playerIndex, bool &lights, bool &lane_change, quint8 &speed) const
+    quint8 GetPlayersControllerData(QSlotRacingPlayer_t a_playerIndex, bool &valid, bool &lights, bool &lane_change, quint8 &speed) const
     {
         ControllerType_t controller_data;
         quint8           ret = -1;
@@ -267,6 +275,9 @@ public:
             if (it->first == a_playerIndex)
             {
                 controller_data = it->second;
+
+                // Get valid flag
+                valid = controller_data.valid;
 
                 // Get lights data
                 lights = controller_data.lights;
@@ -442,6 +453,123 @@ private:
 
     // prevent standard constructor from being used
     QSlotRacingEventRanking();
+};
+
+/// @brief Lap counter event
+class QSlotRacingEventLapCounter :
+        public QSlotRacingEvent
+{
+private:
+    /// type to save ranking data per each player
+    typedef struct
+    {
+        quint8    count_direction;
+        quint32   laps;
+    } LapCounterType_t;
+public:
+    /// @param virtual time timestamp
+    QSlotRacingEventLapCounter(const QTime &a_timestamp):
+            QSlotRacingEvent(e_QSlotRacingEvent_LapCounter, a_timestamp)
+    {}
+    ~QSlotRacingEventLapCounter()
+    {}
+
+    /// @brief store lap counter data
+    /// @param lap counter data
+    void AddLapCounterData(quint8 dir, quint8 byte2, quint8 byte1, quint8 byte0)
+    {
+        quint8 temp2;
+        quint8 temp1;
+        quint8 temp0;
+
+        // Set lap counter direction
+        m_LapCounterData.count_direction = dir;
+
+        // Calculate laps
+        temp2 = byte2 & 0x0F;
+        temp1 = byte1 & 0x0F;
+        temp0 = byte0 & 0x0F;
+
+        m_LapCounterData.laps = (temp2 * 256) + (temp1 * 16) + temp0;
+    }
+
+    /// @return lap counter data
+    ///         return a negative value if there was an error of any kind retrieving the controller data
+    quint8 GetLapCounterData(quint8 &dir, quint32 &laps) const
+    {
+        quint8        ret = -1;
+
+        // Return lap counter data
+        dir = m_LapCounterData.count_direction;
+        laps = m_LapCounterData.laps;
+        ret = 0;
+
+        return ret;
+    }
+
+private:
+    /// contains player's index and its fuel value (from 0 to 100)
+    LapCounterType_t m_LapCounterData;
+
+    // prevent standard constructor from being used
+    QSlotRacingEventLapCounter();
+};
+
+/// @brief Lap counter event
+class QSlotRacingEventLap :
+        public QSlotRacingEvent
+{
+private:
+public:
+    /// @param virtual time timestamp
+    QSlotRacingEventLap(const QTime &a_timestamp):
+            QSlotRacingEvent(e_QSlotRacingEvent_Lap, a_timestamp)
+    {}
+    ~QSlotRacingEventLap()
+    {}
+
+    /// @brief store lap counter data
+    /// @param lap counter data
+    void AddLapData(QSlotRacingPlayer_t player, quint32 crossings, quint32 time)
+    {
+        // Set lap data
+        m_player = player;
+        m_crossingTimes = crossings;
+        m_lapMillis = time;
+    }
+
+    /// @return who triggered this lap event
+    inline QSlotRacingPlayer_t GetWho() const
+    {
+        return m_player;
+    }
+
+    /// @return number of times this player has crossed the finish line
+    /// negative if unknown or bogus
+    inline qint32 GetCrossingTimes() const
+    {
+        return m_crossingTimes;
+    }
+
+    /// @return lap time in milliseconds.
+    /// negative if unknown or bogus. The first crossing (race start) might give a time of 0
+    inline qint32 GetLapMillis() const
+    {
+        return m_lapMillis;
+    }
+
+private:
+    /// @brief who triggered the event
+    QSlotRacingPlayer_t m_player;
+
+    /// @brief times this player has crossed the finish line
+    qint32 m_crossingTimes;
+
+    /// @brief lap time in milliseconds
+    qint32 m_lapMillis;
+
+    // prevent standard constructor from being used
+    QSlotRacingEventLap();
 };
 
 #endif // QSLOTRACINGEVENT_H
