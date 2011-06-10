@@ -1,12 +1,52 @@
 #include "scxproto.h"
+#include <QtCore/QDebug>
+//TODO remove when std::cout is gone
 #include <iostream>
 
 // first byte MUST always be 0x55
 #define SCX_PROTO_START_HEADER 0x55
 
 SCXProtoAnalyzer::SCXProtoAnalyzer(QObject *parent) :
-        QObject(parent)
+        QObject(parent),
+        m_statCounters()
 {
+    // set stat entries' names
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTotal,
+                                 QString("MsgTotal"));
+
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeController,
+                                 QString("MsgTypeController"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeId,
+                                 QString("MsgTypeId"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeBusClearance,
+                                 QString("MsgTypeBusClearance"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeFinishLine,
+                                 QString("MsgTypeFinishLine"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeRanking,
+                                 QString("MsgTypeRanking"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeLapTime,
+                                 QString("MsgTypeLapTime"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeLapCounter,
+                                 QString("MsgTypeLapCounter"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeQualifying,
+                                 QString("MsgTypeQualifying"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeReset,
+                                 QString("MsgTypeReset"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeStart,
+                                 QString("MsgTypeStart"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeEnd,
+                                 QString("MsgTypeEnd"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeFuel,
+                                 QString("MsgTypeFuel"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeRefreshDisplay,
+                                 QString("MsgTypeRefreshDisplay"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeBrake,
+                                 QString("MsgTypeBrake"));
+
+    m_statCounters.SetEntryTitle(eStatEntry_MsgBadHeader,
+                                 QString("MsgBadHeader"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgBadType,
+                                 QString("MsgBadType"));
 }
 
 SCXProtoAnalyzer::~SCXProtoAnalyzer()
@@ -26,6 +66,9 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     }
     std::cout << std::endl;
 
+    // new message has arrived
+    m_statCounters.Increment(eStatEntry_MsgTotal, 1);
+
     const quint8* pData = a_msg->GetBuffer();
 
     // see http://eng.slotbaer.de/SCX/DatProt.html for
@@ -34,6 +77,7 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     if ((*pData) != SCX_PROTO_START_HEADER)
     {
         // this message contains an invalid SCX proto message
+        m_statCounters.Increment(eStatEntry_MsgBadHeader, 1);
         return;
     }
     pData++;
@@ -43,84 +87,98 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     {
     case e_SCXMsgTypeController:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeController, 1);
         ProcessMsgController(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeId:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeId, 1);
         ProcessMsgId(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeBusClearance:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeBusClearance, 1);
         ProcessMsgBusClearance(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeFinishLine:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeFinishLine, 1);
         ProcessMsgFinishLine(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeRanking:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeRanking, 1);
         ProcessMsgRanking(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeLapTime:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeLapTime, 1);
         ProcessMsgLapTime(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeLapCounter:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeLapCounter, 1);
         ProcessMsgLapCounter(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeQualifying:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeQualifying, 1);
         ProcessMsgQualifying(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeReset:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeReset, 1);
         ProcessMsgReset(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeStart:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeStart, 1);
         ProcessMsgStart(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeEnd:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeEnd, 1);
         ProcessMsgEnd(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeFuel:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeFuel, 1);
         ProcessMsgFuel(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeRefreshDisplay:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeRefreshDisplay, 1);
         ProcessMsgRefreshDisplay(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeBrake:
     {
+        m_statCounters.Increment(eStatEntry_MsgTypeBrake, 1);
         ProcessMsgBrake(pData, a_msg);
         break;
     }
@@ -128,9 +186,10 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
 
     default:
         // unknown message. No further processing can be done
-        std::cout << "Unknown message type: "
-                  << std::hex << static_cast<quint32>(*pData)
-                  << std::endl;
+        qDebug() << "Unknown message type: "
+                  << std::hex << static_cast<quint32>(*pData);
+
+        m_statCounters.Increment(eStatEntry_MsgBadType, 1);
         return;
     } // switch (*pData)
 
@@ -143,8 +202,7 @@ void SCXProtoAnalyzer::ProcessMsgController(
     // move past the message type
     a_pData ++;
 
-    std::cout << "Controller message"
-              << std::endl;
+    qDebug() << "Controller message";
 
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventController> event(
@@ -186,8 +244,7 @@ void SCXProtoAnalyzer::ProcessMsgId(
     // move past the message type
     a_pData ++;
 
-    std::cout << "Id message"
-              << std::endl;
+    qDebug() << "Id message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgBusClearance(
@@ -197,8 +254,7 @@ void SCXProtoAnalyzer::ProcessMsgBusClearance(
     // move past the message type
     a_pData ++;
 
-    std::cout << "BusClearance message"
-              << std::endl;
+    qDebug() << "BusClearance message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgFinishLine(
@@ -208,8 +264,7 @@ void SCXProtoAnalyzer::ProcessMsgFinishLine(
     // move past the message type
     a_pData ++;
 
-    std::cout << "FinishLine message"
-              << std::endl;
+    qDebug() << "FinishLine message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgRanking(
@@ -219,8 +274,7 @@ void SCXProtoAnalyzer::ProcessMsgRanking(
     // move past the message type
     a_pData ++;
 
-    std::cout << "Ranking message"
-              << std::endl;
+    qDebug() << "Ranking message";
 
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventRanking> event(
@@ -265,8 +319,7 @@ void SCXProtoAnalyzer::ProcessMsgLapTime(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {    
-    std::cout << "LapTime message"
-              << std::endl;
+    qDebug() << "LapTime message";
 
     // move past the message type
     a_pData ++;
@@ -342,8 +395,7 @@ void SCXProtoAnalyzer::ProcessMsgLapCounter(
     // move past the message type
     a_pData ++;
 
-    std::cout << "LapCounter message"
-              << std::endl;
+    qDebug() << "LapCounter message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgQualifying(
@@ -353,8 +405,7 @@ void SCXProtoAnalyzer::ProcessMsgQualifying(
     // move past the message type
     a_pData ++;
 
-    std::cout << "Qualifying message"
-              << std::endl;
+    qDebug() << "Qualifying message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgReset(
@@ -364,8 +415,7 @@ void SCXProtoAnalyzer::ProcessMsgReset(
     // move past the message type
     a_pData ++;
 
-    std::cout << "Reset message"
-              << std::endl;
+    qDebug() << "Reset message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgStart(
@@ -375,8 +425,7 @@ void SCXProtoAnalyzer::ProcessMsgStart(
     // move past the message type
     a_pData ++;
 
-    std::cout << "Start message"
-              << std::endl;
+    qDebug() << "Start message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgEnd(
@@ -386,16 +435,14 @@ void SCXProtoAnalyzer::ProcessMsgEnd(
     // move past the message type
     a_pData ++;
 
-    std::cout << "End message"
-              << std::endl;
+    qDebug() << "End message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgFuel(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {    
-    std::cout << "Fuel message"
-              << std::endl;
+    qDebug() << "Fuel message";
 
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventFuel> event(
@@ -439,8 +486,7 @@ void SCXProtoAnalyzer::ProcessMsgRefreshDisplay(
     // move past the message type
     a_pData ++;
 
-    std::cout << "RefreshDisplay message"
-              << std::endl;
+    qDebug() << "RefreshDisplay message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgBrake(
@@ -450,8 +496,7 @@ void SCXProtoAnalyzer::ProcessMsgBrake(
     // move past the message type
     a_pData ++;
 
-    std::cout << "Brake message"
-              << std::endl;
+    qDebug() << "Brake message";
 }
 
 

@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include "qslotracingmsg.h"
 #include "qslotracingevent.h"
+#include "qslotracingstatscounter.h"
 
 /// @brief class with a few methods to parse SCX messages
 /// based on the info found in:
@@ -13,6 +14,36 @@ class SCXProtoAnalyzer : public QObject
 {
     Q_OBJECT
 public:
+
+    // statistics counter
+    typedef enum
+    {
+        eStatEntry_MsgTotal = 0, // first enum element MUST be set to 0
+
+        eStatEntry_MsgTypeController,
+        eStatEntry_MsgTypeId,
+        eStatEntry_MsgTypeBusClearance,
+        eStatEntry_MsgTypeFinishLine,
+        eStatEntry_MsgTypeRanking,
+        eStatEntry_MsgTypeLapTime,
+        eStatEntry_MsgTypeLapCounter,
+        eStatEntry_MsgTypeQualifying,
+        eStatEntry_MsgTypeReset,
+        eStatEntry_MsgTypeStart,
+        eStatEntry_MsgTypeEnd,
+        eStatEntry_MsgTypeFuel,
+        eStatEntry_MsgTypeRefreshDisplay,
+        eStatEntry_MsgTypeBrake,
+
+        eStatEntry_MsgBadType,
+        eStatEntry_MsgBadHeader,
+
+        eStatEntry_Count // this value MUST be at the end of the enum
+    } eStatEntries_t;
+
+    // stat counter type
+    typedef QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)> SCXProtoStatCounter_t;
+
 
     /// @brief types of SCX messages
     typedef enum
@@ -37,7 +68,16 @@ public:
     SCXProtoAnalyzer(QObject *parent = 0);
     virtual ~SCXProtoAnalyzer();
 
+    /// @return the stat counter of this particular object
+    const SCXProtoStatCounter_t& GetStatCounters() const
+    {
+        return m_statCounters;
+    }
+
 private:
+    /// @brief this object's stat counters
+    SCXProtoStatCounter_t m_statCounters;
+
     // methods to parse specific message types
     void ProcessMsgController(
             const quint8* a_pData,

@@ -14,11 +14,11 @@ SCXMsgFactory::SCXMsgFactory(QObject *parent) :
     }
     
     // set stat entries' names
-    m_statCounters.SetEntryTitle(e_statEntry_BytesProcessedOK, 
+    m_statCounters.SetEntryTitle(eStatEntry_BytesProcessedOK,
                                  QString("BytesProcessedOK"));
-    m_statCounters.SetEntryTitle(e_statEntry_BytesDiscarded, 
+    m_statCounters.SetEntryTitle(eStatEntry_BytesDiscarded,
                                  QString("BytesDiscarded"));
-    m_statCounters.SetEntryTitle(e_statEntry_BytesTotal, 
+    m_statCounters.SetEntryTitle(eStatEntry_BytesTotal,
                                  QString("BytesTotal"));
 }
 
@@ -30,7 +30,7 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
 {
     for (qint32 i = 0; i < a_dataBuffer.count(); i++)
     {
-        m_statCounters.Increment(e_statEntry_BytesTotal, 1);
+        m_statCounters.Increment(eStatEntry_BytesTotal, 1);
         
         if (m_currentMsgIndex == 0)
         {
@@ -39,18 +39,18 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
             if (a_dataBuffer.at(i) == SCX_PROTO_START_HEADER)
             {
                 m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.at(i);
-                m_statCounters.Increment(e_statEntry_BytesProcessedOK, 1);
+                m_statCounters.Increment(eStatEntry_BytesProcessedOK, 1);
             }
             else
             {
                 // a msg MUST start with SCX_PROTO_START_HEADER
-                m_statCounters.Increment(e_statEntry_BytesDiscarded, 1);
+                m_statCounters.Increment(eStatEntry_BytesDiscarded, 1);
             }
         }
         else
         {
             m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.at(i);
-            m_statCounters.Increment(e_statEntry_BytesProcessedOK, 1);
+            m_statCounters.Increment(eStatEntry_BytesProcessedOK, 1);
         }
 
         // check if we already built up a message

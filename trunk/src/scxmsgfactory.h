@@ -19,15 +19,15 @@ public:
     // statistics counter
     typedef enum
     {
-        e_statEntry_BytesProcessedOK = 0, // first enum element MUST be set to 0
-        e_statEntry_BytesDiscarded, 
-        e_statEntry_BytesTotal,
+        eStatEntry_BytesProcessedOK = 0, // first enum element MUST be set to 0
+        eStatEntry_BytesDiscarded,
+        eStatEntry_BytesTotal,
         
-        e_statEntry_Count // this value MUST be at the end of the enum
+        eStatEntry_Count // this value MUST be at the end of the enum
     } eStatEntries_t;
 
     // stat counter type
-    typedef QSlotRacingStatsCounter<eStatEntries_t, e_statEntry_Count> SCXMsgFactorySTatCounter_t;
+    typedef QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)> SCXMsgFactoryStatCounter_t;
 
     
     SCXMsgFactory(QObject *parent = 0);
@@ -40,14 +40,14 @@ public:
     void Parse(QByteArray a_dataBuffer);
 
     /// @return the stat counter of this particular object
-    const SCXMsgFactorySTatCounter_t& GetStatCounters() const
+    const SCXMsgFactoryStatCounter_t& GetStatCounters() const
     {
         return m_statCounters;
     }
 
 private:
     /// @brief this object's stat counters
-    SCXMsgFactorySTatCounter_t m_statCounters;
+    SCXMsgFactoryStatCounter_t m_statCounters;
     
     /// @brief current SCX message
     quint8 m_currentMsg[SCX_PROTO_MAX_MSG_LENGTH];
