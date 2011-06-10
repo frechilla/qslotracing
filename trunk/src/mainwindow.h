@@ -52,15 +52,28 @@ public:
 private:
     // Member variables
     Ui::MainWindow *ui;
-    SnifferSerial m_serial;
     SerialMonitor m_monitor;
     ConfigDialog m_config;
     ControllerDlg m_controller;
     StatsDialog m_statsdlg;
 
+    /// Sniff data off the serial interface
+    SnifferSerial m_serialSniffer;
+
+    /// ASCII sniffer (to simulate binary input reading from a file)
+    /// (used mainly for debug)
     SnifferFileAscii m_asciiSniffer;
-    SCXProtoAnalyzer m_scxAnalyzer;
+
+    /// parses the raw data cominf from the sniffers to create QSlotRacingMsg's
     SCXMsgFactory    m_msgFactory;
+
+    /// SCX protocol analyzer. Takes in QSlotRacingMsg's and create QSlotRacingEvent's
+    SCXProtoAnalyzer m_scxAnalyzer;
+
+    /// @brief initialize all objects related to sniffing and protocol decoding
+    /// Connects also all signals to the expected slots
+    /// WARNING: should be ONLY called once
+    void InitializeProtoStack();
 
     void OpenSerialPort(QString port);
 
@@ -111,13 +124,13 @@ private slots:
     void on_btnStats_clicked();
     void on_btnController_clicked();
     void on_serial_monitor_clicked();
+
+    //TODO remove
     void slotRead(QByteArray);
 
     // TODO: remove?
     void on_pushButton_3_clicked();
     void on_pushButton_clicked();
-
-    void SetMainWindowDelegate();
 };
 
 #endif // MAINWINDOW_H
