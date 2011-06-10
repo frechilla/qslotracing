@@ -4,46 +4,53 @@
 
 SCXMsgFactory::SCXMsgFactory(QObject *parent) :
         QSlotRacingMsgFactory(parent),
-        m_currentMsgIndex(0),
-        m_bytesDiscarded(0)
+        m_statCounters(),
+        m_currentMsgIndex(0)
 {
     // empty out the current message buffer
     for (quint32 i = 0; i < SCX_PROTO_MAX_MSG_LENGTH; i++)
     {
         m_currentMsg[i] = 0;
     }
+    
+    // set stat entries' names
+    m_statCounters.SetEntryTitle(e_statEntry_BytesProcessedOK, 
+                                 QString("BytesProcessedOK"));
+    m_statCounters.SetEntryTitle(e_statEntry_BytesDiscarded, 
+                                 QString("BytesDiscarded"));
+    m_statCounters.SetEntryTitle(e_statEntry_BytesTotal, 
+                                 QString("BytesTotal"));
 }
 
 SCXMsgFactory::~SCXMsgFactory()
 {
 }
 
-quint32 SCXMsgFactory::GetBytesDiscardedCount()
-{
-    return m_bytesDiscarded;
-}
-
 void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
 {
     for (qint32 i = 0; i < a_dataBuffer.count(); i++)
     {
+        m_statCounters.Increment(e_statEntry_BytesTotal, 1);
+        
         if (m_currentMsgIndex == 0)
         {
             // current message has no data at all
             // look for the start header on current buffer
-            if (a_dataBuffer.data()[i] == SCX_PROTO_START_HEADER)
+            if (a_dataBuffer.at(i) == SCX_PROTO_START_HEADER)
             {
                 m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.at(i);
+                m_statCounters.Increment(e_statEntry_BytesProcessedOK, 1);
             }
             else
             {
                 // a msg MUST start with SCX_PROTO_START_HEADER
-                m_bytesDiscarded++;
+                m_statCounters.Increment(e_statEntry_BytesDiscarded, 1);
             }
         }
         else
         {
             m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.at(i);
+            m_statCounters.Increment(e_statEntry_BytesProcessedOK, 1);
         }
 
         // check if we already built up a message

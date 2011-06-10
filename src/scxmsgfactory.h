@@ -2,6 +2,7 @@
 #define SCXMSGFACTORY_H
 
 #include "qslotracingmsgfactory.h"
+#include "qslotracingstatscounter.h"
 
 // from http://eng.slotbaer.de/SCX/DatProt.html
 //     "each datpacket consits of 9 bytes.
@@ -15,6 +16,20 @@
 class SCXMsgFactory : public QSlotRacingMsgFactory
 {
 public:
+    // statistics counter
+    typedef enum
+    {
+        e_statEntry_BytesProcessedOK = 0, // first enum element MUST be set to 0
+        e_statEntry_BytesDiscarded, 
+        e_statEntry_BytesTotal,
+        
+        e_statEntry_Count // this value MUST be at the end of the enum
+    } eStatEntries_t;
+
+    // stat counter type
+    typedef QSlotRacingStatsCounter<eStatEntries_t, e_statEntry_Count> SCXMsgFactorySTatCounter_t;
+
+    
     SCXMsgFactory(QObject *parent = 0);
     virtual ~SCXMsgFactory();
 
@@ -24,18 +39,21 @@ public:
     /// @param a_dataBuffer byte buffer to be parsed
     void Parse(QByteArray a_dataBuffer);
 
-    /// @return number of bytes discarded in the parsing process
-    quint32 GetBytesDiscardedCount();
+    /// @return the stat counter of this particular object
+    const SCXMsgFactorySTatCounter_t& GetStatCounters() const
+    {
+        return m_statCounters;
+    }
 
 private:
+    /// @brief this object's stat counters
+    SCXMsgFactorySTatCounter_t m_statCounters;
+    
     /// @brief current SCX message
     quint8 m_currentMsg[SCX_PROTO_MAX_MSG_LENGTH];
 
     /// @brief index where the next byte will be stored in the current SCX message
     quint32 m_currentMsgIndex;
-
-    /// @brief number of bytes discarded in the parsing process
-    quint32 m_bytesDiscarded;
 };
 
 #endif // SCXMSGFACTORY_H

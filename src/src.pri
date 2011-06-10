@@ -24,7 +24,9 @@ HEADERS += src/mainwindow.h \
     src/snifferserial.h \
     src/serialmonitor.h \
     src/controllerdlg.h \
-    src/statsdialog.h
+    src/statsdialog.h   \
+    src/atomic_ops.h \
+    src/qslotracingstatscounter.h
 
 FORMS   += src/mainwindow.ui \
     src/configdialog.ui \
