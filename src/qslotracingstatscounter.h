@@ -7,7 +7,7 @@
 /// template-based wrapper for statistics tracking
 /// It's a thread-safe class, though it doesn't support "snapshots", this is
 /// at the same time a value is retrived another one might be getting updated
-template <typename ENUM_TYPE, ENUM_TYPE NSTATS>
+template <int NSTATS>
 class QSlotRacingStatsCounter
 {
 public:

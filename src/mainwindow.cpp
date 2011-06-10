@@ -42,10 +42,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::InitializeProtoStack()
 {
-    ///////////
-    //TODO This is DEBUG code. File(s) should be read from some sort of GUI element
+///////////
+//TODO This is DEBUG code. File(s) should be read from some sort of GUI element
+#if defined (Q_OS_UNIX)
+    m_asciiSniffer.AddAsciiFile("/home/frechilla/workspace/headless/QSlotRacing/doc/ascii-sniffer-example");
+#elif defined (Q_OS_WIN)
     m_asciiSniffer.AddAsciiFile("C:\\file");
-    ///////////
+#endif
+//
+///////////
 
     // SCXMsgFactory will be processing all bytes sniffed
     // by the sniffers (both serial and ascii)
