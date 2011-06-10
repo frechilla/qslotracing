@@ -82,6 +82,14 @@ private:
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
 
+    // CRC calculation functions
+
+    unsigned char crcTable[256];
+
+    void BuildTableCRC();
+
+    unsigned char Crc(unsigned char* buffer, int count);
+
 
 signals:
     void ProtoEvent(QSharedPointer<QSlotRacingEvent>);

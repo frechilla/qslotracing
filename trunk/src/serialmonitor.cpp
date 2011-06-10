@@ -23,11 +23,11 @@ SerialMonitor::~SerialMonitor()
 
         delete m_file;
 
-        qDebug() << "cerrar fichero bien";
+        //qDebug() << "cerrar fichero bien";
     }
     else
     {
-        qDebug() << "cerrando SerialMonitor...";
+        //qDebug() << "cerrando SerialMonitor...";
     }
 
     delete ui;
@@ -62,18 +62,15 @@ void SerialMonitor::on_save_clicked()
     // Check file
     if (m_file->open(QIODevice::WriteOnly) == true)
     {
-        qDebug()<<"fichero ok";
-
         texto = ui->data_packets->toPlainText();
 
         qDebug() << qPrintable(texto);
-
 
         m_file->write(qPrintable(texto));
     }
     else
     {
-        qDebug()<<"fichero mal";
+        //qDebug()<<"fichero mal";
     }
 }
 
@@ -83,7 +80,7 @@ void SerialMonitor::ReadData(QByteArray a_buffer)
     char    data[5];
     quint8 num;
 
-    qDebug() << "SerialMonitor::Readed is : " << a_buffer.count() << " bytes:";
+    //qDebug() << "SerialMonitor::Readed is : " << a_buffer.count() << " bytes:";
     for (qint32 i = 0; i < a_buffer.count(); i++)
     {
         qDebug() << a_buffer.data()[i];
