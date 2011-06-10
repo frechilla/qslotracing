@@ -70,11 +70,11 @@ void SnifferFileAscii::Start(int msec)
     if (m_timer.isActive())
     {
         m_timer.stop();
-
-        // restart all pointers  and variables to ensure the parsing
-        // process starts off the beginning of the files again
-        ResetParsing();
     }
+
+    // restart all pointers  and variables to ensure the parsing
+    // process starts off the beginning of the files again
+    ResetParsing();
 
     // start the timer!
     m_timer.start(msec);
@@ -107,6 +107,10 @@ void SnifferFileAscii::ReadByteFromFile()
         }
 
         m_currentOpenedFile = new QFile(*m_itFilename);
+
+        // Increment for next iteration
+        m_itFilename++;
+
         if (!m_currentOpenedFile->open(QIODevice::ReadOnly))
         {
             // could not open this file
@@ -117,24 +121,6 @@ void SnifferFileAscii::ReadByteFromFile()
         }
 
         m_openedFileStream = new QTextStream(m_currentOpenedFile);
-
-        // Increment for next iteration
-        m_itFilename++;
-
-        /*
-         This code is not needed since the loop will iterate over the files
-        m_itFilename++;
-        if (m_itFilename == m_filenameList.end())
-        {
-            qDebug() << "SnifferFileAscii: Hit the end of the filenames list";
-
-            if (m_timer.isActive())
-            {
-                m_timer.stop();
-            }
-            return;
-        }
-        */
 
     } // while
 

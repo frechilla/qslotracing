@@ -27,9 +27,10 @@ public:
 
     /// @brief starts (or restarts) the parsing of the data files requested
     /// It sets up a timer to which will be used to "sleep"
-    /// between each one the read bytes
-    /// If the timer was already started the parsing process will be stopped and restarted
-    /// from the beginning
+    /// between each one of the bytes read from file
+    /// WARNING: Each time this function is called the parsing process will start
+    /// from thje beginning. If the timer was already started the parsing process
+    /// will be stopped and restarted
     /// @param amount of milliseconds to sleep between each two consecutive parsed bytes
     void Start(int msec);
 
