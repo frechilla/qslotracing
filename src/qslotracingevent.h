@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QTime>
+#include <QtCore/QDebug>
 
 /// Types of events to be passed to upper-most layers
 typedef enum
@@ -222,6 +223,10 @@ public:
         {
             controller_data.valid = true;
 
+            if (a_playersIndex == e_QSlotRacingPlayer1)
+            {
+            }
+
             // Check lights ON/OFF
             if ((a_value & 0x20) == 0x20)
             {
@@ -248,6 +253,10 @@ public:
 
             // Get speed value
             controller_data.speed = (a_value & 0x0F);
+            if (a_playersIndex == e_QSlotRacingPlayer1)
+            {
+                qDebug()<<"sss("<<controller_data.speed<<")";
+            }
         }
         else
         {

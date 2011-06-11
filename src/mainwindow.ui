@@ -581,7 +581,17 @@
       </rect>
      </property>
      <property name="text">
-      <string>Configure</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="pics/tool.qrc">
+       <normaloff>:/pics/settings</normaloff>:/pics/settings</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>33</width>
+       <height>33</height>
+      </size>
      </property>
     </widget>
    </widget>
@@ -2085,6 +2095,19 @@
      </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="btnThread">
+    <property name="geometry">
+     <rect>
+      <x>915</x>
+      <y>520</y>
+      <width>96</width>
+      <height>66</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Test Thread</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -2092,7 +2115,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

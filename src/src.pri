@@ -9,7 +9,8 @@ SOURCES += src/main.cpp\
     src/snifferserial.cpp \
     src/serialmonitor.cpp \
     src/controllerdlg.cpp \
-    src/statsdialog.cpp
+    src/statsdialog.cpp \
+    src/serialthread.cpp
 
 HEADERS += src/mainwindow.h \
     src/qslotracingmsg.h \
@@ -26,7 +27,8 @@ HEADERS += src/mainwindow.h \
     src/controllerdlg.h \
     src/statsdialog.h   \
     src/atomic_ops.h \
-    src/qslotracingstatscounter.h
+    src/qslotracingstatscounter.h \
+    src/serialthread.h
 
 FORMS   += src/mainwindow.ui \
     src/configdialog.ui \

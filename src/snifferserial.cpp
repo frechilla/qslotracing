@@ -75,7 +75,7 @@ void SnifferSerial::OpenSerial()
     // 3. Third - open the device
     if (m_port->open(AbstractSerial::ReadWrite | AbstractSerial::Unbuffered))
     {
-        this->connect(m_port, SIGNAL(readyRead()), SLOT(slotRead()));
+        //this->connect(m_port, SIGNAL(readyRead()), SLOT(slotRead()));
 
         qDebug() << "Serial device " << m_port->deviceName() << " open in " << m_port->openMode();
 
@@ -184,10 +184,47 @@ void SnifferSerial::OpenSerial()
     }
 }
 
+void SnifferSerial::Read(int len, QByteArray &data)
+{
+    QByteArray ba;
+    int i;
+    char buf[20];
+    bool bytesRead;
+
+    // Initialization
+    memset(buf,0,20);
+    bytesRead = false;
+
+    while (bytesRead == false)
+    {
+        if ((m_port->bytesAvailable() > 0) ||  m_port->waitForReadyRead(1000)) {
+            data.clear();
+            data = m_port->read(len);
+            bytesRead = true;
+
+            /*
+            qDebug() << "Readed is : " << data.size() << " bytes";
+            for (i=0;i<data.size();i++)
+            {
+                buf[i] = data[i];
+            }
+            qDebug()<<buf;
+            */
+        }
+        else
+        {
+            qDebug() << "Timeout read data in time : " << QTime::currentTime();
+        }
+    }//while
+
+}
+
 void SnifferSerial::slotRead()
 {
     QByteArray ba;
     ba = m_port->readAll();
+
+    qDebug()<<"####["<<ba.size()<<"]";
 
     // send bytes read to upper layers
     emit(bytesRead(ba));

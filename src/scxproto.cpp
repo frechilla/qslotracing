@@ -55,6 +55,7 @@ SCXProtoAnalyzer::~SCXProtoAnalyzer()
 
 void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
 {
+    /*
     //TODO remove
     for (qint32 i = 0; i < a_msg->GetMsgSize(); i++)
     {
@@ -65,6 +66,7 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
 
     }
     std::cout << std::endl;
+    */
 
     // new message has arrived
     m_statCounters.Increment(eStatEntry_MsgTotal, 1);
@@ -95,35 +97,40 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     case e_SCXMsgTypeId:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeId, 1);
-        ProcessMsgId(pData, a_msg);
+        //ProcessMsgId(pData, a_msg);
+        qDebug()<<"2";
         break;
     }
 
     case e_SCXMsgTypeBusClearance:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeBusClearance, 1);
-        ProcessMsgBusClearance(pData, a_msg);
+        //ProcessMsgBusClearance(pData, a_msg);
+        qDebug()<<"3";
         break;
     }
 
     case e_SCXMsgTypeFinishLine:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeFinishLine, 1);
-        ProcessMsgFinishLine(pData, a_msg);
+        //ProcessMsgFinishLine(pData, a_msg);
+        qDebug()<<"4";
         break;
     }
 
     case e_SCXMsgTypeRanking:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeRanking, 1);
-        ProcessMsgRanking(pData, a_msg);
+//        ProcessMsgRanking(pData, a_msg);
+        qDebug()<<"5";
         break;
     }
 
     case e_SCXMsgTypeLapTime:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeLapTime, 1);
-        ProcessMsgLapTime(pData, a_msg);
+//        ProcessMsgLapTime(pData, a_msg);
+        qDebug()<<"6";
         break;
     }
 
@@ -137,28 +144,32 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     case e_SCXMsgTypeQualifying:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeQualifying, 1);
-        ProcessMsgQualifying(pData, a_msg);
+//        ProcessMsgQualifying(pData, a_msg);
+        qDebug()<<"8";
         break;
     }
 
     case e_SCXMsgTypeReset:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeReset, 1);
-        ProcessMsgReset(pData, a_msg);
+//        ProcessMsgReset(pData, a_msg);
+        qDebug()<<"9";
         break;
     }
 
     case e_SCXMsgTypeStart:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeStart, 1);
-        ProcessMsgStart(pData, a_msg);
+//        ProcessMsgStart(pData, a_msg);
+        qDebug()<<"10";
         break;
     }
 
     case e_SCXMsgTypeEnd:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeEnd, 1);
-        ProcessMsgEnd(pData, a_msg);
+//        ProcessMsgEnd(pData, a_msg);
+        qDebug()<<"11";
         break;
     }
 
@@ -172,23 +183,26 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     case e_SCXMsgTypeRefreshDisplay:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeRefreshDisplay, 1);
-        ProcessMsgRefreshDisplay(pData, a_msg);
+//        ProcessMsgRefreshDisplay(pData, a_msg);
+        qDebug()<<"13";
         break;
     }
 
     case e_SCXMsgTypeBrake:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeBrake, 1);
-        ProcessMsgBrake(pData, a_msg);
+//        ProcessMsgBrake(pData, a_msg);
+        qDebug()<<"14";
         break;
     }
 
 
     default:
         // unknown message. No further processing can be done
+        /*
         std::cout << "Unknown message type: "
                 << std::hex << static_cast<quint32>(*pData)<<std::endl;
-
+*/
         m_statCounters.Increment(eStatEntry_MsgBadType, 1);
         return;
     } // switch (*pData)
@@ -201,8 +215,6 @@ void SCXProtoAnalyzer::ProcessMsgController(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "Controller message";
 
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventController> event(
