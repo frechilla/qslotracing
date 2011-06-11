@@ -33,10 +33,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ConfigurePlayer5("", 0, -1);
     ConfigurePlayer6("", 0, -1);
 
+    // Configure serial device into serial thread
+    producer.SetSerialDevice(&m_serialSniffer);
+
 }
 
 MainWindow::~MainWindow()
 {
+    serialThread.exit(0);
     delete ui;
 }
 
@@ -54,20 +58,26 @@ void MainWindow::InitializeProtoStack()
 
     // SCXMsgFactory will be processing all bytes sniffed
     // by the sniffers (both serial and ascii)
+
+    /*
     m_msgFactory.connect(&m_serialSniffer,
                        SIGNAL(bytesRead(QByteArray)),
                        SLOT(Parse(QByteArray)));
+    */
 
+    // SCXMsgFactory will process all bytes snifferd from ascii file sniffer.
     m_msgFactory.connect(&m_asciiSniffer,
                        SIGNAL(bytesRead(QByteArray)),
                        SLOT(Parse(QByteArray)));
 
-
+/*
     // all sniffed bytes will also be notified into the serial monitor window
     // again, for both serial and ascii sniffers
     m_monitor.connect(&m_serialSniffer,
                       SIGNAL(bytesRead(QByteArray)),
                       SLOT(ReadData(QByteArray)));
+
+                      */
 
     m_monitor.connect(&m_asciiSniffer,
                       SIGNAL(bytesRead(QByteArray)),
@@ -85,13 +95,14 @@ void MainWindow::InitializeProtoStack()
                   SIGNAL(ProtoEvent(QSharedPointer<QSlotRacingEvent>)),
                   SLOT(ProcessEvent(QSharedPointer<QSlotRacingEvent>)));
 
-
+/*
     //TODO DEBUG code
     // serial sniffer is also connected to MainWindow::slotRead
     // it should be deleted at some point
     this->connect(&m_serialSniffer,
                   SIGNAL(bytesRead(QByteArray)),
                   SLOT(slotRead(QByteArray)));
+                  */
 }
 
 void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
@@ -300,6 +311,7 @@ void MainWindow::on_BtnConfigure_clicked()
         // Serial port initialization
         m_config.GetSerialPort(port);
         OpenSerialPort(port);
+
 
         // Get configuration data
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 1);
@@ -1739,6 +1751,8 @@ void MainWindow::OpenSerialPort(QString port)
     
     // Open it!
     m_serialSniffer.OpenSerial();
+
+//    m_serialSniffer.Read();
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -2366,4 +2380,39 @@ void MainWindow::UpdateLaps()
     ui->editLaps4->setText(text);
     ui->editLaps5->setText(text);
     ui->editLaps6->setText(text);
+}
+
+void MainWindow::consume(QByteArray *data)
+{
+    //qDebug()<<"consumir "<<data->size();
+    m_msgFactory.Parse(*data);
+    /* TODO: comprobar que lo que se hace en este consume es lo mismo que esto
+    m_msgFactory.connect(&m_serialSniffer,
+                       SIGNAL(bytesRead(QByteArray)),
+                       SLOT(Parse(QByteArray)));
+    */
+
+    //m_monitor.ReadData(*data);
+    /*
+    m_monitor.connect(&m_serialSniffer,
+                      SIGNAL(bytesRead(QByteArray)),
+                      SLOT(ReadData(QByteArray)));
+                      */
+}
+
+void MainWindow::on_btnThread_clicked()
+{
+    qDebug()<<"conectar con productor";;
+    this->connect(&producer, SIGNAL(DataRead(QByteArray*)),SLOT(consume(QByteArray*)));
+
+    qDebug()<<"generar thread";
+    producer.moveToThread(&serialThread);
+    qDebug()<<"corriendo...";
+
+    producer.connect(&serialThread,SIGNAL(started()),SLOT(gen_event()));
+    qDebug()<<"conectado y produciendo...";
+
+    serialThread.start();
+    //producer.connect(&producerThread,SIGNAL(finished()),SLOT(quit()));
+
 }

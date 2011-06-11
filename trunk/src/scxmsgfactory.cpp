@@ -1,3 +1,4 @@
+#include <QtCore/QDebug>
 #include "scxmsgfactory.h"
 
 #define SCX_PROTO_START_HEADER 0x55

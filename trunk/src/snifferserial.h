@@ -44,6 +44,10 @@ public:
     /// @brief sets flow control which will be used to open the serial interface
     void SetFlowControl(AbstractSerial::Flow a_flowControl);
     
+    /// @brief reads data from serial interface
+    /// @param number of bytes to be read
+    /// @param returned data read
+    void Read(int len, QByteArray &data);
 
     //TODO this is used exclusively for debug. Should be gone at some point
     void Write();

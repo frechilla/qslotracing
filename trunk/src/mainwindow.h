@@ -12,6 +12,7 @@
 #include "snifferfileascii.h"
 #include "scxmsgfactory.h"
 #include "scxproto.h"
+#include "serialthread.h"
 
 namespace Ui {
     class MainWindow;
@@ -56,6 +57,12 @@ private:
     ConfigDialog m_config;
     ControllerDlg m_controller;
     StatsDialog m_statsdlg;
+
+    /// Thread to encapsulate serial thread
+    SerialThread serialThread;
+
+    /// Serial producer thread
+    SerialEvent producer;
 
     /// Sniff data off the serial interface
     SnifferSerial m_serialSniffer;
@@ -128,6 +135,7 @@ private slots:
     /// events will be processed by the window and the GUI will be
     /// updated accordingly
     /// @param shared pointer wrapping the event
+    void on_btnThread_clicked();
     void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
 
     void on_BtnConfigure_clicked();
@@ -141,6 +149,8 @@ private slots:
     // TODO: remove?
     void on_pushButton_3_clicked();
     void on_pushButton_clicked();
+public slots:
+    void consume(QByteArray *data);
 };
 
 #endif // MAINWINDOW_H
