@@ -9,6 +9,9 @@
 //      Of these 3 bytes have a fixed meaning"
 #define SCX_PROTO_MAX_MSG_LENGTH 9
 
+// Minimun number of valid messages read before asserting communication
+#define MIN_VALID_MSGS          10
+
 /// @brief class which porpuse is parse data bytes to create new QSlotRacingMsg
 /// tries to separate the flow of input data into separate protocol units
 /// (QSlotRacinsgMsg) based on the SCX digital protocol as described in
@@ -54,6 +57,9 @@ private:
 
     /// @brief index where the next byte will be stored in the current SCX message
     quint32 m_currentMsgIndex;
+
+    /// @brief counter of valid messages read
+    quint8 m_nValidMessages;
 };
 
 #endif // SCXMSGFACTORY_H
