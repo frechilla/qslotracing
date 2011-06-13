@@ -200,7 +200,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         quint8 lapsBehind;
 
         // Get data from position 1
-        retValue = rankingEvent->GetRankingDataByCar(1, pos, moreThan15, carFlag, lapsBehind);
+        retValue = rankingEvent->GetRankingDataByCar(0, pos, moreThan15, carFlag, lapsBehind);
         //qDebug()<<"CAR 1: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
         //retValue = rankingEvent->GetRankingDataByPos(1, moreThan15, carFlag, lapsBehind, carId);
         //qDebug()<<"Pos 1: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
@@ -209,7 +209,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         UpdateCarPosition(1, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 2
-        retValue = rankingEvent->GetRankingDataByCar(2, pos, moreThan15, carFlag, lapsBehind);
+        retValue = rankingEvent->GetRankingDataByCar(1, pos, moreThan15, carFlag, lapsBehind);
         //qDebug()<<"CAR 2: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
         //retValue = rankingEvent->GetRankingDataByPos(2, moreThan15, carFlag, lapsBehind, carId);
         //qDebug()<<"Pos 2: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
@@ -218,7 +218,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         UpdateCarPosition(2, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 3
-        retValue = rankingEvent->GetRankingDataByCar(3, pos, moreThan15, carFlag, lapsBehind);
+        retValue = rankingEvent->GetRankingDataByCar(2, pos, moreThan15, carFlag, lapsBehind);
         //qDebug()<<"CAR 3: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
         //retValue = rankingEvent->GetRankingDataByPos(3, moreThan15, carFlag, lapsBehind, carId);
         //qDebug()<<"Pos 3: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
@@ -227,7 +227,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         UpdateCarPosition(3, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 4
-        retValue = rankingEvent->GetRankingDataByCar(4, pos, moreThan15, carFlag, lapsBehind);
+        retValue = rankingEvent->GetRankingDataByCar(3, pos, moreThan15, carFlag, lapsBehind);
         //qDebug()<<"CAR 4: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
         //retValue = rankingEvent->GetRankingDataByPos(4, moreThan15, carFlag, lapsBehind, carId);
         //qDebug()<<"Pos 4: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
@@ -236,7 +236,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         UpdateCarPosition(4, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 5
-        retValue = rankingEvent->GetRankingDataByCar(5, pos, moreThan15, carFlag, lapsBehind);
+        retValue = rankingEvent->GetRankingDataByCar(4, pos, moreThan15, carFlag, lapsBehind);
         //qDebug()<<"CAR 5: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
         //retValue = rankingEvent->GetRankingDataByPos(5, moreThan15, carFlag, lapsBehind, carId);
         //qDebug()<<"Pos 5: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
@@ -245,7 +245,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         UpdateCarPosition(5, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 6
-        retValue = rankingEvent->GetRankingDataByCar(6, pos, moreThan15, carFlag, lapsBehind);
+        retValue = rankingEvent->GetRankingDataByCar(5, pos, moreThan15, carFlag, lapsBehind);
         //qDebug()<<"CAR 6: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
         //retValue = rankingEvent->GetRankingDataByPos(6, moreThan15, carFlag, lapsBehind, carId);
         //qDebug()<<"Pos 6: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
@@ -271,13 +271,67 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
     }
     case e_QSlotRacingEvent_Lap:
     {
-        QSharedPointer<QSlotRacingEventLapCounter> lapCounterEvent =
-                a_event.staticCast<QSlotRacingEventLapCounter>();
+        QSharedPointer<QSlotRacingEventLap> lapEvent =
+                a_event.staticCast<QSlotRacingEventLap>();
 
-        //quint8  retValue;
+        QSlotRacingPlayer_t   player;
+        qint32                crossings;
+        quint32               time;
+        QString               text;
+        char                  data[10];
 
-        // Get event laps
-        //retValue = lapCounterEvent->GetLapCounterData(m_CountingDir, m_LapsCounter);
+        // Initialization
+        memset(data, 0, 10);
+
+        // Get event data
+        player = lapEvent->GetWho();
+        crossings = lapEvent->GetCrossingTimes();
+        time = lapEvent->GetLapMillis();
+
+        // Format string
+        sprintf(data, "%d/%d", crossings,m_LapsCounter);
+        text = QString::fromLocal8Bit(data);
+
+        switch(player)
+        {
+        case e_QSlotRacingPlayer1:
+            {
+                ui->editLaps1->setText(text);
+                break;
+            }
+        case e_QSlotRacingPlayer2:
+            {
+                ui->editLaps2->setText(text);
+                break;
+            }
+        case e_QSlotRacingPlayer3:
+            {
+                ui->editLaps3->setText(text);
+                break;
+            }
+        case e_QSlotRacingPlayer4:
+            {
+                ui->editLaps4->setText(text);
+                break;
+            }
+        case e_QSlotRacingPlayer5:
+            {
+                ui->editLaps5->setText(text);
+                break;
+            }
+        case e_QSlotRacingPlayer6:
+            {
+                ui->editLaps6->setText(text);
+                break;
+            }
+        case e_QSlotRacingNoPlayer:
+        default:
+            {
+                // do nothing
+                break;
+            }
+        }
+
 
         break;
     }
