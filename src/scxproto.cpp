@@ -121,16 +121,14 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     case e_SCXMsgTypeRanking:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeRanking, 1);
-//        ProcessMsgRanking(pData, a_msg);
-        qDebug()<<"5";
+        ProcessMsgRanking(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeLapTime:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeLapTime, 1);
-//        ProcessMsgLapTime(pData, a_msg);
-        qDebug()<<"6";
+        ProcessMsgLapTime(pData, a_msg);
         break;
     }
 
