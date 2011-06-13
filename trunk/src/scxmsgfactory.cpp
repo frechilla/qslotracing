@@ -21,6 +21,9 @@ SCXMsgFactory::SCXMsgFactory(QObject *parent) :
                                  QString("BytesDiscarded"));
     m_statCounters.SetEntryTitle(eStatEntry_BytesTotal,
                                  QString("BytesTotal"));
+
+    // Initialize number of valid messages to be read
+    m_nValidMessages = 0;
 }
 
 SCXMsgFactory::~SCXMsgFactory()
@@ -46,6 +49,9 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
             {
                 // a msg MUST start with SCX_PROTO_START_HEADER
                 m_statCounters.Increment(eStatEntry_BytesDiscarded, 1);
+
+                // Restart valid messages count
+                m_nValidMessages = 0;
             }
         }
         else
@@ -67,6 +73,18 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
 
             // send this new message somewhere beyond the sea...
             emit MsgParsed(newSlotRacingMsg);
+
+            // Check and increment the number of valid messages read
+            if (m_nValidMessages < MIN_VALID_MSGS)
+            {
+                // Increment number of valid messages
+                m_nValidMessages++;
+            }
+            else if (m_nValidMessages == MIN_VALID_MSGS)
+            {
+                // emit signal
+                emit ProtocolSynced();
+            }
         }        
     }
 }

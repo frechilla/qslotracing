@@ -187,7 +187,6 @@ void SnifferSerial::OpenSerial()
 void SnifferSerial::Read(int len, QByteArray &data)
 {
     QByteArray ba;
-    int i;
     char buf[20];
     bool bytesRead;
 

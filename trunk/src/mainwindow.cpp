@@ -36,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Configure serial device into serial thread
     producer.SetSerialDevice(&m_serialSniffer);
 
+    // Initialize status frame
+    InitStatusFrame();
 }
 
 MainWindow::~MainWindow()
@@ -349,6 +351,9 @@ void MainWindow::on_BtnConfigure_clicked()
 
         // Configure players
         ConfigurePlayer6(PlayerName, PlayerFlag, PlayerCar);
+
+        // Update race status
+        UpdateRaceStatus(1);
     }
     else
     {
@@ -2405,6 +2410,8 @@ void MainWindow::on_btnThread_clicked()
     qDebug()<<"conectar con productor";;
     this->connect(&producer, SIGNAL(DataRead(QByteArray*)),SLOT(consume(QByteArray*)));
 
+    m_msgFactory.connect(&producer, SIGNAL(DataRead(QByteArray*)),SLOT(Parse(QByteArray*)));
+
     qDebug()<<"generar thread";
     producer.moveToThread(&serialThread);
     qDebug()<<"corriendo...";
@@ -2415,4 +2422,43 @@ void MainWindow::on_btnThread_clicked()
     serialThread.start();
     //producer.connect(&producerThread,SIGNAL(finished()),SLOT(quit()));
 
+}
+
+void MainWindow::InitStatusFrame()
+{
+    // Initialize synchro status
+    ui->labelSynchro->setPixmap(QPixmap(QString::fromUtf8(":/pics/red_ball")));
+
+    // Initialize race status
+    ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/settings_status")));
+}
+
+void MainWindow::UpdateSynchroStatus(bool bSynchro)
+{
+    // Check synchro status flag
+    if (bSynchro == true)
+    {
+        // Update to green status
+        ui->labelSynchro->setPixmap(QPixmap(QString::fromUtf8(":/pics/green_ball")));
+    }
+    else
+    {
+        // Update to red status
+        ui->labelSynchro->setPixmap(QPixmap(QString::fromUtf8(":/pics/red_ball")));
+    }
+}
+
+void MainWindow::UpdateRaceStatus(int status)
+{
+    // Check race status
+    if (status == 0)
+    {
+        // Waiting for configuration status
+        ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/settings_status")));
+    }
+    else if (status == 1)
+    {
+        // Waiting for race status
+        ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/race_flag_status")));
+    }
 }

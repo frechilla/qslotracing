@@ -50,6 +50,11 @@ public:
     void SetController5(bool lights, bool lane_change, quint8 speed);
     void SetController6(bool lights, bool lane_change, quint8 speed);
 
+    /// @brief update syncrho status
+    void UpdateSynchroStatus(bool bSynchro);
+
+    /// @brief update race status
+    void UpdateRaceStatus(int status);
 private:
     // Member variables
     Ui::MainWindow *ui;
@@ -128,7 +133,11 @@ private:
 
     void UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool moreThan15, quint8 lapsBehind);
 
+    /// @brief update laps showed in window
     void UpdateLaps();
+
+    /// @brief initializes status frame withing window
+    void InitStatusFrame();
 
 private slots:
     /// @brief entry point for events
