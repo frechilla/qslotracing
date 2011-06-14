@@ -6,6 +6,7 @@
 55 D6 78 88 88 00 50 AA 00 05 # fuel: car 1 7/8
 55 D5 FF 00 00 05 FF FF 00 05 # Lap counter packet: 5 laps, counting down
 55 D3 82 84 81 FF FF FF FF 05 # ranking packet
+55 D4 01 00 10 01 00 C8 9F 05 # Lap event packet
 55 D6 68 85 48 00 50 AA 00 05 # fuel: car 1 6/8. Car 4 5/8. Car 5 4/8
 55 D6 58 85 38 00 50 AA 00 05 # fuel: car 1 5/8. Car 4 5/8. Car 5 3/8
 55 D3 82 81 84 FF FF FF FF 05 # ranking packet

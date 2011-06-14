@@ -276,7 +276,12 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         qint32                crossings;
         quint32               time;
         QString               text;
+        QString               timelap;
         char                  data[10];
+        char                  datatime[10];
+        quint8                mins;
+        quint8                secs;
+        quint8                ms;
 
         // Initialization
         memset(data, 0, 10);
@@ -286,40 +291,89 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         crossings = lapEvent->GetCrossingTimes();
         time = lapEvent->GetLapMillis();
 
-        // Format string
+        // Calculate mins
+        mins = time / 60000;
+
+        if (mins > 0)
+        {
+            time = time - (60000 * mins);
+        }
+
+        // Calculate secs
+        secs = time / 1000;
+
+        if (secs > 0)
+        {
+            time = time - (secs * 1000);
+        }
+
+        // Calculate ms
+        ms = time;
+
+        // Format crossings string
+        crossings = crossings - 1; // Initial crossing must not be counted
         sprintf(data, "%d/%d", crossings,m_LapsCounter);
         text = QString::fromLocal8Bit(data);
+
+        // Check best time for player
+
+        sprintf(datatime, "%02d:%02d:%02d", mins, secs, ms);
+        timelap = QString::fromLocal8Bit(datatime);
 
         switch(player)
         {
         case e_QSlotRacingPlayer1:
             {
+                // Set laps counter display
                 ui->editLaps1->setText(text);
+
+                // Set lap time data
+                ui->labelTime1->setText(timelap);
                 break;
             }
         case e_QSlotRacingPlayer2:
             {
+                // Set laps counter display
                 ui->editLaps2->setText(text);
+
+                // Set lap time data
+                ui->labelTime2->setText(timelap);
                 break;
             }
         case e_QSlotRacingPlayer3:
             {
+                // Set laps counter display
                 ui->editLaps3->setText(text);
+
+                // Set lap time data
+                ui->labelTime3->setText(timelap);
                 break;
             }
         case e_QSlotRacingPlayer4:
             {
+                // Set laps counter display
                 ui->editLaps4->setText(text);
+
+                // Set lap time data
+                ui->labelTime4->setText(timelap);
                 break;
             }
         case e_QSlotRacingPlayer5:
             {
+                // Set laps counter display
                 ui->editLaps5->setText(text);
+
+                // Set lap time data
+                ui->labelTime5->setText(timelap);
                 break;
             }
         case e_QSlotRacingPlayer6:
             {
+                // Set laps counter display
                 ui->editLaps6->setText(text);
+
+                // Set lap time data
+                ui->labelTime6->setText(timelap);
                 break;
             }
         case e_QSlotRacingNoPlayer:
