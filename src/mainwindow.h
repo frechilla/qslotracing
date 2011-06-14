@@ -49,14 +49,13 @@ public:
     void SetController5(bool lights, bool lane_change, quint8 speed);
     void SetController6(bool lights, bool lane_change, quint8 speed);
 
-    /// @brief update syncrho status
-    void UpdateSynchroStatus(bool bSynchro);
-
     /// @brief update race status
     void UpdateRaceStatus(int status);
 private:
 
-    typedef QVector< std::pair<QSlotRacingPlayer_t, quint32> > PlayersTimeContainerType_t;
+    typedef QVector<quint32>  PlayersTimeContainerType_t;
+    typedef QList<quint32> PlayersTimesType_t;
+
 
     // Member variables
     Ui::MainWindow *ui;
@@ -77,6 +76,18 @@ private:
 
     /// SCX protocol analyzer. Takes in QSlotRacingMsg's and create QSlotRacingEvent's
     SCXProtoAnalyzer m_scxAnalyzer;
+
+    PlayersTimeContainerType_t m_PlayersBestTimes;
+
+    PlayersTimesType_t m_Player1RaceTimes;
+    PlayersTimesType_t m_Player2RaceTimes;
+    PlayersTimesType_t m_Player3RaceTimes;
+    PlayersTimesType_t m_Player4RaceTimes;
+    PlayersTimesType_t m_Player5RaceTimes;
+    PlayersTimesType_t m_Player6RaceTimes;
+
+    quint32 m_BestRaceLapTime;
+
 
     // Laps counting direction
     quint8 m_CountingDir;
@@ -135,6 +146,25 @@ private:
     /// @brief initializes status frame withing window
     void InitStatusFrame();
 
+    /// @brief Format a string from a given time in milliseconds
+    /// @param Returned formated string
+    /// @param Provided time in milliseconds
+    void GetStringFromTime(QString &timestr, quint32 time);
+
+    /// @brief Check if provided time is the best partial time for player
+    /// @param Current player
+    /// @param Provided time
+    bool IsBestOwnTime(QSlotRacingPlayer_t player, quint32 time);
+
+    /// @brief Check if provided time is the best partial time for player
+    /// @param Current player
+    /// @param Provided time
+    bool IsFasterLap(QSlotRacingPlayer_t player, quint32 time);
+
+    /// @brief Check if provided time is the best race lap time
+    /// @param Provided time
+    bool IsBestLapTime(quint32 time);
+
 private slots:
     /// @brief entry point for events
     /// events will be processed by the window and the GUI will be
@@ -142,6 +172,9 @@ private slots:
     /// @param shared pointer wrapping the event
     void on_btnThread_clicked();
     void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
+
+    /// @brief update syncrho status
+    void UpdateSynchroStatus(bool bSynchro);
 
     void on_BtnConfigure_clicked();
     void on_btnStats_clicked();

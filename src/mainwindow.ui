@@ -2222,8 +2222,7 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(42, 171, 13);
-color: rgb(255, 255, 255);</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>00:00:00</string>
@@ -2356,8 +2355,7 @@ color: rgb(255, 255, 255);</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(229, 2, 188);
-color: rgb(255, 255, 255);</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>00:00:00</string>

@@ -14,7 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_serialSniffer(parent),
     m_asciiSniffer(parent),
     m_msgFactory(parent),
-    m_scxAnalyzer(parent)
+    m_scxAnalyzer(parent),
+    m_PlayersBestTimes(6)
 {
     ui->setupUi(this);
     setStyleSheet("QProgressBar:horizontal {border: 1px solid gray;border-radius: 3px;background: black;padding: 1px;text-align: right;margin-right: 10ex; }QProgressBar::chunk:horizontal {background: qlineargradient(x1: 0, y1: 0.5, x2: 3, y2: 0.5, stop: 0 lightgreen, stop: 1 black); margin-right: 2px; /* space */ width: 10px; }");
@@ -35,6 +36,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Initialize status frame
     InitStatusFrame();
+
+    // Initialization to 1 hour
+    qDebug()<<"inicializar vector";
+    m_PlayersBestTimes[0] = 3600000;
+    m_PlayersBestTimes[1] = 3600000;
+    m_PlayersBestTimes[2] = 3600000;
+    m_PlayersBestTimes[3] = 3600000;
+    m_PlayersBestTimes[4] = 3600000;
+    m_PlayersBestTimes[5] = 3600000;
+
+    // Initialize best race lap time
+    m_BestRaceLapTime = 3600000;
 }
 
 MainWindow::~MainWindow()
@@ -94,6 +107,11 @@ void MainWindow::InitializeProtoStack()
     this->connect(&m_scxAnalyzer,
                   SIGNAL(ProtoEvent(QSharedPointer<QSlotRacingEvent>)),
                   SLOT(ProcessEvent(QSharedPointer<QSlotRacingEvent>)));
+
+    // Event of protocol synced
+    this->connect(&m_msgFactory,
+                  SIGNAL(ProtocolSynced(bool)),
+                  SLOT(UpdateSynchroStatus(bool)));
 
 /*
     //TODO DEBUG code
@@ -199,54 +217,36 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
         // Get data from position 1
         retValue = rankingEvent->GetRankingDataByCar(0, pos, moreThan15, carFlag, lapsBehind);
-        //qDebug()<<"CAR 1: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
-        //retValue = rankingEvent->GetRankingDataByPos(1, moreThan15, carFlag, lapsBehind, carId);
-        //qDebug()<<"Pos 1: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
 
         // Update position from retrieved carId
         UpdateCarPosition(1, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 2
         retValue = rankingEvent->GetRankingDataByCar(1, pos, moreThan15, carFlag, lapsBehind);
-        //qDebug()<<"CAR 2: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
-        //retValue = rankingEvent->GetRankingDataByPos(2, moreThan15, carFlag, lapsBehind, carId);
-        //qDebug()<<"Pos 2: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
 
         // Update position from retrieved carId
         UpdateCarPosition(2, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 3
         retValue = rankingEvent->GetRankingDataByCar(2, pos, moreThan15, carFlag, lapsBehind);
-        //qDebug()<<"CAR 3: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
-        //retValue = rankingEvent->GetRankingDataByPos(3, moreThan15, carFlag, lapsBehind, carId);
-        //qDebug()<<"Pos 3: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
 
         // Update position from retrieved carId
         UpdateCarPosition(3, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 4
         retValue = rankingEvent->GetRankingDataByCar(3, pos, moreThan15, carFlag, lapsBehind);
-        //qDebug()<<"CAR 4: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
-        //retValue = rankingEvent->GetRankingDataByPos(4, moreThan15, carFlag, lapsBehind, carId);
-        //qDebug()<<"Pos 4: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
 
         // Update position from retrieved carId
         UpdateCarPosition(4, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 5
         retValue = rankingEvent->GetRankingDataByCar(4, pos, moreThan15, carFlag, lapsBehind);
-        //qDebug()<<"CAR 5: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
-        //retValue = rankingEvent->GetRankingDataByPos(5, moreThan15, carFlag, lapsBehind, carId);
-        //qDebug()<<"Pos 5: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
 
         // Update position from retrieved carId
         UpdateCarPosition(5, pos, carFlag, moreThan15, lapsBehind);
 
         // Get data from position 6
         retValue = rankingEvent->GetRankingDataByCar(5, pos, moreThan15, carFlag, lapsBehind);
-        //qDebug()<<"CAR 6: "<<pos<<" "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind;
-        //retValue = rankingEvent->GetRankingDataByPos(6, moreThan15, carFlag, lapsBehind, carId);
-        //qDebug()<<"Pos 6: "<<moreThan15<<" "<<carFlag<<" "<<lapsBehind<<" "<<carId;
 
         // Update position from retrieved carId
         UpdateCarPosition(6, pos, carFlag, moreThan15, lapsBehind);
@@ -277,49 +277,36 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         quint32               time;
         QString               text;
         QString               timelap;
-        char                  data[10];
-        char                  datatime[10];
-        quint8                mins;
-        quint8                secs;
-        quint8                ms;
+        char                  data[20];
+        bool                  bestOwnTime;
+        bool                  bestRaceLapTime;
 
         // Initialization
-        memset(data, 0, 10);
+        memset(data, 0, 20);
+        bestOwnTime = false;
+        bestRaceLapTime = false;
 
         // Get event data
         player = lapEvent->GetWho();
         crossings = lapEvent->GetCrossingTimes();
         time = lapEvent->GetLapMillis();
 
-        // Calculate mins
-        mins = time / 60000;
-
-        if (mins > 0)
-        {
-            time = time - (60000 * mins);
-        }
-
-        // Calculate secs
-        secs = time / 1000;
-
-        if (secs > 0)
-        {
-            time = time - (secs * 1000);
-        }
-
-        // Calculate ms
-        ms = time;
 
         // Format crossings string
         crossings = crossings - 1; // Initial crossing must not be counted
         sprintf(data, "%d/%d", crossings,m_LapsCounter);
         text = QString::fromLocal8Bit(data);
 
-        // Check best time for player
+        // Check best time for current player
+        bestOwnTime = IsBestOwnTime(player, time);
 
-        sprintf(datatime, "%02d:%02d:%02d", mins, secs, ms);
-        timelap = QString::fromLocal8Bit(datatime);
+        // Format time string
+        GetStringFromTime(timelap, time);
 
+        // Check best lap time of race
+        bestRaceLapTime = IsBestLapTime(time);
+
+// el otro color violeta (229,2,188)
         switch(player)
         {
         case e_QSlotRacingPlayer1:
@@ -328,6 +315,15 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 ui->editLaps1->setText(text);
 
                 // Set lap time data
+                if (bestOwnTime == true)
+                {
+                    // Set background color green, text color white
+                    ui->labelTime1->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    ui->labelTime1->setStyleSheet("");
+                }
                 ui->labelTime1->setText(timelap);
                 break;
             }
@@ -337,6 +333,15 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 ui->editLaps2->setText(text);
 
                 // Set lap time data
+                if (bestOwnTime == true)
+                {
+                    // Set background color green, text color white
+                    ui->labelTime2->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    ui->labelTime2->setStyleSheet("");
+                }
                 ui->labelTime2->setText(timelap);
                 break;
             }
@@ -346,6 +351,15 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 ui->editLaps3->setText(text);
 
                 // Set lap time data
+                if (bestOwnTime == true)
+                {
+                    // Set background color green, text color white
+                    ui->labelTime3->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    ui->labelTime3->setStyleSheet("");
+                }
                 ui->labelTime3->setText(timelap);
                 break;
             }
@@ -355,6 +369,15 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 ui->editLaps4->setText(text);
 
                 // Set lap time data
+                if (bestOwnTime == true)
+                {
+                    // Set background color green, text color white
+                    ui->labelTime4->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    ui->labelTime4->setStyleSheet("");
+                }
                 ui->labelTime4->setText(timelap);
                 break;
             }
@@ -364,6 +387,15 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 ui->editLaps5->setText(text);
 
                 // Set lap time data
+                if (bestOwnTime == true)
+                {
+                    // Set background color green, text color white
+                    ui->labelTime5->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    ui->labelTime5->setStyleSheet("");
+                }
                 ui->labelTime5->setText(timelap);
                 break;
             }
@@ -373,6 +405,15 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 ui->editLaps6->setText(text);
 
                 // Set lap time data
+                if (bestOwnTime == true)
+                {
+                    // Set background color green, text color white
+                    ui->labelTime6->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    ui->labelTime6->setStyleSheet("");
+                }
                 ui->labelTime6->setText(timelap);
                 break;
             }
@@ -2546,11 +2587,13 @@ void MainWindow::UpdateSynchroStatus(bool bSynchro)
     // Check synchro status flag
     if (bSynchro == true)
     {
+        qDebug()<<"poner verde";
         // Update to green status
         ui->labelSynchro->setPixmap(QPixmap(QString::fromUtf8(":/pics/green_ball")));
     }
     else
     {
+        qDebug()<<"poner rojo";
         // Update to red status
         ui->labelSynchro->setPixmap(QPixmap(QString::fromUtf8(":/pics/red_ball")));
     }
@@ -2569,4 +2612,86 @@ void MainWindow::UpdateRaceStatus(int status)
         // Waiting for race status
         ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/race_flag_status")));
     }
+}
+
+void MainWindow::GetStringFromTime(QString &timestr, quint32 time)
+{
+    quint8    mins;
+    quint8    secs;
+    quint8    ms;
+    char      datatime[50];
+
+    // Initialization
+    mins = 0;
+    secs = 0;
+    ms = 0;
+    memset(datatime, 0, 50);
+
+    // Calculate mins
+    mins = time / 60000;
+
+    if (mins > 0)
+    {
+        time = time - (60000 * mins);
+    }
+
+    // Calculate secs
+    secs = time / 1000;
+
+    if (secs > 0)
+    {
+        time = time - (secs * 1000);
+    }
+
+    // Calculate ms
+    ms = time;
+
+    sprintf(datatime, "%02d:%02d.%02d", mins, secs, ms);
+    timestr = QString::fromLocal8Bit(datatime);
+}
+
+bool MainWindow::IsBestOwnTime(QSlotRacingPlayer_t player, quint32 time)
+{
+    quint32    storedtime;
+    bool       bRet;
+
+    // Initialization
+    bRet = false;
+
+    // Check time
+    storedtime = m_PlayersBestTimes[player];
+
+    if (time < storedtime)
+    {
+        // New best time for player. Store it and return true
+        m_PlayersBestTimes[player] = time;
+        bRet = true;
+    }
+    else
+    {
+        // do nothing
+    }
+
+    return bRet;
+}
+
+bool MainWindow::IsBestLapTime(quint32 time)
+{
+    bool    bRet;
+
+    // Initialization
+    bRet = false;
+
+    if (time < m_BestRaceLapTime)
+    {
+        // New best race lap time
+        m_BestRaceLapTime = time;
+        bRet = true;
+    }
+    else
+    {
+        // Do nothing
+    }
+
+    return bRet;
 }
