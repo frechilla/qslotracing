@@ -1,7 +1,16 @@
 #include "snifferserial.h"
+#include <QMutex>
+#include <QWaitCondition>
+
+#define READFOREVER_BUFFER_LEN 10
+#define READFOREVER_WAIT_MSEC  250
 
 SnifferSerial::SnifferSerial(QObject *parent) :
     QObject(parent),
+    m_workerThread(parent),
+    m_snifferOn(false),
+    m_threadAlive(true),
+    m_interfaceOpened(false),
     m_port(0),
     m_interfaceName(""),
     m_baudRate(AbstractSerial::BaudRateUndefined),
@@ -14,6 +23,14 @@ SnifferSerial::SnifferSerial(QObject *parent) :
     // add PrintBuffer to the list of slots
     this->connect(this, SIGNAL(bytesRead(QByteArray)), SLOT(PrintBuffer(QByteArray)));
 #endif
+
+    // this object is going to sniff using a different thread
+    // set that up before doing anything else
+    this->connect(&m_workerThread, SIGNAL(started()), SLOT(ReadForever()));
+    this->moveToThread(&m_workerThread);
+
+    // start the thread now so it is ready to sniff
+    m_workerThread.start();
 }
 
 SnifferSerial::~SnifferSerial()
@@ -75,7 +92,8 @@ void SnifferSerial::OpenSerial()
     // 3. Third - open the device
     if (m_port->open(AbstractSerial::ReadWrite | AbstractSerial::Unbuffered))
     {
-        //this->connect(m_port, SIGNAL(readyRead()), SLOT(slotRead()));
+        // Connect for event driven serial port read
+        //this->connect(m_port, SIGNAL(readyRead()), SLOT(SlotRead()));
 
         qDebug() << "Serial device " << m_port->deviceName() << " open in " << m_port->openMode();
 
@@ -169,6 +187,9 @@ void SnifferSerial::OpenSerial()
         }
 #endif
 
+        // notify the thread we have a valid serial interface opened
+        m_interfaceOpened = true;
+
         //Here, the new set parameters (for example)
         qDebug() << "= New parameters =";
         qDebug() << "Device name            : " << m_port->deviceName();
@@ -184,41 +205,63 @@ void SnifferSerial::OpenSerial()
     }
 }
 
-void SnifferSerial::Read(int len, QByteArray &data)
+void SnifferSerial::Pause()
 {
-    QByteArray ba;
-    char buf[20];
-    bool bytesRead;
+    // atomically set snifferOn to false
+    m_snifferOn = false;
+}
 
-    // Initialization
-    memset(buf,0,20);
-    bytesRead = false;
+void SnifferSerial::Resume()
+{
+    // atomically set snifferOn to true
+    m_snifferOn = true;
+}
 
-    while (bytesRead == false)
+void SnifferSerial::Join()
+{
+    // Tell the worker thread to kill itself by atomically
+    // setting the threadAlive variable to false
+    m_threadAlive = false;
+
+    // tell the worker thread to exit the QT event loop
+    m_workerThread.exit();
+
+    // wait now until the thread is dead
+    m_workerThread.wait();
+}
+
+void SnifferSerial::ReadForever()
+{
+    //TODO hacky way to sleep
+    QMutex mutex;
+    QWaitCondition sleep;
+
+    while (m_threadAlive)
     {
-        if ((m_port->bytesAvailable() > 0) ||  m_port->waitForReadyRead(1000)) {
-            data.clear();
-            data = m_port->read(len);
-            bytesRead = true;
-
-            /*
-            qDebug() << "Readed is : " << data.size() << " bytes";
-            for (i=0;i<data.size();i++)
+        if (m_interfaceOpened && m_snifferOn && m_port)
+        {
+            if ((m_port->bytesAvailable() > 0) ||
+                 m_port->waitForReadyRead(READFOREVER_WAIT_MSEC))
             {
-                buf[i] = data[i];
+                QByteArray data(READFOREVER_BUFFER_LEN + 1, '\0');
+                data = m_port->read(READFOREVER_BUFFER_LEN);
+
+                emit DataRead(data);
             }
-            qDebug()<<buf;
-            */
         }
         else
         {
-            qDebug() << "Timeout read data in time : " << QTime::currentTime();
+            //TODO hacky way to sleep.
+            // Proper way would be to extend this class from QThread
+            // sleep for READFOREVER_WAIT_MSEC ms
+            mutex.lock();
+            sleep.wait(&mutex, READFOREVER_WAIT_MSEC);
+            mutex.unlock();
         }
-    }//while
-
+    }
 }
 
-void SnifferSerial::slotRead()
+void SnifferSerial::SlotRead()
 {
     QByteArray ba;
     ba = m_port->readAll();
@@ -226,7 +269,7 @@ void SnifferSerial::slotRead()
     qDebug()<<"####["<<ba.size()<<"]";
 
     // send bytes read to upper layers
-    emit(bytesRead(ba));
+    emit(DataRead(ba));
 }
 
 void SnifferSerial::PrintBuffer(QByteArray ba)

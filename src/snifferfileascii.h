@@ -86,7 +86,7 @@ private:
 
 
 signals:
-    void bytesRead(QByteArray ba);
+    void DataRead(QByteArray ba);
 
 private slots:
     /// @brief reads the next byte off the file and issues a bytesRead signal

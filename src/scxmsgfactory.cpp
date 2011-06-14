@@ -1,7 +1,14 @@
 #include <QtCore/QDebug>
 #include "scxmsgfactory.h"
 
+// SCX proto header. All SCX messages start with this byte
 #define SCX_PROTO_START_HEADER 0x55
+
+// undef this variable if there is no trailer at the end of each message
+#define SCX_PROTO_TRAILER      0x05
+
+// Minimun number of valid messages read before asserting communication
+#define MIN_VALID_MSGS          10
 
 SCXMsgFactory::SCXMsgFactory(QObject *parent) :
         QSlotRacingMsgFactory(parent),
@@ -45,6 +52,13 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
                 m_currentMsg[m_currentMsgIndex++] = a_dataBuffer.at(i);
                 m_statCounters.Increment(eStatEntry_BytesProcessedOK, 1);
             }
+#ifdef SCX_PROTO_TRAILER
+            else if (a_dataBuffer.at(i) == SCX_PROTO_TRAILER)
+            {
+                // Do not do anything. Just consume this byte
+                // so the valid messages count is not restarted
+            }
+#endif
             else
             {
                 // a msg MUST start with SCX_PROTO_START_HEADER
