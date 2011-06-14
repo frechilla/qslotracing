@@ -179,21 +179,6 @@ private:
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
 
-    // CRC calculation functions
-
-    /// @brief This method creates the table for CRC
-    /// calculation
-    void BuildTableCRC();
-
-    /// @brief This method calculates the CRC of the
-    /// provided buffer
-    /// @param input buffer for CRC calculation
-    /// @param number of bytes of buffer
-    unsigned char Crc(unsigned char* buffer, int count);
-
-    /// @brief CRC table for calculation
-    unsigned char crcTable[256];
-
 signals:
     void ProtoEvent(QSharedPointer<QSlotRacingEvent>);
 

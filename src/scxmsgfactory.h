@@ -7,7 +7,10 @@
 // from http://eng.slotbaer.de/SCX/DatProt.html
 //     "each datpacket consits of 9 bytes.
 //      Of these 3 bytes have a fixed meaning"
-#define SCX_PROTO_MAX_MSG_LENGTH 9
+#define SCX_PROTO_MSG_LENGTH 9
+
+// just 1 byte is used as CRC
+#define SCX_PROTO_CRC_LENGTH 1
 
 
 /// @brief class which porpuse is parse data bytes to create new QSlotRacingMsg
@@ -23,6 +26,7 @@ public:
         eStatEntry_BytesProcessedOK = 0, // first enum element MUST be set to 0
         eStatEntry_BytesDiscarded,
         eStatEntry_BytesTotal,
+        eStatEntry_BadCRC,
         
         eStatEntry_Count // this value MUST be at the end of the enum
     } eStatEntries_t;
@@ -51,13 +55,28 @@ private:
     SCXMsgFactoryStatCounter_t m_statCounters;
     
     /// @brief current SCX message
-    quint8 m_currentMsg[SCX_PROTO_MAX_MSG_LENGTH];
+    quint8 m_currentMsg[SCX_PROTO_MSG_LENGTH];
 
     /// @brief index where the next byte will be stored in the current SCX message
     quint32 m_currentMsgIndex;
 
     /// @brief counter of valid messages read
     quint8 m_nValidMessages;
+
+
+    // CRC calculation functions
+    // see http://eng.slotbaer.de/SCX/DatProt.html
+
+    /// @brief This method creates the table for CRC calculation
+    void BuildTableCRC();
+
+    /// @brief This method calculates the CRC of the provided buffer
+    /// @param input buffer for CRC calculation
+    /// @param number of bytes of buffer
+    unsigned char CalculateCRC(unsigned char* buffer, int count);
+
+    /// @brief CRC table for calculation
+    unsigned char m_crcTable[256];
 };
 
 #endif // SCXMSGFACTORY_H
