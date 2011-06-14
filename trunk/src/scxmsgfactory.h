@@ -26,7 +26,8 @@ public:
         eStatEntry_BytesProcessedOK = 0, // first enum element MUST be set to 0
         eStatEntry_BytesDiscarded,
         eStatEntry_BytesTotal,
-        eStatEntry_BadCRC,
+        eStatEntry_MsgDispatched,
+        eStatEntry_MsgBadCRC,
         
         eStatEntry_Count // this value MUST be at the end of the enum
     } eStatEntries_t;

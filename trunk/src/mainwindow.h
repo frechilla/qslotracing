@@ -77,6 +77,9 @@ private:
     /// SCX protocol analyzer. Takes in QSlotRacingMsg's and create QSlotRacingEvent's
     SCXProtoAnalyzer m_scxAnalyzer;
 
+    /// timer to print out stats
+    QTimer m_statsTimer;
+
     PlayersTimeContainerType_t m_PlayersBestTimes;
 
     PlayersTimesType_t m_Player1RaceTimes;
@@ -166,15 +169,20 @@ private:
     bool IsBestLapTime(quint32 time);
 
 private slots:
+    void on_btnThread_clicked();
+
     /// @brief entry point for events
     /// events will be processed by the window and the GUI will be
     /// updated accordingly
     /// @param shared pointer wrapping the event
-    void on_btnThread_clicked();
     void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
 
-    /// @brief update syncrho status
+    /// @brief update synchro status
     void UpdateSynchroStatus(bool bSynchro);
+
+    /// @brief handler for the stats timer.
+    /// Stats will be collected from the modules and printed out
+    void UpdateStats();
 
     void on_BtnConfigure_clicked();
     void on_btnStats_clicked();

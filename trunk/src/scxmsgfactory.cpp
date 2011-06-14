@@ -35,8 +35,10 @@ SCXMsgFactory::SCXMsgFactory(QObject *parent) :
                                  QString("BytesDiscarded"));
     m_statCounters.SetEntryTitle(eStatEntry_BytesTotal,
                                  QString("BytesTotal"));
-    m_statCounters.SetEntryTitle(eStatEntry_BadCRC,
-                                 QString("BadCRC"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgDispatched,
+                                 QString("MsgDispatched"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgBadCRC,
+                                 QString("MsgBadCRC"));
 }
 
 SCXMsgFactory::~SCXMsgFactory()
@@ -72,9 +74,8 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
                 // a msg MUST start with SCX_PROTO_START_HEADER
                 m_statCounters.Increment(eStatEntry_BytesDiscarded, 1);
 
-                // Restart valid messages count
+                // Restart valid messages count. We are no longer in sync
                 m_nValidMessages = 0;
-                qDebug()<<"valid messages = 0";
                 emit ProtocolSynced(false);
             }
         }
@@ -90,12 +91,31 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
             // restart message index counter
             m_currentMsgIndex = 0;
 
+            // Check and increment the number of valid messages read
+            if (m_nValidMessages < MIN_VALID_MSGS)
+            {
+                // Increment number of valid messages
+                m_nValidMessages++;
+            }
+            else if (m_nValidMessages == MIN_VALID_MSGS)
+            {
+                // increment number of valid messages so this signal is
+                // only issued once (the first time we get to the minimum
+                // amount of valid messages)
+                m_nValidMessages++;
+                
+                // emit signal. We are in sync
+                emit ProtocolSynced(true);
+            }
+
             // check the CRC first
             // from http://eng.slotbaer.de/SCX/DatProt.html
             //   The checksum is calculated over all bytes of the packet, but the checksum
             crc = CalculateCRC(m_currentMsg, SCX_PROTO_MSG_LENGTH - SCX_PROTO_CRC_LENGTH);
             if (crc == m_currentMsg[SCX_PROTO_CRC_POS])
             {
+                m_statCounters.Increment(eStatEntry_MsgDispatched, 1);
+
                 // create a new QSlotMsg.
                 // Timestamp of this message is set at construction time
                 QSharedPointer<QSlotRacingMsg> newSlotRacingMsg(
@@ -103,23 +123,10 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
 
                 // send this new message somewhere beyond the sea...
                 emit MsgParsed(newSlotRacingMsg);
-
-                // Check and increment the number of valid messages read
-                if (m_nValidMessages < MIN_VALID_MSGS)
-                {
-                    // Increment number of valid messages
-                    m_nValidMessages++;
-                }
-                else if (m_nValidMessages == MIN_VALID_MSGS)
-                {
-                    // emit signal
-                    emit ProtocolSynced(true);
-                }
-                qDebug()<<"valid messages++ "<<m_nValidMessages;
             }
             else
-            {
-                m_statCounters.Increment(eStatEntry_BadCRC, 1);
+            {                
+                m_statCounters.Increment(eStatEntry_MsgBadCRC, 1);
 
                 ////////////////
                 //TODO this should be gone when the CRC is working correctly
