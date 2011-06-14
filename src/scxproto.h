@@ -15,7 +15,7 @@ class SCXProtoAnalyzer : public QObject
     Q_OBJECT
 public:
 
-    // statistics counter
+    /// @brief statistics counter
     typedef enum
     {
         eStatEntry_MsgTotal = 0, // first enum element MUST be set to 0
@@ -41,7 +41,7 @@ public:
         eStatEntry_Count // this value MUST be at the end of the enum
     } eStatEntries_t;
 
-    // stat counter type
+    /// @brief stat counter type
     typedef QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)> SCXProtoStatCounter_t;
 
 
@@ -65,7 +65,10 @@ public:
 
     } SCXProtoMsgType_t;
 
+    /// @brief SCXProtoAnalyzer class constructor
     SCXProtoAnalyzer(QObject *parent = 0);
+
+    /// @brief SCXProtoAnalyzer class destructor
     virtual ~SCXProtoAnalyzer();
 
     /// @return the stat counter of this particular object
@@ -78,58 +81,118 @@ private:
     /// @brief this object's stat counters
     SCXProtoStatCounter_t m_statCounters;
 
-    // methods to parse specific message types
+    /// @brief Method for controller message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgController(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for car Id message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgId(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Bus Clearance message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgBusClearance(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Finish Line message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgFinishLine(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Ranking message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgRanking(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Lap Time message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgLapTime(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Lap Counter message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgLapCounter(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Qualifying message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgQualifying(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Reset message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgReset(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Start message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgStart(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for End message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgEnd(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Fuel message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgFuel(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Refresh Display message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgRefreshDisplay(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
+
+    /// @brief Method for Brake message processing
+    /// @param Message data bytes
+    /// @param Message data structur
     void ProcessMsgBrake(
             const quint8* a_pData,
             const QSharedPointer<QSlotRacingMsg> &a_msg);
 
     // CRC calculation functions
 
-    unsigned char crcTable[256];
-
+    /// @brief This method creates the table for CRC
+    /// calculation
     void BuildTableCRC();
 
+    /// @brief This method calculates the CRC of the
+    /// provided buffer
+    /// @param input buffer for CRC calculation
+    /// @param number of bytes of buffer
     unsigned char Crc(unsigned char* buffer, int count);
 
+    /// @brief CRC table for calculation
+    unsigned char crcTable[256];
 
 signals:
     void ProtoEvent(QSharedPointer<QSlotRacingEvent>);
