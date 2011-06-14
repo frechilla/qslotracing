@@ -55,6 +55,9 @@ public:
     /// @brief update race status
     void UpdateRaceStatus(int status);
 private:
+
+    typedef QVector< std::pair<QSlotRacingPlayer_t, quint32> > PlayersTimeContainerType_t;
+
     // Member variables
     Ui::MainWindow *ui;
     SerialMonitor m_monitor;

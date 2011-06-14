@@ -81,10 +81,12 @@ void SerialMonitor::ReadData(QByteArray a_buffer)
     quint8 num;
 
     //qDebug() << "SerialMonitor::Readed is : " << a_buffer.count() << " bytes:";
+    /*
     for (qint32 i = 0; i < a_buffer.count(); i++)
     {
         qDebug() << a_buffer.data()[i];
     }
+    */
 
     if (flag_show == 1)
     {

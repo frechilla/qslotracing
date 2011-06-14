@@ -253,10 +253,6 @@ public:
 
             // Get speed value
             controller_data.speed = (a_value & 0x0F);
-            if (a_playersIndex == e_QSlotRacingPlayer1)
-            {
-                qDebug()<<"sss("<<controller_data.speed<<")";
-            }
         }
         else
         {

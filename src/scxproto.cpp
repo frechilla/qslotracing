@@ -404,6 +404,8 @@ void SCXProtoAnalyzer::ProcessMsgLapCounter(
     quint8 byte1;
     quint8 byte2;
 
+    qDebug() << "Lap Counter message";
+
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventLapCounter> event(
             new QSlotRacingEventLapCounter(a_msg->GetTimestamp()));
