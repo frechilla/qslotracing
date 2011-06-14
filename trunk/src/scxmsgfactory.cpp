@@ -74,6 +74,8 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
 
                 // Restart valid messages count
                 m_nValidMessages = 0;
+                qDebug()<<"valid messages = 0";
+                emit ProtocolSynced(false);
             }
         }
         else
@@ -111,8 +113,9 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
                 else if (m_nValidMessages == MIN_VALID_MSGS)
                 {
                     // emit signal
-                    emit ProtocolSynced();
+                    emit ProtocolSynced(true);
                 }
+                qDebug()<<"valid messages++ "<<m_nValidMessages;
             }
             else
             {

@@ -28,7 +28,7 @@ signals:
     void MsgParsed(QSharedPointer<QSlotRacingMsg>);
 
     /// @brief signal sent when minimun number of valid messages read
-    void ProtocolSynced();
+    void ProtocolSynced(bool);
 
 public slots:
     /// @brief parses a buffer of bytes of size 'a_bufferSize'
