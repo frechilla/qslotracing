@@ -12,7 +12,6 @@
 #include "snifferfileascii.h"
 #include "scxmsgfactory.h"
 #include "scxproto.h"
-#include "serialthread.h"
 
 namespace Ui {
     class MainWindow;
@@ -62,12 +61,6 @@ private:
     ConfigDialog m_config;
     ControllerDlg m_controller;
     StatsDialog m_statsdlg;
-
-    /// Thread to encapsulate serial thread
-    SerialThread serialThread;
-
-    /// Serial producer thread
-    SerialEvent producer;
 
     /// Sniff data off the serial interface
     SnifferSerial m_serialSniffer;

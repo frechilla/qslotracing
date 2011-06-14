@@ -165,7 +165,7 @@ void SnifferFileAscii::ReadByteFromFile()
         m_latestAsciiProcessed = LATEST_ASCII_UNSET;
 
         QByteArray ba(reinterpret_cast<const char*>(&m_latestAsciiProcessed), 1);
-        emit bytesRead(ba);
+        emit DataRead(ba);
     }
 }
 
@@ -207,7 +207,7 @@ bool SnifferFileAscii::ProcessChar(char a_asciiCharacter)
 
             // notify that value we've just found to the upper layers
             QByteArray ba(reinterpret_cast<const char*>(&valueFound), 1);
-            emit bytesRead(ba);
+            emit DataRead(ba);
 
             return true;
         }
@@ -227,7 +227,7 @@ bool SnifferFileAscii::ProcessChar(char a_asciiCharacter)
 
             // notify that value we've just found to the upper layers
             QByteArray ba(reinterpret_cast<const char*>(&valueFound), 1);
-            emit bytesRead(ba);
+            emit DataRead(ba);
 
             return true;
         }

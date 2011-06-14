@@ -33,16 +33,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ConfigurePlayer5("", 0, -1);
     ConfigurePlayer6("", 0, -1);
 
-    // Configure serial device into serial thread
-    producer.SetSerialDevice(&m_serialSniffer);
-
     // Initialize status frame
     InitStatusFrame();
 }
 
 MainWindow::~MainWindow()
 {
-    serialThread.exit(0);
+    // tell the serial sniffer thread to die and wait for it
+    m_serialSniffer.Join();
+
     delete ui;
 }
 
@@ -61,28 +60,27 @@ void MainWindow::InitializeProtoStack()
     // SCXMsgFactory will be processing all bytes sniffed
     // by the sniffers (both serial and ascii)
 
-    /*
+
     m_msgFactory.connect(&m_serialSniffer,
-                       SIGNAL(bytesRead(QByteArray)),
+                       SIGNAL(DataRead(QByteArray)),
                        SLOT(Parse(QByteArray)));
-    */
+
 
     // SCXMsgFactory will process all bytes snifferd from ascii file sniffer.
     m_msgFactory.connect(&m_asciiSniffer,
-                       SIGNAL(bytesRead(QByteArray)),
+                       SIGNAL(DataRead(QByteArray)),
                        SLOT(Parse(QByteArray)));
 
-/*
+
     // all sniffed bytes will also be notified into the serial monitor window
     // again, for both serial and ascii sniffers
     m_monitor.connect(&m_serialSniffer,
-                      SIGNAL(bytesRead(QByteArray)),
+                      SIGNAL(DataRead(QByteArray)),
                       SLOT(ReadData(QByteArray)));
 
-                      */
 
     m_monitor.connect(&m_asciiSniffer,
-                      SIGNAL(bytesRead(QByteArray)),
+                      SIGNAL(DataRead(QByteArray)),
                       SLOT(ReadData(QByteArray)));
 
 
@@ -102,7 +100,7 @@ void MainWindow::InitializeProtoStack()
     // serial sniffer is also connected to MainWindow::slotRead
     // it should be deleted at some point
     this->connect(&m_serialSniffer,
-                  SIGNAL(bytesRead(QByteArray)),
+                  SIGNAL(DataRead(QByteArray)),
                   SLOT(slotRead(QByteArray)));
                   */
 }
@@ -1808,10 +1806,11 @@ void MainWindow::OpenSerialPort(QString port)
     m_serialSniffer.SetStopBits(AbstractSerial::StopBits1);
     m_serialSniffer.SetFlowControl(AbstractSerial::FlowControlOff);
     
-    // Open it!
+    // Open it
     m_serialSniffer.OpenSerial();
 
-//    m_serialSniffer.Read();
+    // allow the thread to start sniffing the interface
+    m_serialSniffer.Resume();
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -2443,39 +2442,40 @@ void MainWindow::UpdateLaps()
 
 void MainWindow::consume(QByteArray *data)
 {
-    //qDebug()<<"consumir "<<data->size();
-    m_msgFactory.Parse(*data);
+    qDebug()<<"consumir "<<data->size();
+    //m_msgFactory.Parse(*data);
     /* TODO: comprobar que lo que se hace en este consume es lo mismo que esto
     m_msgFactory.connect(&m_serialSniffer,
-                       SIGNAL(bytesRead(QByteArray)),
+                       SIGNAL(DataRead(QByteArray)),
                        SLOT(Parse(QByteArray)));
     */
 
     //m_monitor.ReadData(*data);
     /*
     m_monitor.connect(&m_serialSniffer,
-                      SIGNAL(bytesRead(QByteArray)),
+                      SIGNAL(DataRead(QByteArray)),
                       SLOT(ReadData(QByteArray)));
                       */
 }
 
 void MainWindow::on_btnThread_clicked()
 {
+    /*
     qDebug()<<"conectar con productor";;
     this->connect(&producer, SIGNAL(DataRead(QByteArray*)),SLOT(consume(QByteArray*)));
 
     m_msgFactory.connect(&producer, SIGNAL(DataRead(QByteArray*)),SLOT(Parse(QByteArray*)));
 
     qDebug()<<"generar thread";
-    producer.moveToThread(&serialThread);
+    producer.moveToThread(&m_serialThread);
     qDebug()<<"corriendo...";
 
-    producer.connect(&serialThread,SIGNAL(started()),SLOT(gen_event()));
+    producer.connect(&m_serialThread,SIGNAL(started()),SLOT(gen_event()));
     qDebug()<<"conectado y produciendo...";
 
-    serialThread.start();
+    m_serialThread.start();
     //producer.connect(&producerThread,SIGNAL(finished()),SLOT(quit()));
-
+*/
 }
 
 void MainWindow::InitStatusFrame()
