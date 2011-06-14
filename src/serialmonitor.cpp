@@ -2,6 +2,8 @@
 #include "ui_serialmonitor.h"
 #include <QtCore/QDebug>
 
+#define BYTES_PER_LINE 16
+
 SerialMonitor::SerialMonitor(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SerialMonitor)
@@ -76,30 +78,25 @@ void SerialMonitor::on_save_clicked()
 
 void SerialMonitor::ReadData(QByteArray a_buffer)
 {
-    QString strData;
-    char    data[5];
-    quint8 num;
-
-    //qDebug() << "SerialMonitor::Readed is : " << a_buffer.count() << " bytes:";
-    /*
-    for (qint32 i = 0; i < a_buffer.count(); i++)
-    {
-        qDebug() << a_buffer.data()[i];
-    }
-    */
+    QString       strData;
+    static char   data[5] = "";
+    static qint32 bytesThisLine = 0;
 
     if (flag_show == 1)
     {
         strData = "";
-        memset(data, 0, 5);
         for (qint32 i = 0; i < a_buffer.count(); i++)
         {
-            qDebug() << a_buffer.data()[i];
-            num = a_buffer.data()[i];
-            sprintf(data, "%02X", num);
+            sprintf(data, "%02X", static_cast<quint8>(a_buffer.at(i)));
             strData = QString::fromLocal8Bit(data);
-            ui->data_packets->insertPlainText(strData);
+            ui->data_packets->insertPlainText(strData + QString(" "));
+
+            bytesThisLine++;
+            if (bytesThisLine == BYTES_PER_LINE)
+            {
+                bytesThisLine = 0;
+                ui->data_packets->insertPlainText("\n");
+            }
         }
-        ui->data_packets->insertPlainText("\n");
     }
 }

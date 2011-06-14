@@ -60,6 +60,11 @@
       <height>171</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
    </widget>
   </widget>
   <widget class="QPushButton" name="save">

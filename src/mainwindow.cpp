@@ -8,6 +8,8 @@
 #include <qbitmap.h>
 #include <qmessagebox.h>
 
+#define STATS_TIMER_EXPIRE_MSEC 10000 // 10 seconds
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -15,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_asciiSniffer(parent),
     m_msgFactory(parent),
     m_scxAnalyzer(parent),
+    m_statsTimer(parent),
     m_PlayersBestTimes(6)
 {
     ui->setupUi(this);
@@ -22,6 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Initialize protocol stacks (basically connect slots to signals)
     InitializeProtoStack();
+
+    // connect the stats timer to its handler and start it
+    this->connect(&m_statsTimer, SIGNAL(timeout()), SLOT(UpdateStats()));
+    m_statsTimer.start(STATS_TIMER_EXPIRE_MSEC);
 
     // Initialize window widgets backgrounds
     InitFuelBackground();
@@ -2533,6 +2540,33 @@ void MainWindow::UpdateLaps()
     ui->editLaps4->setText(text);
     ui->editLaps5->setText(text);
     ui->editLaps6->setText(text);
+}
+
+void MainWindow::UpdateStats()
+{
+    const QSlotRacingStatsCounter<SCXMsgFactory::eStatEntry_Count>& msgFactoryStats =
+            m_msgFactory.GetStatCounters();
+
+    qDebug("STATS: SCX MSG Factory:");
+    for (qint32 i = 0; i < SCXMsgFactory::eStatEntry_Count; i++)
+    {
+        qDebug() << "  "
+                 << msgFactoryStats.GetEntryTitle(i)
+                 << ": "
+                 << msgFactoryStats.GetEntryValue(i);
+    }
+
+    const QSlotRacingStatsCounter<SCXProtoAnalyzer::eStatEntry_Count>& scxAnalyzerStats =
+            m_scxAnalyzer.GetStatCounters();
+
+    qDebug("STATS: SCX Analyzer:");
+    for (qint32 i = 0; i < SCXProtoAnalyzer::eStatEntry_Count; i++)
+    {
+        qDebug() << "  "
+                 << scxAnalyzerStats.GetEntryTitle(i)
+                 << ": "
+                 << scxAnalyzerStats.GetEntryValue(i);
+    }
 }
 
 void MainWindow::consume(QByteArray *data)
