@@ -1,7 +1,5 @@
 #include "scxproto.h"
 #include <QtCore/QDebug>
-//TODO remove when std::cout is gone
-#include <iostream>
 
 // first byte MUST always be 0x55
 #define SCX_PROTO_START_HEADER 0x55
@@ -55,19 +53,6 @@ SCXProtoAnalyzer::~SCXProtoAnalyzer()
 
 void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
 {
-    /*
-    //TODO remove
-    for (qint32 i = 0; i < a_msg->GetMsgSize(); i++)
-    {
-        std::cout << "SCXProtoAnalyzer::ProcessMsg: ";
-        std::cout << std::hex
-                  << static_cast<quint32>(a_msg->GetMsg()[i])
-                  << " ";
-
-    }
-    std::cout << std::endl;
-    */
-
     // new message has arrived
     m_statCounters.Increment(eStatEntry_MsgTotal, 1);
 
@@ -197,10 +182,8 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
 
     default:
         // unknown message. No further processing can be done
-        /*
-        std::cout << "Unknown message type: "
-                << std::hex << static_cast<quint32>(*pData)<<std::endl;
-*/
+        qDebug("Unknown message type: %02X", *pData);
+
         m_statCounters.Increment(eStatEntry_MsgBadType, 1);
         return;
     } // switch (*pData)
@@ -530,47 +513,4 @@ void SCXProtoAnalyzer::ProcessMsgBrake(
     a_pData ++;
 
     qDebug() << "Brake message";
-}
-
-
-void SCXProtoAnalyzer::BuildTableCRC()
-{
-    int i;
-    unsigned char table[8];
-
-    table[0] = 0x31;
-
-    for (i = 1; i < 8; i++)
-    {
-            int n = 2 * table[i - 1];
-
-            table[i] = (n >= 256) ?n ^ 0x31 : n;
-    }
-
-    for (i = 0; i < 256; i++)
-    {
-            crcTable[i] = 0;
-            if (i & 1) crcTable[i] ^= table[0];
-            if (i & 2) crcTable[i] ^= table[1];
-            if (i & 4) crcTable[i] ^= table[2];
-            if (i & 8) crcTable[i] ^= table[3];
-            if (i & 16) crcTable[i] ^= table[4];
-            if (i & 32) crcTable[i] ^= table[5];
-            if (i & 64) crcTable[i] ^= table[6];
-            if (i & 128) crcTable[i] ^= table[7];
-    }
-}
-
-unsigned char SCXProtoAnalyzer::Crc(unsigned char* buffer, int count)
-{
-    int i;
-    unsigned char result = 0;
-
-    for (i = 0; i < count - 1; i++) {
-            unsigned char idx = buffer[i] ^ result;
-
-            result = crcTable[idx];
-    }
-
-    return result ^ 0xBB;
 }
