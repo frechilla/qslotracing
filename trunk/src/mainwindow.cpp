@@ -18,7 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_msgFactory(parent),
     m_scxAnalyzer(parent),
     m_statsTimer(parent),
-    m_PlayersBestTimes(6)
+    m_PlayersBestTimes(6),
+    m_PlayerLastLapTime(6),
+    m_PlayerCrossings(6)
 {
     ui->setupUi(this);
     setStyleSheet("QProgressBar:horizontal {border: 1px solid gray;border-radius: 3px;background: black;padding: 1px;text-align: right;margin-right: 10ex; }QProgressBar::chunk:horizontal {background: qlineargradient(x1: 0, y1: 0.5, x2: 3, y2: 0.5, stop: 0 lightgreen, stop: 1 black); margin-right: 2px; /* space */ width: 10px; }");
@@ -44,17 +46,35 @@ MainWindow::MainWindow(QWidget *parent) :
     // Initialize status frame
     InitStatusFrame();
 
-    // Initialization to 1 hour
-    qDebug()<<"inicializar vector";
-    m_PlayersBestTimes[0] = 3600000;
-    m_PlayersBestTimes[1] = 3600000;
-    m_PlayersBestTimes[2] = 3600000;
-    m_PlayersBestTimes[3] = 3600000;
-    m_PlayersBestTimes[4] = 3600000;
-    m_PlayersBestTimes[5] = 3600000;
+    // Players best times initialization
+    m_PlayersBestTimes[0] = 0;
+    m_PlayersBestTimes[1] = 0;
+    m_PlayersBestTimes[2] = 0;
+    m_PlayersBestTimes[3] = 0;
+    m_PlayersBestTimes[4] = 0;
+    m_PlayersBestTimes[5] = 0;
 
-    // Initialize best race lap time
-    m_BestRaceLapTime = 3600000;
+    // Initialize last players lap time
+    m_PlayerLastLapTime[0] = 0;
+    m_PlayerLastLapTime[1] = 0;
+    m_PlayerLastLapTime[2] = 0;
+    m_PlayerLastLapTime[3] = 0;
+    m_PlayerLastLapTime[4] = 0;
+    m_PlayerLastLapTime[5] = 0;
+
+    // Initialize player number of crossings
+    m_PlayerCrossings[0] = 0;
+    m_PlayerCrossings[1] = 0;
+    m_PlayerCrossings[2] = 0;
+    m_PlayerCrossings[3] = 0;
+    m_PlayerCrossings[4] = 0;
+    m_PlayerCrossings[5] = 0;
+
+    // Initialize current player with best race time
+    m_CurPlayerBestLapTime = e_QSlotRacingNoPlayer;
+
+    // Initialize timing strings
+    InitTimingStrings();
 }
 
 MainWindow::~MainWindow()
@@ -168,42 +188,36 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         quint8 speed = 0;
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer1, valid, lights, lane_change, speed);
-        //qDebug()<<" Controller 1: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         if (valid == true)
         {
             SetController1(lights, lane_change, speed);
         }
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer2, valid, lights, lane_change, speed);
-        //qDebug()<<" Controller 2: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         if (valid == true)
         {
             SetController2(lights, lane_change, speed);
         }
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer3, valid, lights, lane_change, speed);
-        //qDebug()<<" Controller 3: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         if (valid == true)
         {
             SetController3(lights, lane_change, speed);
         }
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer4, valid, lights, lane_change, speed);
-        //qDebug()<<" Controller 4: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         if (valid == true)
         {
             SetController4(lights, lane_change, speed);
         }
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer5, valid, lights, lane_change, speed);
-        //qDebug()<<" Controller 5: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         if (valid == true)
         {
             SetController5(lights, lane_change, speed);
         }
 
         retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer6, valid, lights, lane_change, speed);
-        //qDebug()<<" Controller 6: ligths("<<lights<<") lane change("<<lane_change<<") speed ("<<speed<<")";
         if (valid == true)
         {
             SetController6(lights, lane_change, speed);
@@ -215,7 +229,6 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         QSharedPointer<QSlotRacingEventRanking> rankingEvent =
                 a_event.staticCast<QSlotRacingEventRanking>();
 
-        //quint8 carId;
         quint8 pos;
         quint8 retValue;
         bool   moreThan15;
@@ -298,22 +311,17 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         crossings = lapEvent->GetCrossingTimes();
         time = lapEvent->GetLapMillis();
 
-
         // Format crossings string
         crossings = crossings - 1; // Initial crossing must not be counted
         sprintf(data, "%d/%d", crossings,m_LapsCounter);
         text = QString::fromLocal8Bit(data);
 
-        // Check best time for current player
-        bestOwnTime = IsBestOwnTime(player, time);
+        // Update race best lap time
+        UpdateRaceBestLapTime(player,time, crossings);
 
-        // Format time string
-        GetStringFromTime(timelap, time);
+        // Update player current lap time
+        UpdatePlayerLapTime(player, time, crossings);
 
-        // Check best lap time of race
-        bestRaceLapTime = IsBestLapTime(time);
-
-// el otro color violeta (229,2,188)
         switch(player)
         {
         case e_QSlotRacingPlayer1:
@@ -321,17 +329,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 // Set laps counter display
                 ui->editLaps1->setText(text);
 
-                // Set lap time data
-                if (bestOwnTime == true)
-                {
-                    // Set background color green, text color white
-                    ui->labelTime1->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
-                }
-                else
-                {
-                    ui->labelTime1->setStyleSheet("");
-                }
-                ui->labelTime1->setText(timelap);
+                m_PlayerCrossings[0] = crossings;
+
                 break;
             }
         case e_QSlotRacingPlayer2:
@@ -339,17 +338,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 // Set laps counter display
                 ui->editLaps2->setText(text);
 
-                // Set lap time data
-                if (bestOwnTime == true)
-                {
-                    // Set background color green, text color white
-                    ui->labelTime2->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
-                }
-                else
-                {
-                    ui->labelTime2->setStyleSheet("");
-                }
-                ui->labelTime2->setText(timelap);
+                m_PlayerCrossings[1] = crossings;
+
                 break;
             }
         case e_QSlotRacingPlayer3:
@@ -357,17 +347,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 // Set laps counter display
                 ui->editLaps3->setText(text);
 
-                // Set lap time data
-                if (bestOwnTime == true)
-                {
-                    // Set background color green, text color white
-                    ui->labelTime3->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
-                }
-                else
-                {
-                    ui->labelTime3->setStyleSheet("");
-                }
-                ui->labelTime3->setText(timelap);
+                m_PlayerCrossings[2] = crossings;
+
                 break;
             }
         case e_QSlotRacingPlayer4:
@@ -375,17 +356,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 // Set laps counter display
                 ui->editLaps4->setText(text);
 
-                // Set lap time data
-                if (bestOwnTime == true)
-                {
-                    // Set background color green, text color white
-                    ui->labelTime4->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
-                }
-                else
-                {
-                    ui->labelTime4->setStyleSheet("");
-                }
-                ui->labelTime4->setText(timelap);
+                m_PlayerCrossings[3] = crossings;
+
                 break;
             }
         case e_QSlotRacingPlayer5:
@@ -393,17 +365,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 // Set laps counter display
                 ui->editLaps5->setText(text);
 
-                // Set lap time data
-                if (bestOwnTime == true)
-                {
-                    // Set background color green, text color white
-                    ui->labelTime5->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
-                }
-                else
-                {
-                    ui->labelTime5->setStyleSheet("");
-                }
-                ui->labelTime5->setText(timelap);
+                m_PlayerCrossings[4] = crossings;
+
                 break;
             }
         case e_QSlotRacingPlayer6:
@@ -411,17 +374,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 // Set laps counter display
                 ui->editLaps6->setText(text);
 
-                // Set lap time data
-                if (bestOwnTime == true)
-                {
-                    // Set background color green, text color white
-                    ui->labelTime6->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
-                }
-                else
-                {
-                    ui->labelTime6->setStyleSheet("");
-                }
-                ui->labelTime6->setText(timelap);
+                m_PlayerCrossings[5] = crossings;
+
                 break;
             }
         case e_QSlotRacingNoPlayer:
@@ -1915,20 +1869,6 @@ void MainWindow::OpenSerialPort(QString port)
     m_serialSniffer.Resume();
 }
 
-void MainWindow::on_pushButton_3_clicked()
-{
-    m_serialSniffer.Write();
-}
-
-void MainWindow::slotRead(QByteArray ba)
-{
-    qDebug() << "MainWindow::slotRead is : " << ba.size() << " bytes:";
-    for (qint32 i = 0; i < ba.size(); i++)
-    {
-        qDebug() << "MainWindow::slotRead: " << ba.at(i);
-    }
-}
-
 void MainWindow::on_serial_monitor_clicked()
 {
     //static SerialMonitor *diag = new SerialMonitor(this);
@@ -1953,6 +1893,9 @@ void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
 
         // Set Default laps
         ui->editLaps1->setText("0/0");
+
+        // Set player enable flag
+        m_PlayersConfigured[0] = true;
 
         // Display player car
         switch (car)
@@ -1994,7 +1937,9 @@ void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
         ui->editPos1->setStyleSheet("background-color: rgb(220, 220, 220);");
 
         ui->editLaps1->setEnabled(false);
+        ui->editLaps1->setText("");
         ui->editPos1->setEnabled(false);
+        ui->editPos1->setText("");
 
         m_PlayersConfigured[0] = false;
     }
@@ -2018,6 +1963,9 @@ void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
 
         // Set Default laps
         ui->editLaps2->setText("0/0");
+
+        // Set player enable flag
+        m_PlayersConfigured[1] = true;
 
         // Display player car
         switch (car)
@@ -2057,7 +2005,9 @@ void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
         ui->editPos2->setStyleSheet("background-color: rgb(220, 220, 220);");
 
         ui->editLaps2->setEnabled(false);
+        ui->editLaps2->setText("");
         ui->editPos2->setEnabled(false);
+        ui->editPos2->setText("");
 
         m_PlayersConfigured[1] = false;
     }
@@ -2081,6 +2031,9 @@ void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
 
         // Set Default laps
         ui->editLaps3->setText("0/0");
+
+        // Set player enable flag
+        m_PlayersConfigured[2] = true;
 
         // Display player car
         switch (car)
@@ -2120,7 +2073,9 @@ void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
         ui->editPos3->setStyleSheet("background-color: rgb(220, 220, 220);");
 
         ui->editLaps3->setEnabled(false);
+        ui->editLaps3->setText("");
         ui->editPos3->setEnabled(false);
+        ui->editPos3->setText("");
 
         m_PlayersConfigured[2] = false;
     }
@@ -2145,6 +2100,9 @@ void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
 
         // Set Default laps
         ui->editLaps4->setText("0/0");
+
+        // Set player enable flag
+        m_PlayersConfigured[3] = true;
 
         // Display player car
         switch (car)
@@ -2184,7 +2142,9 @@ void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
         ui->editLaps4->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editPos4->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editLaps4->setEnabled(false);
+        ui->editLaps4->setText("");
         ui->editPos4->setEnabled(false);
+        ui->editPos4->setText("");
         m_PlayersConfigured[3] = false;
     }
 }
@@ -2207,6 +2167,9 @@ void MainWindow::ConfigurePlayer5(QString player, bool flag, int car)
 
         // Set Default laps
         ui->editLaps5->setText("0/0");
+
+        // Set player enable flag
+        m_PlayersConfigured[4] = true;
 
         // Display player car
         switch (car)
@@ -2246,7 +2209,9 @@ void MainWindow::ConfigurePlayer5(QString player, bool flag, int car)
         ui->editLaps5->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editPos5->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editLaps5->setEnabled(false);
+        ui->editLaps5->setText("");
         ui->editPos5->setEnabled(false);
+        ui->editPos5->setText("");
         m_PlayersConfigured[4] = false;
     }
 }
@@ -2269,6 +2234,9 @@ void MainWindow::ConfigurePlayer6(QString player, bool flag, int car)
 
         // Set Default laps
         ui->editLaps6->setText("0/0");
+
+        // Set player enable flag
+        m_PlayersConfigured[5] = true;
 
         // Display player car
         switch (car)
@@ -2313,7 +2281,9 @@ void MainWindow::ConfigurePlayer6(QString player, bool flag, int car)
         ui->editPos6->setStyleSheet("background-color: rgb(220, 220, 220);");
 
         ui->editLaps6->setEnabled(false);
+        ui->editLaps6->setText("");
         ui->editPos6->setEnabled(false);
+        ui->editPos6->setText("");
         m_PlayersConfigured[5] = false;
     }
 }
@@ -2623,24 +2593,6 @@ void MainWindow::UpdateStats()
     }
 }
 
-void MainWindow::consume(QByteArray *data)
-{
-    qDebug()<<"consumir "<<data->size();
-    //m_msgFactory.Parse(*data);
-    /* TODO: comprobar que lo que se hace en este consume es lo mismo que esto
-    m_msgFactory.connect(&m_serialSniffer,
-                       SIGNAL(DataRead(QByteArray)),
-                       SLOT(Parse(QByteArray)));
-    */
-
-    //m_monitor.ReadData(*data);
-    /*
-    m_monitor.connect(&m_serialSniffer,
-                      SIGNAL(DataRead(QByteArray)),
-                      SLOT(ReadData(QByteArray)));
-                      */
-}
-
 void MainWindow::InitStatusFrame()
 {
     // Initialize synchro status
@@ -2682,7 +2634,7 @@ void MainWindow::UpdateRaceStatus(int status)
     }
 }
 
-void MainWindow::GetStringFromTime(QString &timestr, quint32 time)
+void MainWindow::GetStringFromTime(QString *timestr, quint32 time)
 {
     quint8    mins;
     quint8    secs;
@@ -2714,51 +2666,436 @@ void MainWindow::GetStringFromTime(QString &timestr, quint32 time)
     // Calculate ms
     ms = time;
 
-    sprintf(datatime, "%02d:%02d.%02d", mins, secs, ms);
-    timestr = QString::fromLocal8Bit(datatime);
+    sprintf(datatime, "%02d:%02d.%03d", mins, secs, ms);
+    *timestr = QString::fromLocal8Bit(datatime);
 }
 
-bool MainWindow::IsBestOwnTime(QSlotRacingPlayer_t player, quint32 time)
+void MainWindow::InitTimingStrings()
 {
-    quint32    storedtime;
-    bool       bRet;
+    ui->labelTime1->setText("--:--.---");
+    ui->labelTime2->setText("--:--.---");
+    ui->labelTime3->setText("--:--.---");
+    ui->labelTime4->setText("--:--.---");
+    ui->labelTime5->setText("--:--.---");
+    ui->labelTime6->setText("--:--.---");
 
-    // Initialization
-    bRet = false;
+    ui->labelBest1->setText("--:--.---");
+    ui->labelBest2->setText("--:--.---");
+    ui->labelBest3->setText("--:--.---");
+    ui->labelBest4->setText("--:--.---");
+    ui->labelBest5->setText("--:--.---");
+    ui->labelBest6->setText("--:--.---");
+}
 
-    // Check time
-    storedtime = m_PlayersBestTimes[player];
+void MainWindow::UpdateRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing)
+{
+    QString    timestr;
+    bool       newCrossing;
 
-    if (time < storedtime)
+    // Check for a new crossing
+    newCrossing = IsNewCrossing(player, crossing);
+
+    if (newCrossing == true)
     {
-        // New best time for player. Store it and return true
-        m_PlayersBestTimes[player] = time;
-        bRet = true;
+        // Check if it's best time
+        if (((m_PlayersBestTimes[0] <= curtime) && (m_PlayersBestTimes[0] > 0) && (m_PlayersConfigured[0])) ||
+            ((m_PlayersBestTimes[1] <= curtime) && (m_PlayersBestTimes[1] > 0) && (m_PlayersConfigured[1])) ||
+            ((m_PlayersBestTimes[2] <= curtime) && (m_PlayersBestTimes[2] > 0) && (m_PlayersConfigured[2])) ||
+            ((m_PlayersBestTimes[3] <= curtime) && (m_PlayersBestTimes[3] > 0) && (m_PlayersConfigured[3])) ||
+            ((m_PlayersBestTimes[4] <= curtime) && (m_PlayersBestTimes[4] > 0) && (m_PlayersConfigured[4])) ||
+            ((m_PlayersBestTimes[5] <= curtime) && (m_PlayersBestTimes[5] > 0) && (m_PlayersConfigured[5])))
+        {
+            // no better player
+        }
+        else
+        {
+            // New player best time
+
+            // Store new player best time
+            m_PlayersBestTimes[player] = curtime;
+
+            // Update background color last best race lap player
+            switch (m_CurPlayerBestLapTime)
+            {
+            case e_QSlotRacingPlayer1:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, m_PlayersBestTimes[0]);
+
+                    ui->labelBest1->setStyleSheet("");
+                    ui->labelBest1->setText(timestr);
+
+                    // Set background color green, text color white
+     //                   ui->labelTime1->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                    break;
+                }
+            case e_QSlotRacingPlayer2:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, m_PlayersBestTimes[1]);
+
+                    ui->labelBest2->setStyleSheet("");
+                    ui->labelBest2->setText(timestr);
+                    break;
+                }
+            case e_QSlotRacingPlayer3:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, m_PlayersBestTimes[2]);
+
+                    ui->labelBest3->setStyleSheet("");
+                    ui->labelBest3->setText(timestr);
+                    break;
+                }
+            case e_QSlotRacingPlayer4:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, m_PlayersBestTimes[3]);
+
+                    ui->labelBest4->setStyleSheet("");
+                    ui->labelBest4->setText(timestr);
+                    break;
+                }
+            case e_QSlotRacingPlayer5:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, m_PlayersBestTimes[4]);
+
+                    ui->labelBest5->setStyleSheet("");
+                    ui->labelBest5->setText(timestr);
+                    break;
+                }
+            case e_QSlotRacingPlayer6:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, m_PlayersBestTimes[5]);
+
+                    ui->labelBest6->setStyleSheet("");
+                    ui->labelBest6->setText(timestr);
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
+            }  // switch last best player
+
+            // Update background color last best race lap player
+            switch (player)
+            {
+            case e_QSlotRacingPlayer1:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, curtime);
+
+                    ui->labelBest1->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest1->setText(timestr);
+                    break;
+                }
+            case e_QSlotRacingPlayer2:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, curtime);
+
+                    ui->labelBest2->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest2->setText(timestr);
+                    break;
+                }
+            case e_QSlotRacingPlayer3:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, curtime);
+
+                    ui->labelBest3->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest3->setText(timestr);
+                    break;
+                }
+            case e_QSlotRacingPlayer4:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, curtime);
+
+                    ui->labelBest4->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest4->setText(timestr);
+                    break;
+                }
+            case e_QSlotRacingPlayer5:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, curtime);
+
+                    ui->labelBest5->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest5->setText(timestr);
+                    break;
+                }
+            case e_QSlotRacingPlayer6:
+                {
+                    // Format time string
+                    GetStringFromTime(&timestr, curtime);
+
+                    ui->labelBest6->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest6->setText(timestr);
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
+            }  // switch new best player
+        }  // if there is a new best player
     }
     else
     {
-        // do nothing
     }
-
-    return bRet;
 }
 
-bool MainWindow::IsBestLapTime(quint32 time)
+void MainWindow::UpdatePlayerLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing)
+{
+    QString    timelap;
+    bool       newCrossing;
+
+    // Check for a new crossing
+    newCrossing = IsNewCrossing(player, crossing);
+
+    if (newCrossing == true)
+    {
+        // Format time string
+        GetStringFromTime(&timelap, curtime);
+
+        // Check player
+        switch (player)
+        {
+        case e_QSlotRacingPlayer1:
+            {
+                // Check last  lap time
+                if (curtime < m_PlayerLastLapTime[0] && (m_PlayerLastLapTime[0] > 0))
+                {
+                    // Faster lap
+                    // Set background color green, text color white
+                    ui->labelTime1->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else if (curtime > m_PlayerLastLapTime[0] && (m_PlayerLastLapTime[0] > 0))
+                {
+                    // Slower lap
+                    // Set background color red, text color white
+                    ui->labelTime1->setStyleSheet("background-color: rgb(250, 0, 0);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    // Same time lap
+                    // Remove background color
+                    ui->labelTime1->setStyleSheet("");
+                }
+                ui->labelTime1->setText(timelap);
+
+                // Update player last time
+                m_PlayerLastLapTime[0] = curtime;
+                break;
+            }
+        case e_QSlotRacingPlayer2:
+            {
+                // Check last  lap time
+                if (curtime < m_PlayerLastLapTime[1] && (m_PlayerLastLapTime[1] > 0))
+                {
+                    // Faster lap
+                    // Set background color green, text color white
+                    ui->labelTime2->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else if (curtime > m_PlayerLastLapTime[1] && (m_PlayerLastLapTime[1] > 0))
+                {
+                    // Slower lap
+                    // Set background color red, text color white
+                    ui->labelTime2->setStyleSheet("background-color: rgb(250, 0, 0);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    // Same time lap
+                    // Remove background color
+                    ui->labelTime2->setStyleSheet("");
+                }
+                ui->labelTime2->setText(timelap);
+
+                // Update player last time
+                m_PlayerLastLapTime[1] = curtime;
+                break;
+            }
+        case e_QSlotRacingPlayer3:
+            {
+                // Check last  lap time
+                if (curtime < m_PlayerLastLapTime[2] && (m_PlayerLastLapTime[2] > 0))
+                {
+                    // Faster lap
+                    // Set background color green, text color white
+                    ui->labelTime3->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else if (curtime > m_PlayerLastLapTime[2] && (m_PlayerLastLapTime[2] > 0))
+                {
+                    // Slower lap
+                    // Set background color red, text color white
+                    ui->labelTime3->setStyleSheet("background-color: rgb(250, 0, 0);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    // Same time lap
+                    // Remove background color
+                    ui->labelTime3->setStyleSheet("");
+                }
+                ui->labelTime3->setText(timelap);
+
+                // Update player last time
+                m_PlayerLastLapTime[2] = curtime;
+                break;
+            }
+        case e_QSlotRacingPlayer4:
+            {
+                // Check last  lap time
+                if (curtime < m_PlayerLastLapTime[3] && (m_PlayerLastLapTime[3] > 0))
+                {
+                    // Faster lap
+                    // Set background color green, text color white
+                    ui->labelTime4->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else if (curtime > m_PlayerLastLapTime[3] && (m_PlayerLastLapTime[3] > 0))
+                {
+                    // Slower lap
+                    // Set background color red, text color white
+                    ui->labelTime4->setStyleSheet("background-color: rgb(250, 0, 0);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    // Same time lap
+                    // Remove background color
+                    ui->labelTime4->setStyleSheet("");
+                }
+                ui->labelTime4->setText(timelap);
+
+                // Update player last time
+                m_PlayerLastLapTime[3] = curtime;
+                break;
+            }
+        case e_QSlotRacingPlayer5:
+            {
+                // Check last  lap time
+                if (curtime < m_PlayerLastLapTime[4] && (m_PlayerLastLapTime[4] > 0))
+                {
+                    // Faster lap
+                    // Set background color green, text color white
+                    ui->labelTime5->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else if (curtime > m_PlayerLastLapTime[4] && (m_PlayerLastLapTime[4] > 0))
+                {
+                    // Slower lap
+                    // Set background color red, text color white
+                    ui->labelTime5->setStyleSheet("background-color: rgb(250, 0, 0);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    // Same time lap
+                    // Remove background color
+                    ui->labelTime5->setStyleSheet("");
+                }
+                ui->labelTime5->setText(timelap);
+
+                // Update player last time
+                m_PlayerLastLapTime[4] = curtime;
+                break;
+            }
+        case e_QSlotRacingPlayer6:
+            {
+                // Check last  lap time
+                if ((curtime < m_PlayerLastLapTime[5]) && (m_PlayerLastLapTime[5] > 0))
+                {
+                    // Faster lap
+                    // Set background color green, text color white
+                    ui->labelTime6->setStyleSheet("background-color: rgb(42, 171, 13);color: rgb(255, 255, 255);");
+                }
+                else if (curtime > m_PlayerLastLapTime[5] && (m_PlayerLastLapTime[5] > 0))
+                {
+                    // Slower lap
+                    // Set background color red, text color white
+                    ui->labelTime6->setStyleSheet("background-color: rgb(250, 0, 0);color: rgb(255, 255, 255);");
+                }
+                else
+                {
+                    // Same time lap
+                    // Remove background color
+                    ui->labelTime6->setStyleSheet("");
+                }
+                ui->labelTime6->setText(timelap);
+
+                // Update player last time
+                m_PlayerLastLapTime[5] = curtime;
+                break;
+            }
+        default:
+            {
+                break;
+            }
+        }
+    }
+}
+
+bool MainWindow::IsNewCrossing(QSlotRacingPlayer_t player, quint32 crossing)
 {
     bool    bRet;
 
     // Initialization
     bRet = false;
 
-    if (time < m_BestRaceLapTime)
+    switch(player)
     {
-        // New best race lap time
-        m_BestRaceLapTime = time;
-        bRet = true;
-    }
-    else
-    {
-        // Do nothing
+    case e_QSlotRacingPlayer1:
+        {
+            if (m_PlayerCrossings[0] != crossing)
+            {
+                bRet = true;
+            }
+            break;
+        }
+    case e_QSlotRacingPlayer2:
+        {
+            if (m_PlayerCrossings[1] != crossing)
+            {
+                bRet = true;
+            }
+            break;
+        }
+    case e_QSlotRacingPlayer3:
+        {
+            if (m_PlayerCrossings[2] != crossing)
+            {
+                bRet = true;
+            }
+            break;
+        }
+    case e_QSlotRacingPlayer4:
+        {
+            if (m_PlayerCrossings[3] != crossing)
+            {
+                bRet = true;
+            }
+            break;
+        }
+    case e_QSlotRacingPlayer5:
+        {
+            if (m_PlayerCrossings[4] != crossing)
+            {
+                bRet = true;
+            }
+            break;
+        }
+    case e_QSlotRacingPlayer6:
+        {
+            if (m_PlayerCrossings[5] != crossing)
+            {
+                bRet = true;
+            }
+            break;
+        }
+    default:
+        {
+            break;
+        }
     }
 
     return bRet;
