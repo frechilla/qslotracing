@@ -91,6 +91,8 @@ private:
 
     quint32 m_BestRaceLapTime;
 
+    /// @brief Array of configured players flags
+    bool m_PlayersConfigured[6];
 
     // Laps counting direction
     quint8 m_CountingDir;

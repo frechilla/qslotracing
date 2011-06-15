@@ -1992,6 +1992,11 @@ void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
         // Disable lap counter
         ui->editLaps1->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editPos1->setStyleSheet("background-color: rgb(220, 220, 220);");
+
+        ui->editLaps1->setEnabled(false);
+        ui->editPos1->setEnabled(false);
+
+        m_PlayersConfigured[0] = false;
     }
 }
 
@@ -2050,6 +2055,11 @@ void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
         ui->car2->show();
         ui->editLaps2->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editPos2->setStyleSheet("background-color: rgb(220, 220, 220);");
+
+        ui->editLaps2->setEnabled(false);
+        ui->editPos2->setEnabled(false);
+
+        m_PlayersConfigured[1] = false;
     }
 }
 
@@ -2108,6 +2118,11 @@ void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
         ui->car3->show();
         ui->editLaps3->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editPos3->setStyleSheet("background-color: rgb(220, 220, 220);");
+
+        ui->editLaps3->setEnabled(false);
+        ui->editPos3->setEnabled(false);
+
+        m_PlayersConfigured[2] = false;
     }
 }
 
@@ -2168,6 +2183,9 @@ void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
 
         ui->editLaps4->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editPos4->setStyleSheet("background-color: rgb(220, 220, 220);");
+        ui->editLaps4->setEnabled(false);
+        ui->editPos4->setEnabled(false);
+        m_PlayersConfigured[3] = false;
     }
 }
 
@@ -2227,6 +2245,9 @@ void MainWindow::ConfigurePlayer5(QString player, bool flag, int car)
 
         ui->editLaps5->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editPos5->setStyleSheet("background-color: rgb(220, 220, 220);");
+        ui->editLaps5->setEnabled(false);
+        ui->editPos5->setEnabled(false);
+        m_PlayersConfigured[4] = false;
     }
 }
 
@@ -2290,6 +2311,10 @@ void MainWindow::ConfigurePlayer6(QString player, bool flag, int car)
 
         ui->editLaps6->setStyleSheet("background-color: rgb(220, 220, 220);");
         ui->editPos6->setStyleSheet("background-color: rgb(220, 220, 220);");
+
+        ui->editLaps6->setEnabled(false);
+        ui->editPos6->setEnabled(false);
+        m_PlayersConfigured[5] = false;
     }
 }
 
@@ -2343,181 +2368,192 @@ void MainWindow::on_btnStats_clicked()
 void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool moreThan15, quint8 lapsBehind)
 {
     QString    data;
-    char       posStr[5];
+    char       posStr[20];
 
-    memset(posStr, 0, 5);
+    // Initialization
+    memset(posStr, 0, 20);
 
-    //qDebug()<<"Update pos: (carId)"<<carId<<" (pos)"<<pos<<" (carFlag)"<<carFlag<<" (moreThan15)"<<moreThan15<<" (lapsBehind)"<<lapsBehind;
-    switch(carId)
+    // Check if car is enabled
+    if (m_PlayersConfigured[carId -1] == true)
     {
-    case 1:
+        switch(carId)
         {
-            ui->editPos1->setStyleSheet("color: rgb(0, 0, 0);");
-            // Check position status
-            if (carFlag == false)
+        case 1:
             {
-                // No car at this position
-                ui->editPos1->setText("E");
+                ui->editPos1->setStyleSheet("color: rgb(0, 0, 0);");
+                // Check position status
+                if (carFlag == false)
+                {
+                    // No car at this position
+                    ui->editPos1->setText("E");
+                }
+                else if (moreThan15 == true)
+                {
+                    ui->editPos1->setStyleSheet("color: rgb(255, 0, 0);");
+                    ui->editPos1->setText("+15");
+                }
+                else if (lapsBehind > 0)
+                {
+                    sprintf(posStr, "+%d", lapsBehind);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos1->setText(data);
+                }
+                else
+                {
+                    if ((pos >= 0) && (pos <= 6))
+                    {
+                        sprintf(posStr, "%d", pos);
+                        data = QString::fromLocal8Bit(posStr);
+                        ui->editPos1->setText(data);
+                    }
+                }
+                break;
             }
-            else if (moreThan15 == true)
+        case 2:
             {
-                ui->editPos1->setStyleSheet("color: rgb(255, 0, 0);");
-                ui->editPos1->setText("+15");
+                ui->editPos2->setStyleSheet("color: rgb(0, 0, 0);");
+                // Check position status
+                if (carFlag == false)
+                {
+                    // No car at this position
+                    ui->editPos2->setText("E");
+                }
+                else if (moreThan15 == true)
+                {
+                    ui->editPos2->setStyleSheet("color: rgb(255, 0, 0);");
+                    ui->editPos2->setText("+15");
+                }
+                else if (lapsBehind > 0)
+                {
+                    sprintf(posStr, "+%d", lapsBehind);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos2->setText(data);
+                }
+                else
+                {
+                    sprintf(posStr, "%d", pos);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos2->setText(data);
+                }
+                break;
             }
-            else if (lapsBehind > 0)
+        case 3:
             {
-                sprintf(posStr, "+%d", lapsBehind);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos1->setText(data);
+                ui->editPos3->setStyleSheet("color: rgb(0, 0, 0);");
+                // Check position status
+                if (carFlag == false)
+                {
+                    // No car at this position
+                    ui->editPos3->setText("E");
+                }
+                else if (moreThan15 == true)
+                {
+                    ui->editPos3->setStyleSheet("color: rgb(255, 0, 0);");
+                    ui->editPos3->setText("+15");
+                }
+                else if (lapsBehind > 0)
+                {
+                    sprintf(posStr, "+%d", lapsBehind);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos3->setText(data);
+                }
+                else
+                {
+                    sprintf(posStr, "%d", pos);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos3->setText(data);
+                }
+                break;
             }
-            else
+        case 4:
             {
-                sprintf(posStr, "%d", pos);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos1->setText(data);
+                ui->editPos4->setStyleSheet("color: rgb(0, 0, 0);");
+                // Check position status
+                if (carFlag == false)
+                {
+                    // No car at this position
+                    ui->editPos4->setText("E");
+                }
+                else if (moreThan15 == true)
+                {
+                    ui->editPos4->setStyleSheet("color: rgb(255, 0, 0);");
+                    ui->editPos4->setText("+15");
+                }
+                else if (lapsBehind > 0)
+                {
+                    sprintf(posStr, "+%d", lapsBehind);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos4->setText(data);
+                }
+                else
+                {
+                    sprintf(posStr, "%d", pos);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos4->setText(data);
+                }
+                break;
             }
-            break;
+        case 5:
+            {
+                ui->editPos5->setStyleSheet("color: rgb(0, 0, 0);");
+                // Check position status
+                if (carFlag == false)
+                {
+                    // No car at this position
+                    ui->editPos5->setText("E");
+                }
+                else if (moreThan15 == true)
+                {
+                    ui->editPos5->setStyleSheet("color: rgb(255, 0, 0);");
+                    ui->editPos5->setText("+15");
+                }
+                else if (lapsBehind > 0)
+                {
+                    sprintf(posStr, "+%d", lapsBehind);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos5->setText(data);
+                }
+                else
+                {
+                    sprintf(posStr, "%d", pos);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos5->setText(data);
+                }
+                break;
+            }
+        case 6:
+            {
+                ui->editPos6->setStyleSheet("color: rgb(0, 0, 0);");
+                // Check position status
+                if (carFlag == false)
+                {
+                    // No car at this position
+                    ui->editPos6->setText("E");
+                }
+                else if (moreThan15 == true)
+                {
+                    ui->editPos6->setStyleSheet("color: rgb(255, 0, 0);");
+                    ui->editPos6->setText("+15");
+                }
+                else if (lapsBehind > 0)
+                {
+                    sprintf(posStr, "+%d", lapsBehind);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos6->setText(data);
+                }
+                else
+                {
+                    sprintf(posStr, "%d", pos);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos6->setText(data);
+                }
+                break;
+            }
         }
-    case 2:
-        {
-            ui->editPos2->setStyleSheet("color: rgb(0, 0, 0);");
-            // Check position status
-            if (carFlag == false)
-            {
-                // No car at this position
-                ui->editPos2->setText("E");
-            }
-            else if (moreThan15 == true)
-            {
-                ui->editPos2->setStyleSheet("color: rgb(255, 0, 0);");
-                ui->editPos2->setText("+15");
-            }
-            else if (lapsBehind > 0)
-            {
-                sprintf(posStr, "+%d", lapsBehind);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos2->setText(data);
-            }
-            else
-            {
-                sprintf(posStr, "%d", pos);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos2->setText(data);
-            }
-            break;
-        }
-    case 3:
-        {
-            ui->editPos3->setStyleSheet("color: rgb(0, 0, 0);");
-            // Check position status
-            if (carFlag == false)
-            {
-                // No car at this position
-                ui->editPos3->setText("E");
-            }
-            else if (moreThan15 == true)
-            {
-                ui->editPos3->setStyleSheet("color: rgb(255, 0, 0);");
-                ui->editPos3->setText("+15");
-            }
-            else if (lapsBehind > 0)
-            {
-                sprintf(posStr, "+%d", lapsBehind);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos3->setText(data);
-            }
-            else
-            {
-                sprintf(posStr, "%d", pos);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos3->setText(data);
-            }
-            break;
-        }
-    case 4:
-        {
-            ui->editPos4->setStyleSheet("color: rgb(0, 0, 0);");
-            // Check position status
-            if (carFlag == false)
-            {
-                // No car at this position
-                ui->editPos4->setText("E");
-            }
-            else if (moreThan15 == true)
-            {
-                ui->editPos4->setStyleSheet("color: rgb(255, 0, 0);");
-                ui->editPos4->setText("+15");
-            }
-            else if (lapsBehind > 0)
-            {
-                sprintf(posStr, "+%d", lapsBehind);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos4->setText(data);
-            }
-            else
-            {
-                sprintf(posStr, "%d", pos);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos4->setText(data);
-            }
-            break;
-        }
-    case 5:
-        {
-            ui->editPos5->setStyleSheet("color: rgb(0, 0, 0);");
-            // Check position status
-            if (carFlag == false)
-            {
-                // No car at this position
-                ui->editPos5->setText("E");
-            }
-            else if (moreThan15 == true)
-            {
-                ui->editPos5->setStyleSheet("color: rgb(255, 0, 0);");
-                ui->editPos5->setText("+15");
-            }
-            else if (lapsBehind > 0)
-            {
-                sprintf(posStr, "+%d", lapsBehind);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos5->setText(data);
-            }
-            else
-            {
-                sprintf(posStr, "%d", pos);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos5->setText(data);
-            }
-            break;
-        }
-    case 6:
-        {
-            ui->editPos6->setStyleSheet("color: rgb(0, 0, 0);");
-            // Check position status
-            if (carFlag == false)
-            {
-                // No car at this position
-                ui->editPos6->setText("E");
-            }
-            else if (moreThan15 == true)
-            {
-                ui->editPos6->setStyleSheet("color: rgb(255, 0, 0);");
-                ui->editPos6->setText("+15");
-            }
-            else if (lapsBehind > 0)
-            {
-                sprintf(posStr, "+%d", lapsBehind);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos6->setText(data);
-            }
-            else
-            {
-                sprintf(posStr, "%d", pos);
-                data = QString::fromLocal8Bit(posStr);
-                ui->editPos6->setText(data);
-            }
-            break;
-        }
+    }
+    else
+    {
+        // Do nothing
     }
 }
 
@@ -2533,13 +2569,31 @@ void MainWindow::UpdateLaps()
     sprintf(data, "0/%d", m_LapsCounter);
     text = QString::fromLocal8Bit(data);
 
-    // Display data for all drivers
-    ui->editLaps1->setText(text);
-    ui->editLaps2->setText(text);
-    ui->editLaps3->setText(text);
-    ui->editLaps4->setText(text);
-    ui->editLaps5->setText(text);
-    ui->editLaps6->setText(text);
+    // Display data for all configured drivers
+    if (m_PlayersConfigured[0] == true)
+    {
+        ui->editLaps1->setText(text);
+    }
+    if (m_PlayersConfigured[1] == true)
+    {
+        ui->editLaps2->setText(text);
+    }
+    if (m_PlayersConfigured[2] == true)
+    {
+        ui->editLaps3->setText(text);
+    }
+    if (m_PlayersConfigured[3] == true)
+    {
+        ui->editLaps4->setText(text);
+    }
+    if (m_PlayersConfigured[4] == true)
+    {
+        ui->editLaps5->setText(text);
+    }
+    if (m_PlayersConfigured[5] == true)
+    {
+        ui->editLaps6->setText(text);
+    }
 }
 
 void MainWindow::UpdateStats()
