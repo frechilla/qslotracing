@@ -33,71 +33,132 @@ public:
     /// @param none
     void InitFuelBackground(void);
 
-    /// @brief initializes fuel devices background color
-    /// @param none
+    /// @brief Sets current fuel level for car 1. It updates fuel display
+    /// for car
+    /// @param current fuel level
     void SetCar1Fuel(quint8 value);
+
+    /// @brief Sets current fuel level for car 2. It updates fuel display
+    /// for car
+    /// @param current fuel level
     void SetCar2Fuel(quint8 value);
+
+    /// @brief Sets current fuel level for car 3. It updates fuel display
+    /// for car
+    /// @param current fuel level
     void SetCar3Fuel(quint8 value);
+
+    /// @brief Sets current fuel level for car 4. It updates fuel display
+    /// for car
+    /// @param current fuel level
     void SetCar4Fuel(quint8 value);
+
+    /// @brief Sets current fuel level for car 5. It updates fuel display
+    /// for car
+    /// @param current fuel level
     void SetCar5Fuel(quint8 value);
+
+    /// @brief Sets current fuel level for car 6. It updates fuel display
+    /// for car
+    /// @param current fuel level
     void SetCar6Fuel(quint8 value);
 
+    /// @brief Set controller status for controller id 1.
+    /// @param ligths flag
+    /// @param lane change button flag
+    /// @param current speed value
     void SetController1(bool lights, bool lane_change, quint8 speed);
+
+    /// @brief Set controller status for controller id 2.
+    /// @param ligths flag
+    /// @param lane change button flag
+    /// @param current speed value
     void SetController2(bool lights, bool lane_change, quint8 speed);
+
+    /// @brief Set controller status for controller id 3.
+    /// @param ligths flag
+    /// @param lane change button flag
+    /// @param current speed value
     void SetController3(bool lights, bool lane_change, quint8 speed);
+
+    /// @brief Set controller status for controller id 4.
+    /// @param ligths flag
+    /// @param lane change button flag
+    /// @param current speed value
     void SetController4(bool lights, bool lane_change, quint8 speed);
+
+    /// @brief Set controller status for controller id 5.
+    /// @param ligths flag
+    /// @param lane change button flag
+    /// @param current speed value
     void SetController5(bool lights, bool lane_change, quint8 speed);
+
+    /// @brief Set controller status for controller id 6.
+    /// @param ligths flag
+    /// @param lane change button flag
+    /// @param current speed value
     void SetController6(bool lights, bool lane_change, quint8 speed);
 
     /// @brief update race status
     void UpdateRaceStatus(int status);
 private:
 
+    /// Class type definitions
     typedef QVector<quint32>  PlayersTimeContainerType_t;
-    typedef QList<quint32> PlayersTimesType_t;
+   // typedef QList<quint32> PlayersTimesType_t;
 
+    /// Class member variables
 
-    // Member variables
+    /// @brief main window pointer
     Ui::MainWindow *ui;
+
+    /// @brief serial monitor dialog member variable
     SerialMonitor m_monitor;
+
+    /// @brief configuration dialog member variable
     ConfigDialog m_config;
+
+    /// @brief controller dialog member variable
     ControllerDlg m_controller;
+
+    /// @brief stats dialog member variable
     StatsDialog m_statsdlg;
 
-    /// Sniff data off the serial interface
+    /// @brief Sniff data off the serial interface
     SnifferSerial m_serialSniffer;
 
-    /// ASCII sniffer (to simulate binary input reading from a file)
+    /// @brief ASCII sniffer (to simulate binary input reading from a file)
     /// (used mainly for debug)
     SnifferFileAscii m_asciiSniffer;
 
-    /// parses the raw data cominf from the sniffers to create QSlotRacingMsg's
+    /// @brief parses the raw data cominf from the sniffers to create QSlotRacingMsg's
     SCXMsgFactory    m_msgFactory;
 
-    /// SCX protocol analyzer. Takes in QSlotRacingMsg's and create QSlotRacingEvent's
+    /// @brief SCX protocol analyzer. Takes in QSlotRacingMsg's and create QSlotRacingEvent's
     SCXProtoAnalyzer m_scxAnalyzer;
 
-    /// timer to print out stats
+    /// @brief timer to print out stats
     QTimer m_statsTimer;
 
+    /// @brief vector containing players best times
     PlayersTimeContainerType_t m_PlayersBestTimes;
 
-    PlayersTimesType_t m_Player1RaceTimes;
-    PlayersTimesType_t m_Player2RaceTimes;
-    PlayersTimesType_t m_Player3RaceTimes;
-    PlayersTimesType_t m_Player4RaceTimes;
-    PlayersTimesType_t m_Player5RaceTimes;
-    PlayersTimesType_t m_Player6RaceTimes;
+    /// @brief variable containing current best race lap time player
+    QSlotRacingPlayer_t m_CurPlayerBestLapTime;
 
-    quint32 m_BestRaceLapTime;
+    /// @brief variable containing last player race lap time player
+    PlayersTimeContainerType_t m_PlayerLastLapTime;
+
+    /// @brief variable containing player number of crossings
+    PlayersTimeContainerType_t m_PlayerCrossings;
 
     /// @brief Array of configured players flags
     bool m_PlayersConfigured[6];
 
-    // Laps counting direction
+    /// @brief Race configured counting direction
     quint8 m_CountingDir;
 
-    // Laps counter
+    /// @brief Race configured number of laps
     quint32 m_LapsCounter;
 
     /// @brief initialize all objects related to sniffing and protocol decoding
@@ -105,6 +166,8 @@ private:
     /// WARNING: should be ONLY called once
     void InitializeProtoStack();
 
+    /// @brief this method opens and starts the serial communication device
+    /// @param serial port string identifier COM1, COM2, ...
     void OpenSerialPort(QString port);
 
     /// @brief configuration procedure for Player 1
@@ -143,6 +206,12 @@ private:
     /// @param player car ID
     void ConfigurePlayer6(QString player, bool flag, int car);
 
+    /// @brief This method updates car position at main window GUI
+    /// @param car identifier
+    /// @param current car position
+    /// @param defines if the car is present or not
+    /// @param more than 15 laps behind leader flag
+    /// @param laps begind leader
     void UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool moreThan15, quint8 lapsBehind);
 
     /// @brief update laps showed in window
@@ -154,21 +223,26 @@ private:
     /// @brief Format a string from a given time in milliseconds
     /// @param Returned formated string
     /// @param Provided time in milliseconds
-    void GetStringFromTime(QString &timestr, quint32 time);
-
-    /// @brief Check if provided time is the best partial time for player
-    /// @param Current player
-    /// @param Provided time
-    bool IsBestOwnTime(QSlotRacingPlayer_t player, quint32 time);
+    void GetStringFromTime(QString *timestr, quint32 time);
 
     /// @brief Check if provided time is the best partial time for player
     /// @param Current player
     /// @param Provided time
     bool IsFasterLap(QSlotRacingPlayer_t player, quint32 time);
 
-    /// @brief Check if provided time is the best race lap time
-    /// @param Provided time
-    bool IsBestLapTime(quint32 time);
+    /// @brief Initialize timing strings
+    void InitTimingStrings();
+
+    /// @brief This method updates the status of the player best time edit box
+    void UpdateRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing);
+
+    /// @brief This method updates the status of the player current lap time edit box
+    void UpdatePlayerLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing);
+
+    /// @brief Check if there is a new crossing for the provided player
+    /// @param current player lap event
+    /// @param number of crossings
+    bool IsNewCrossing(QSlotRacingPlayer_t player, quint32 crossing);
 
 private slots:
 
@@ -185,19 +259,20 @@ private slots:
     /// Stats will be collected from the modules and printed out
     void UpdateStats();
 
+    /// @brief Configuration dialog click button slot
     void on_BtnConfigure_clicked();
+
+    /// @brief Stats dialog click button slot
     void on_btnStats_clicked();
+
+    /// @brief Controller dialog click button slot
     void on_btnController_clicked();
+
+    /// @brief Serial monitor dialog click button slot
     void on_serial_monitor_clicked();
 
-    //TODO remove
-    void slotRead(QByteArray);
-
-    // TODO: remove?
-    void on_pushButton_3_clicked();
+    // simulator button slot
     void on_pushButton_clicked();
-public slots:
-    void consume(QByteArray *data);
 };
 
 #endif // MAINWINDOW_H
