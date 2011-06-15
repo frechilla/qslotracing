@@ -180,6 +180,7 @@ private:
             const QSharedPointer<QSlotRacingMsg> &a_msg);
 
 signals:
+    /// @brief signal issued for each new event created by this class
     void ProtoEvent(QSharedPointer<QSlotRacingEvent>);
 
 public slots:
