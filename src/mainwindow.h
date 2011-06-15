@@ -169,7 +169,6 @@ private:
     bool IsBestLapTime(quint32 time);
 
 private slots:
-    void on_btnThread_clicked();
 
     /// @brief entry point for events
     /// events will be processed by the window and the GUI will be

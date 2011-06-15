@@ -2587,26 +2587,6 @@ void MainWindow::consume(QByteArray *data)
                       */
 }
 
-void MainWindow::on_btnThread_clicked()
-{
-    /*
-    qDebug()<<"conectar con productor";;
-    this->connect(&producer, SIGNAL(DataRead(QByteArray*)),SLOT(consume(QByteArray*)));
-
-    m_msgFactory.connect(&producer, SIGNAL(DataRead(QByteArray*)),SLOT(Parse(QByteArray*)));
-
-    qDebug()<<"generar thread";
-    producer.moveToThread(&m_serialThread);
-    qDebug()<<"corriendo...";
-
-    producer.connect(&m_serialThread,SIGNAL(started()),SLOT(gen_event()));
-    qDebug()<<"conectado y produciendo...";
-
-    m_serialThread.start();
-    //producer.connect(&producerThread,SIGNAL(finished()),SLOT(quit()));
-*/
-}
-
 void MainWindow::InitStatusFrame()
 {
     // Initialize synchro status
