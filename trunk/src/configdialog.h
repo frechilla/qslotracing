@@ -26,6 +26,18 @@ private:
     QString m_port;
 
 private slots:
+    void on_EditName6_textChanged(QString str);
+    void on_EditName5_textChanged(QString str);
+    void on_EditName4_textChanged(QString str);
+    void on_EditName3_textChanged(QString str);
+    void on_EditName2_textChanged(QString str);
+    void on_EditName1_textChanged(QString str);
+    void on_EditName6_textEdited(QString );
+    void on_EditName5_textEdited(QString );
+    void on_EditName4_textEdited(QString );
+    void on_EditName3_textEdited(QString );
+    void on_EditName2_textEdited(QString );
+    void on_EditName1_textEdited(QString );
     void on_buttonBox_accepted();
 };
 

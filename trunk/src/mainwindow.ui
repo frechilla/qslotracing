@@ -2137,19 +2137,6 @@
      </property>
     </widget>
    </widget>
-   <widget class="QPushButton" name="btnThread">
-    <property name="geometry">
-     <rect>
-      <x>960</x>
-      <y>625</y>
-      <width>96</width>
-      <height>66</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Test Thread</string>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox_24">
     <property name="geometry">
      <rect>

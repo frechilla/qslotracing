@@ -86,3 +86,81 @@ void ConfigDialog::GetSerialPort(QString &port)
     port = m_port;
 }
 
+
+void ConfigDialog::on_EditName1_textEdited(QString )
+{
+    ui->checkPlayer1->setChecked(true);
+}
+
+void ConfigDialog::on_EditName2_textEdited(QString )
+{
+    ui->checkPlayer2->setChecked(true);
+}
+
+void ConfigDialog::on_EditName3_textEdited(QString )
+{
+    ui->checkPlayer3->setChecked(true);
+}
+
+void ConfigDialog::on_EditName4_textEdited(QString )
+{
+    ui->checkPlayer4->setChecked(true);
+}
+
+void ConfigDialog::on_EditName5_textEdited(QString )
+{
+    ui->checkPlayer5->setChecked(true);
+}
+
+void ConfigDialog::on_EditName6_textEdited(QString )
+{
+    ui->checkPlayer6->setChecked(true);
+}
+
+void ConfigDialog::on_EditName1_textChanged(QString str)
+{
+    if (str == "")
+    {
+        ui->checkPlayer1->setChecked(false);
+    }
+}
+
+void ConfigDialog::on_EditName2_textChanged(QString str)
+{
+    if (str == "")
+    {
+        ui->checkPlayer2->setChecked(false);
+    }
+}
+
+void ConfigDialog::on_EditName3_textChanged(QString str)
+{
+    if (str == "")
+    {
+        ui->checkPlayer3->setChecked(false);
+    }
+}
+
+void ConfigDialog::on_EditName4_textChanged(QString str)
+{
+    if (str == "")
+    {
+        ui->checkPlayer4->setChecked(false);
+    }
+}
+
+void ConfigDialog::on_EditName5_textChanged(QString str)
+{
+    if (str == "")
+    {
+        ui->checkPlayer5->setChecked(false);
+    }
+}
+
+void ConfigDialog::on_EditName6_textChanged(QString str)
+{
+    if (str == "")
+    {
+        ui->checkPlayer6->setChecked(false);
+    }
+}
