@@ -82,24 +82,21 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     case e_SCXMsgTypeId:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeId, 1);
-        //ProcessMsgId(pData, a_msg);
-        qDebug()<<"2";
+        ProcessMsgId(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeBusClearance:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeBusClearance, 1);
-        //ProcessMsgBusClearance(pData, a_msg);
-        qDebug()<<"3";
+        ProcessMsgBusClearance(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeFinishLine:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeFinishLine, 1);
-        //ProcessMsgFinishLine(pData, a_msg);
-        qDebug()<<"4";
+        ProcessMsgFinishLine(pData, a_msg);
         break;
     }
 
@@ -127,32 +124,28 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     case e_SCXMsgTypeQualifying:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeQualifying, 1);
-//        ProcessMsgQualifying(pData, a_msg);
-        qDebug()<<"8";
+        ProcessMsgQualifying(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeReset:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeReset, 1);
-//        ProcessMsgReset(pData, a_msg);
-        qDebug()<<"9";
+        ProcessMsgReset(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeStart:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeStart, 1);
-//        ProcessMsgStart(pData, a_msg);
-        qDebug()<<"10";
+        ProcessMsgStart(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeEnd:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeEnd, 1);
-//        ProcessMsgEnd(pData, a_msg);
-        qDebug()<<"11";
+        ProcessMsgEnd(pData, a_msg);
         break;
     }
 
@@ -166,16 +159,14 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     case e_SCXMsgTypeRefreshDisplay:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeRefreshDisplay, 1);
-//        ProcessMsgRefreshDisplay(pData, a_msg);
-        qDebug()<<"13";
+        ProcessMsgRefreshDisplay(pData, a_msg);
         break;
     }
 
     case e_SCXMsgTypeBrake:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeBrake, 1);
-//        ProcessMsgBrake(pData, a_msg);
-        qDebug()<<"14";
+        ProcessMsgBrake(pData, a_msg);
         break;
     }
 
@@ -236,8 +227,6 @@ void SCXProtoAnalyzer::ProcessMsgId(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "Id message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgBusClearance(
@@ -246,8 +235,6 @@ void SCXProtoAnalyzer::ProcessMsgBusClearance(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "BusClearance message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgFinishLine(
@@ -256,8 +243,6 @@ void SCXProtoAnalyzer::ProcessMsgFinishLine(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "FinishLine message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgRanking(
@@ -266,8 +251,6 @@ void SCXProtoAnalyzer::ProcessMsgRanking(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "Ranking message";
 
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventRanking> event(
@@ -312,8 +295,6 @@ void SCXProtoAnalyzer::ProcessMsgLapTime(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {    
-    qDebug() << "LapTime message";
-
     // move past the message type
     a_pData ++;
 
@@ -387,8 +368,6 @@ void SCXProtoAnalyzer::ProcessMsgLapCounter(
     quint8 byte1;
     quint8 byte2;
 
-    qDebug() << "Lap Counter message";
-
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventLapCounter> event(
             new QSlotRacingEventLapCounter(a_msg->GetTimestamp()));
@@ -420,8 +399,6 @@ void SCXProtoAnalyzer::ProcessMsgQualifying(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "Qualifying message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgReset(
@@ -430,8 +407,6 @@ void SCXProtoAnalyzer::ProcessMsgReset(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "Reset message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgStart(
@@ -440,8 +415,6 @@ void SCXProtoAnalyzer::ProcessMsgStart(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "Start message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgEnd(
@@ -450,16 +423,12 @@ void SCXProtoAnalyzer::ProcessMsgEnd(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "End message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgFuel(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {    
-    qDebug() << "Fuel message";
-
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventFuel> event(
             new QSlotRacingEventFuel(a_msg->GetTimestamp()));
@@ -501,8 +470,6 @@ void SCXProtoAnalyzer::ProcessMsgRefreshDisplay(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "RefreshDisplay message";
 }
 
 void SCXProtoAnalyzer::ProcessMsgBrake(
@@ -511,6 +478,4 @@ void SCXProtoAnalyzer::ProcessMsgBrake(
 {
     // move past the message type
     a_pData ++;
-
-    qDebug() << "Brake message";
 }

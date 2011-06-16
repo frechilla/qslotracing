@@ -132,15 +132,26 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
                 ////////////////
                 //TODO this should be gone when the CRC is working correctly
                 qDebug("SCXMsgFactory: Bad CRC %02X (expected %02X)",
-                       m_currentMsg[SCX_PROTO_CRC_POS], crc);
+                       m_currentMsg[SCX_PROTO_CRC_POS], crc);                
+
+                qDebug("    %02X %02X %02X %02X %02X %02X %02X %02X %02X",
+                       m_currentMsg[0],
+                       m_currentMsg[1],
+                       m_currentMsg[2],
+                       m_currentMsg[3],
+                       m_currentMsg[4],
+                       m_currentMsg[5],
+                       m_currentMsg[6],
+                       m_currentMsg[7],
+                       m_currentMsg[8]);
 
                 // send this new message somewhere beyond the sea...
-                QSharedPointer<QSlotRacingMsg> newSlotRacingMsg(
-                        new QSlotRacingMsg(SCX_PROTO_MSG_LENGTH, m_currentMsg));
-                emit MsgParsed(newSlotRacingMsg);
+                //QSharedPointer<QSlotRacingMsg> newSlotRacingMsg(
+                //        new QSlotRacingMsg(SCX_PROTO_MSG_LENGTH, m_currentMsg));
+                //emit MsgParsed(newSlotRacingMsg);
                 ////////////////
             }
-        }        
+        }
     }
 }
 

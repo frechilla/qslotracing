@@ -10,6 +10,9 @@
 
 #define STATS_TIMER_EXPIRE_MSEC 10000 // 10 seconds
 
+// start the testing. a byte will be read each 25ms
+#define ASCII_SNIFFER_DELAY 25
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -1841,8 +1844,7 @@ void MainWindow::on_pushButton_clicked()
 {
     // objects have been already initialized in InitializeProtoStack
 
-    // start the testing. a byte will be read each 25ms
-    m_asciiSniffer.Start(25);
+    m_asciiSniffer.Start(ASCII_SNIFFER_DELAY);
 
     //TODO would be nice to be able to stop the ascii sniffer
 
