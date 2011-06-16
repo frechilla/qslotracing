@@ -244,6 +244,12 @@ private:
     /// @param number of crossings
     bool IsNewCrossing(QSlotRacingPlayer_t player, quint32 crossing);
 
+    /// @brief Check if provided time is best race lap time among players
+    /// @param current player
+    /// @param current player lap time
+    /// @param current crossing number
+    bool IsRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing);
+
 private slots:
 
     /// @brief entry point for events
