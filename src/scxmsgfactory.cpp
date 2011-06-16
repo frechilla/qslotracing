@@ -7,6 +7,9 @@
 // undef this variable if there is no trailer at the end of each message
 #define SCX_PROTO_TRAILER      0x05
 
+// just 1 byte is used as CRC
+#define SCX_PROTO_CRC_LENGTH 1
+
 // position of the CRC byte
 #define SCX_PROTO_CRC_POS    8
 
@@ -109,9 +112,7 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
             }
 
             // check the CRC first
-            // from http://eng.slotbaer.de/SCX/DatProt.html
-            //   The checksum is calculated over all bytes of the packet, but the checksum
-            crc = CalculateCRC(m_currentMsg, SCX_PROTO_MSG_LENGTH - SCX_PROTO_CRC_LENGTH);
+            crc = CalculateCRC(m_currentMsg, SCX_PROTO_MSG_LENGTH);
             if (crc == m_currentMsg[SCX_PROTO_CRC_POS])
             {
                 m_statCounters.Increment(eStatEntry_MsgDispatched, 1);
@@ -175,7 +176,9 @@ unsigned char SCXMsgFactory::CalculateCRC(unsigned char* buffer, int count)
     int i;
     unsigned char result = 0;
 
-    for (i = 0; i < count - 1; i++)
+    // from http://eng.slotbaer.de/SCX/DatProt.html
+    //   The checksum is calculated over all bytes of the packet, but the checksum
+    for (i = 0; i < count - SCX_PROTO_CRC_LENGTH; i++)
     {
         unsigned char idx = buffer[i] ^ result;
         result = m_crcTable[idx];
