@@ -9,9 +9,6 @@
 //      Of these 3 bytes have a fixed meaning"
 #define SCX_PROTO_MSG_LENGTH 9
 
-// just 1 byte is used as CRC
-#define SCX_PROTO_CRC_LENGTH 1
-
 
 /// @brief class which porpuse is parse data bytes to create new QSlotRacingMsg
 /// tries to separate the flow of input data into separate protocol units
@@ -73,7 +70,8 @@ private:
 
     /// @brief This method calculates the CRC of the provided buffer
     /// @param input buffer for CRC calculation
-    /// @param number of bytes of buffer
+    /// @param number of bytes of buffer. It should be set to SCX_PROTO_MSG_LENGTH since
+    ///        it doesn't use the last byte of "buffer" (it assumes it contains the CRC)
     unsigned char CalculateCRC(unsigned char* buffer, int count);
 
     /// @brief CRC table for calculation
