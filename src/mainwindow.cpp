@@ -11,7 +11,7 @@
 #define STATS_TIMER_EXPIRE_MSEC 10000 // 10 seconds
 
 // start the testing. a byte will be read each 25ms
-#define ASCII_SNIFFER_DELAY 25
+#define ASCII_SNIFFER_DELAY 2
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -318,6 +318,11 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         crossings = crossings - 1; // Initial crossing must not be counted
         sprintf(data, "%d/%d", crossings,m_LapsCounter);
         text = QString::fromLocal8Bit(data);
+
+        if (player == e_QSlotRacingPlayer1)
+        {
+            player = e_QSlotRacingPlayer1;
+        }
 
         // Update race best lap time
         UpdateRaceBestLapTime(player,time, crossings);
@@ -2640,7 +2645,8 @@ void MainWindow::GetStringFromTime(QString *timestr, quint32 time)
 {
     quint8    mins;
     quint8    secs;
-    quint8    ms;
+    quint16   ms;
+    quint32   temp_time;
     char      datatime[50];
 
     // Initialization
@@ -2648,25 +2654,26 @@ void MainWindow::GetStringFromTime(QString *timestr, quint32 time)
     secs = 0;
     ms = 0;
     memset(datatime, 0, 50);
+    temp_time = time;
 
     // Calculate mins
-    mins = time / 60000;
+    mins = (quint8)(temp_time / 60000);
 
     if (mins > 0)
     {
-        time = time - (60000 * mins);
+        temp_time = temp_time - (60000 * mins);
     }
 
     // Calculate secs
-    secs = time / 1000;
+    secs = (quint8)(temp_time / 1000);
 
     if (secs > 0)
     {
-        time = time - (secs * 1000);
+        temp_time = temp_time - (secs * 1000);
     }
 
     // Calculate ms
-    ms = time;
+    ms = (quint16)temp_time;
 
     sprintf(datatime, "%02d:%02d.%03d", mins, secs, ms);
     *timestr = QString::fromLocal8Bit(datatime);
@@ -2692,30 +2699,24 @@ void MainWindow::InitTimingStrings()
 void MainWindow::UpdateRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing)
 {
     QString    timestr;
+    QString    qStyleString;
     bool       newCrossing;
+    bool       newBestLapTime;
+    bool       isPlayerFasterLap;
 
     // Check for a new crossing
     newCrossing = IsNewCrossing(player, crossing);
 
     if (newCrossing == true)
     {
-        // Check if it's best time
-        if (((m_PlayersBestTimes[0] <= curtime) && (m_PlayersBestTimes[0] > 0) && (m_PlayersConfigured[0])) ||
-            ((m_PlayersBestTimes[1] <= curtime) && (m_PlayersBestTimes[1] > 0) && (m_PlayersConfigured[1])) ||
-            ((m_PlayersBestTimes[2] <= curtime) && (m_PlayersBestTimes[2] > 0) && (m_PlayersConfigured[2])) ||
-            ((m_PlayersBestTimes[3] <= curtime) && (m_PlayersBestTimes[3] > 0) && (m_PlayersConfigured[3])) ||
-            ((m_PlayersBestTimes[4] <= curtime) && (m_PlayersBestTimes[4] > 0) && (m_PlayersConfigured[4])) ||
-            ((m_PlayersBestTimes[5] <= curtime) && (m_PlayersBestTimes[5] > 0) && (m_PlayersConfigured[5])))
-        {
-            // no better player
-        }
-        else
-        {
-            // New player best time
+        // Check for new best lap time
+        newBestLapTime = IsRaceBestLapTime(player, curtime, crossing);
 
-            // Store new player best time
-            m_PlayersBestTimes[player] = curtime;
+        // Check for player best lap time
+        isPlayerFasterLap = IsFasterLap(player, curtime);
 
+        if (newBestLapTime == true)
+        {
             // Update background color last best race lap player
             switch (m_CurPlayerBestLapTime)
             {
@@ -2782,60 +2783,64 @@ void MainWindow::UpdateRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curti
                 }
             }  // switch last best player
 
-            // Update background color last best race lap player
+            m_CurPlayerBestLapTime = player;
+        }
+        else
+        {
+            // Do nothing. No new best lap time
+        }
+
+        // Checke for new best lap time before setting background color
+        if (newBestLapTime == true)
+        {
+            qStyleString = "background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);";
+        }
+        else
+        {
+            qStyleString = "";
+        }
+
+        if (isPlayerFasterLap == true)
+        {
+            // Format time string
+            GetStringFromTime(&timestr, curtime);
+
+            // Update
             switch (player)
             {
             case e_QSlotRacingPlayer1:
                 {
-                    // Format time string
-                    GetStringFromTime(&timestr, curtime);
-
-                    ui->labelBest1->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest1->setStyleSheet(qStyleString);
                     ui->labelBest1->setText(timestr);
                     break;
                 }
             case e_QSlotRacingPlayer2:
                 {
-                    // Format time string
-                    GetStringFromTime(&timestr, curtime);
-
-                    ui->labelBest2->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest2->setStyleSheet(qStyleString);
                     ui->labelBest2->setText(timestr);
                     break;
                 }
             case e_QSlotRacingPlayer3:
                 {
-                    // Format time string
-                    GetStringFromTime(&timestr, curtime);
-
-                    ui->labelBest3->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest3->setStyleSheet(qStyleString);
                     ui->labelBest3->setText(timestr);
                     break;
                 }
             case e_QSlotRacingPlayer4:
                 {
-                    // Format time string
-                    GetStringFromTime(&timestr, curtime);
-
-                    ui->labelBest4->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest4->setStyleSheet(qStyleString);
                     ui->labelBest4->setText(timestr);
                     break;
                 }
             case e_QSlotRacingPlayer5:
                 {
-                    // Format time string
-                    GetStringFromTime(&timestr, curtime);
-
-                    ui->labelBest5->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest5->setStyleSheet(qStyleString);
                     ui->labelBest5->setText(timestr);
                     break;
                 }
             case e_QSlotRacingPlayer6:
                 {
-                    // Format time string
-                    GetStringFromTime(&timestr, curtime);
-
-                    ui->labelBest6->setStyleSheet("background-color: rgb(229, 2, 188);color: rgb(255, 255, 255);");
+                    ui->labelBest6->setStyleSheet(qStyleString);
                     ui->labelBest6->setText(timestr);
                     break;
                 }
@@ -2844,12 +2849,74 @@ void MainWindow::UpdateRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curti
                     break;
                 }
             }  // switch new best player
-        }  // if there is a new best player
+        }
+        else
+        {
+            // Do nothing. No personal best lap time so no best race lap time
+        }
+
     }
     else
     {
+        // Do nothing. No new crossing detected.
     }
 }
+
+bool MainWindow::IsFasterLap(QSlotRacingPlayer_t player, quint32 time)
+{
+    bool    bIsFaster;
+
+    // Initialization
+    bIsFaster = false;
+
+    // Check if player configured and time is better than stored
+    if (m_PlayersConfigured[player] &&
+        ((time < m_PlayersBestTimes[player]) || (m_PlayersBestTimes[player] == 0)))
+    {
+        // Update best time
+        m_PlayersBestTimes[player] = time;
+
+        // Set faster flag
+        bIsFaster = true;
+    }
+
+    return bIsFaster;
+}
+
+bool MainWindow::IsRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing)
+{
+    bool    bIsBestTime;
+    bool    newCrossing;
+
+    // Initialization
+    bIsBestTime = false;
+
+    // Check for a new crossing
+    newCrossing = IsNewCrossing(player, crossing);
+
+    if (newCrossing == true)
+    {
+        // Check if it's best time
+        if (((m_PlayersBestTimes[0] <= curtime) && (m_PlayersBestTimes[0] > 0) && (m_PlayersConfigured[0])) ||
+            ((m_PlayersBestTimes[1] <= curtime) && (m_PlayersBestTimes[1] > 0) && (m_PlayersConfigured[1])) ||
+            ((m_PlayersBestTimes[2] <= curtime) && (m_PlayersBestTimes[2] > 0) && (m_PlayersConfigured[2])) ||
+            ((m_PlayersBestTimes[3] <= curtime) && (m_PlayersBestTimes[3] > 0) && (m_PlayersConfigured[3])) ||
+            ((m_PlayersBestTimes[4] <= curtime) && (m_PlayersBestTimes[4] > 0) && (m_PlayersConfigured[4])) ||
+            ((m_PlayersBestTimes[5] <= curtime) && (m_PlayersBestTimes[5] > 0) && (m_PlayersConfigured[5])))
+        {
+            // no better player
+            bIsBestTime = false;
+        }
+        else
+        {
+            // new best race lap time
+            bIsBestTime = true;
+        }
+    }
+
+    return bIsBestTime;
+}
+
 
 void MainWindow::UpdatePlayerLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing)
 {
