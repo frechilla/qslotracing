@@ -99,13 +99,19 @@ public:
     /// @param current speed value
     void SetController6(bool lights, bool lane_change, quint8 speed);
 
-    /// @brief update race status
-    void UpdateRaceStatus(int status);
 private:
 
     /// Class type definitions
     typedef QVector<quint32>  PlayersTimeContainerType_t;
    // typedef QList<quint32> PlayersTimesType_t;
+
+    typedef enum
+    {
+        e_QSlotRacingConfigMode = 0,  // configuration mode
+        e_QSlotRacingRaceMode,        // race mode
+        e_QSlotRacingQualyMode       // qualifying mode
+    } QSlotRacingRaceStatusType_t;
+
 
     /// Class member variables
 
@@ -250,12 +256,16 @@ private:
     /// @param current crossing number
     bool IsRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing);
 
+    /// @brief update race status
+    void UpdateRaceStatus(QSlotRacingRaceStatusType_t status);
+
 private slots:
 
     /// @brief entry point for events
     /// events will be processed by the window and the GUI will be
     /// updated accordingly
     /// @param shared pointer wrapping the event
+    void on_btnQualy_clicked();
     void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
 
     /// @brief update synchro status

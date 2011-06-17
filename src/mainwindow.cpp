@@ -469,7 +469,7 @@ void MainWindow::on_BtnConfigure_clicked()
         ConfigurePlayer6(PlayerName, PlayerFlag, PlayerCar);
 
         // Update race status
-        UpdateRaceStatus(1);
+        UpdateRaceStatus(e_QSlotRacingRaceMode);
     }
     else
     {
@@ -2605,8 +2605,7 @@ void MainWindow::InitStatusFrame()
     // Initialize synchro status
     ui->labelSynchro->setPixmap(QPixmap(QString::fromUtf8(":/pics/red_ball")));
 
-    // Initialize race status
-    ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/settings_status")));
+    UpdateRaceStatus(e_QSlotRacingConfigMode);
 }
 
 void MainWindow::UpdateSynchroStatus(bool bSynchro)
@@ -2626,18 +2625,23 @@ void MainWindow::UpdateSynchroStatus(bool bSynchro)
     }
 }
 
-void MainWindow::UpdateRaceStatus(int status)
+void MainWindow::UpdateRaceStatus(QSlotRacingRaceStatusType_t status)
 {
     // Check race status
-    if (status == 0)
+    if (status == e_QSlotRacingConfigMode)
     {
         // Waiting for configuration status
         ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/settings_status")));
     }
-    else if (status == 1)
+    else if (status == e_QSlotRacingRaceMode)
     {
         // Waiting for race status
         ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/race_flag_status")));
+    }
+    else if (status == e_QSlotRacingQualyMode)
+    {
+        // Waiting for qualifying status
+        ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/crono_status")));
     }
 }
 
@@ -3168,4 +3172,9 @@ bool MainWindow::IsNewCrossing(QSlotRacingPlayer_t player, quint32 crossing)
     }
 
     return bRet;
+}
+
+void MainWindow::on_btnQualy_clicked()
+{
+    UpdateRaceStatus(e_QSlotRacingQualyMode);
 }
