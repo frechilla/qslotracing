@@ -108,8 +108,9 @@ private:
     typedef enum
     {
         e_QSlotRacingConfigMode = 0,  // configuration mode
+        e_QSlotRacingRaceIdleMode,    // waiting for mode
         e_QSlotRacingRaceMode,        // race mode
-        e_QSlotRacingQualyMode       // qualifying mode
+        e_QSlotRacingQualyMode        // qualifying mode
     } QSlotRacingRaceStatusType_t;
 
 
@@ -166,6 +167,9 @@ private:
 
     /// @brief Race configured number of laps
     quint32 m_LapsCounter;
+
+    /// @brief Race status
+    QSlotRacingRaceStatusType_t m_RaceMode;
 
     /// @brief initialize all objects related to sniffing and protocol decoding
     /// Connects also all signals to the expected slots

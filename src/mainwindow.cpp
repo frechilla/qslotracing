@@ -76,6 +76,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Initialize current player with best race time
     m_CurPlayerBestLapTime = e_QSlotRacingNoPlayer;
 
+    // Initialize race mode
+    m_RaceMode = e_QSlotRacingConfigMode;
+
     // Initialize timing strings
     InitTimingStrings();
 }
@@ -397,6 +400,28 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
         break;
     }
+    case e_QSlotRacingEvent_Start:
+    {
+        // Check if qualifying mode
+        if (m_RaceMode == e_QSlotRacingQualyMode)
+        {
+            // Do nothing, qualy mode
+        }
+        else
+        {
+            m_RaceMode = e_QSlotRacingRaceMode;
+            UpdateRaceStatus(m_RaceMode);
+        }
+        break;
+    }
+    case e_QSlotRacingEvent_Qualifying:
+    {
+        // Update status
+        m_RaceMode = e_QSlotRacingQualyMode;
+        UpdateRaceStatus(m_RaceMode);
+
+        break;
+    }
     default:
     {
         // highly unexpected
@@ -469,7 +494,7 @@ void MainWindow::on_BtnConfigure_clicked()
         ConfigurePlayer6(PlayerName, PlayerFlag, PlayerCar);
 
         // Update race status
-        UpdateRaceStatus(e_QSlotRacingRaceMode);
+        UpdateRaceStatus(e_QSlotRacingRaceIdleMode);
     }
     else
     {
@@ -2633,10 +2658,15 @@ void MainWindow::UpdateRaceStatus(QSlotRacingRaceStatusType_t status)
         // Waiting for configuration status
         ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/settings_status")));
     }
+    else if (status == e_QSlotRacingRaceIdleMode)
+    {
+        // Waiting for race status
+        ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/race_idle_status")));
+    }
     else if (status == e_QSlotRacingRaceMode)
     {
         // Waiting for race status
-        ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/race_flag_status")));
+        ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/race_status")));
     }
     else if (status == e_QSlotRacingQualyMode)
     {

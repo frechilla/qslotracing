@@ -12,7 +12,9 @@ typedef enum
     e_QSlotRacingEvent_Lap,        // finish line crossed
     e_QSlotRacingEvent_Controller, // controller package
     e_QSlotRacingEvent_Ranking,    // ranking package
-    e_QSlotRacingEvent_LapCounter    // lap counter package
+    e_QSlotRacingEvent_LapCounter, // lap counter package
+    e_QSlotRacingEvent_Start,      // start package
+    e_QSlotRacingEvent_Qualifying  // qualifying package
 } QSlotRacingEventType_t;
 
 /// Players handled by this app
@@ -89,6 +91,7 @@ public:
     QSlotRacingEventFuel(const QTime &a_timestamp):
             QSlotRacingEvent(e_QSlotRacingEvent_Fuel, a_timestamp)
     {}
+
     ~QSlotRacingEventFuel()
     {}
 
@@ -128,65 +131,6 @@ private:
     // prevent standard constructor from being used
     QSlotRacingEventFuel();
 };
-
-
-/*
-/// @brief lap event
-/// sent when a car crosses the finish line
-class QSlotRacingEventLap :
-        public QSlotRacingEvent
-{
-public:
-    /// @param virtual time timestamp
-    /// @param who triggered this lap event
-    /// @param lap time. 0 if it is unknown
-    /// @param virtual time timestamp
-    QSlotRacingEventLap(const QTime         &a_timestamp,
-                        QSlotRacingPlayer_t  a_who,
-                        qint32               a_crossingTimes,
-                        qint32               a_lapTimeMillis = -1):
-            QSlotRacingEvent(e_QSlotRacingEvent_Lap, a_timestamp),
-            m_player(a_who),
-            m_crossingTimes(a_crossingTimes),
-            m_lapMillis(a_lapTimeMillis)
-    {}
-    ~QSlotRacingEventLap()
-    {}
-
-    /// @return who triggered this lap event
-    inline QSlotRacingPlayer_t GetWho() const
-    {
-        return m_player;
-    }
-
-    /// @return number of times this player has crossed the finish line
-    /// negative if unknown or bogus
-    inline qint32 GetCrossingTimes() const
-    {
-        return m_crossingTimes;
-    }
-
-    /// @return lap time in milliseconds.
-    /// negative if unknown or bogus. The first crossing (race start) might give a time of 0
-    inline qint32 GetLapMillis() const
-    {
-        return m_lapMillis;
-    }
-
-private:
-    /// @brief who triggered the event
-    QSlotRacingPlayer_t m_player;
-
-    /// @brief times this player has crossed the finish line
-    qint32 m_crossingTimes;
-
-    /// @brief lap time in milliseconds
-    qint32 m_lapMillis;
-
-    // prevent standard constructor from being used
-    QSlotRacingEventLap();
-};
-*/
 
 /// @brief controller event
 class QSlotRacingEventController :
@@ -329,6 +273,7 @@ public:
     QSlotRacingEventRanking(const QTime &a_timestamp):
             QSlotRacingEvent(e_QSlotRacingEvent_Ranking, a_timestamp)
     {}
+
     ~QSlotRacingEventRanking()
     {}
 
@@ -476,6 +421,7 @@ public:
     QSlotRacingEventLapCounter(const QTime &a_timestamp):
             QSlotRacingEvent(e_QSlotRacingEvent_LapCounter, a_timestamp)
     {}
+
     ~QSlotRacingEventLapCounter()
     {}
 
@@ -530,6 +476,7 @@ public:
     QSlotRacingEventLap(const QTime &a_timestamp):
             QSlotRacingEvent(e_QSlotRacingEvent_Lap, a_timestamp)
     {}
+
     ~QSlotRacingEventLap()
     {}
 
@@ -575,6 +522,46 @@ private:
 
     // prevent standard constructor from being used
     QSlotRacingEventLap();
+};
+
+/// @brief Start package event
+class QSlotRacingEventStart :
+        public QSlotRacingEvent
+{
+private:
+public:
+    /// @param virtual time timestamp
+    QSlotRacingEventStart(const QTime &a_timestamp):
+            QSlotRacingEvent(e_QSlotRacingEvent_Start, a_timestamp)
+    {}
+
+    ~QSlotRacingEventStart()
+    {}
+
+private:
+
+    // prevent standard constructor from being used
+    QSlotRacingEventStart();
+};
+
+/// @brief Qualifying package event
+class QSlotRacingEventQualifying :
+        public QSlotRacingEvent
+{
+private:
+public:
+    /// @param virtual time timestamp
+    QSlotRacingEventQualifying(const QTime &a_timestamp):
+            QSlotRacingEvent(e_QSlotRacingEvent_Qualifying, a_timestamp)
+    {}
+
+    ~QSlotRacingEventQualifying()
+    {}
+
+private:
+
+    // prevent standard constructor from being used
+    QSlotRacingEventQualifying();
 };
 
 #endif // QSLOTRACINGEVENT_H
