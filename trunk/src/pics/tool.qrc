@@ -8,10 +8,12 @@
         <file alias="williams">williams.bmp</file>
         <file alias="controller">controller.bmp</file>
         <file alias="settings">settings.png</file>
+        <file alias="race_idle_status">race_idle_status.png</file>
+        <file alias="crono_status">crono_status.png</file>
+        <file alias="race_flag_status">race_flag_status.png</file>
+        <file alias="settings_status">settings_status.png</file>
         <file alias="red_ball">red_ball.png</file>
         <file alias="green_ball">green_ball.png</file>
-        <file alias="settings_status">settings_status.png</file>
-        <file alias="race_flag_status">race_flag_status.png</file>
-        <file alias="crono_status">crono_status.png</file>
+        <file alias="race_status">car_status.png</file>
     </qresource>
 </RCC>

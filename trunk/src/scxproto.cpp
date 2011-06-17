@@ -397,8 +397,12 @@ void SCXProtoAnalyzer::ProcessMsgQualifying(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    // move past the message type
-    a_pData ++;
+    // this is the event that will be pass through to upper layers
+    QSharedPointer<QSlotRacingEventQualifying> event(
+            new QSlotRacingEventQualifying(a_msg->GetTimestamp()));
+
+    // notify the event to upper layers (whoever that might be)
+    emit ProtoEvent(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgReset(
@@ -413,8 +417,12 @@ void SCXProtoAnalyzer::ProcessMsgStart(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    // move past the message type
-    a_pData ++;
+    // this is the event that will be pass through to upper layers
+    QSharedPointer<QSlotRacingEventStart> event(
+            new QSlotRacingEventStart(a_msg->GetTimestamp()));
+
+    // notify the event to upper layers (whoever that might be)
+    emit ProtoEvent(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgEnd(
