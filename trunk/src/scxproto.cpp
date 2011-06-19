@@ -429,8 +429,12 @@ void SCXProtoAnalyzer::ProcessMsgEnd(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
-    // move past the message type
-    a_pData ++;
+    // this is the event that will be pass through to upper layers
+    QSharedPointer<QSlotRacingEventEnd> event(
+            new QSlotRacingEventEnd(a_msg->GetTimestamp()));
+
+    // notify the event to upper layers (whoever that might be)
+    emit ProtoEvent(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgFuel(

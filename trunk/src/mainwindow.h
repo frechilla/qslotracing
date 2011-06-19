@@ -110,7 +110,8 @@ private:
         e_QSlotRacingConfigMode = 0,  // configuration mode
         e_QSlotRacingRaceIdleMode,    // waiting for mode
         e_QSlotRacingRaceMode,        // race mode
-        e_QSlotRacingQualyMode        // qualifying mode
+        e_QSlotRacingQualyMode,       // qualifying mode
+        e_QSlotRacingFinishMode       // race finished mode
     } QSlotRacingRaceStatusType_t;
 
 
@@ -261,7 +262,11 @@ private:
     bool IsRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing);
 
     /// @brief update race status
+    /// @param race status
     void UpdateRaceStatus(QSlotRacingRaceStatusType_t status);
+
+    /// @brief Show final results of race
+    void ShowRaceResults();
 
 private slots:
 
