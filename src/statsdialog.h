@@ -17,6 +17,9 @@ public:
 
 private:
     Ui::StatsDialog *ui;
+
+private slots:
+    void on_tabWidget_currentChanged(int index);
 };
 
 #endif // STATSDIALOG_H
