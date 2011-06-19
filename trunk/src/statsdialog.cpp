@@ -12,3 +12,10 @@ StatsDialog::~StatsDialog()
 {
     delete ui;
 }
+
+void StatsDialog::on_tabWidget_currentChanged(int index)
+{
+    int cual;
+
+    cual = index;
+}
