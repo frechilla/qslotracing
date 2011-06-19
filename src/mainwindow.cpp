@@ -299,7 +299,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 a_event.staticCast<QSlotRacingEventLap>();
 
         QSlotRacingPlayer_t   player;
-        qint32                crossings;
+        quint32                crossings;
         quint32               time;
         QString               text;
         QString               timelap;
@@ -321,11 +321,6 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         crossings = crossings - 1; // Initial crossing must not be counted
         sprintf(data, "%d/%d", crossings,m_LapsCounter);
         text = QString::fromLocal8Bit(data);
-
-        if (player == e_QSlotRacingPlayer1)
-        {
-            player = e_QSlotRacingPlayer1;
-        }
 
         // Update race best lap time
         UpdateRaceBestLapTime(player,time, crossings);
@@ -397,6 +392,16 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
             }
         }
 
+        // Update race status. If laps finished, show flag
+        if (crossings == m_LapsCounter)
+        {
+            // Race end
+            UpdateRaceStatus(e_QSlotRacingFinishMode);
+        }
+        else
+        {
+            // Do nothing
+        }
 
         break;
     }
@@ -420,6 +425,11 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         m_RaceMode = e_QSlotRacingQualyMode;
         UpdateRaceStatus(m_RaceMode);
 
+        break;
+    }
+    case e_QSlotRacingEvent_End:
+    {
+        ShowRaceResults();
         break;
     }
     default:
@@ -2392,11 +2402,13 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
                 else if (moreThan15 == true)
                 {
                     ui->editPos1->setStyleSheet("color: rgb(255, 0, 0);");
-                    ui->editPos1->setText("+15");
+                    sprintf(posStr, "%d/+15", pos);
+                    data = QString::fromLocal8Bit(posStr);
+                    ui->editPos1->setText(data);
                 }
                 else if (lapsBehind > 0)
                 {
-                    sprintf(posStr, "+%d", lapsBehind);
+                    sprintf(posStr, "%d/+%d", pos, lapsBehind);
                     data = QString::fromLocal8Bit(posStr);
                     ui->editPos1->setText(data);
                 }
@@ -2423,11 +2435,12 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
                 else if (moreThan15 == true)
                 {
                     ui->editPos2->setStyleSheet("color: rgb(255, 0, 0);");
-                    ui->editPos2->setText("+15");
+                    sprintf(posStr, "%d/+15", pos);
+                    data = QString::fromLocal8Bit(posStr);
                 }
                 else if (lapsBehind > 0)
                 {
-                    sprintf(posStr, "+%d", lapsBehind);
+                    sprintf(posStr, "%d/+%d", pos, lapsBehind);
                     data = QString::fromLocal8Bit(posStr);
                     ui->editPos2->setText(data);
                 }
@@ -2672,6 +2685,11 @@ void MainWindow::UpdateRaceStatus(QSlotRacingRaceStatusType_t status)
     {
         // Waiting for qualifying status
         ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/crono_status")));
+    }
+    else if (status == e_QSlotRacingFinishMode)
+    {
+        // Waiting for qualifying status
+        ui->labelRace->setPixmap(QPixmap(QString::fromUtf8(":/pics/race_flag_status")));
     }
 }
 
@@ -3207,4 +3225,9 @@ bool MainWindow::IsNewCrossing(QSlotRacingPlayer_t player, quint32 crossing)
 void MainWindow::on_btnQualy_clicked()
 {
     UpdateRaceStatus(e_QSlotRacingQualyMode);
+}
+
+void MainWindow::ShowRaceResults()
+{
+
 }

@@ -14,7 +14,8 @@ typedef enum
     e_QSlotRacingEvent_Ranking,    // ranking package
     e_QSlotRacingEvent_LapCounter, // lap counter package
     e_QSlotRacingEvent_Start,      // start package
-    e_QSlotRacingEvent_Qualifying  // qualifying package
+    e_QSlotRacingEvent_Qualifying, // qualifying package
+    e_QSlotRacingEvent_End         // end package
 } QSlotRacingEventType_t;
 
 /// Players handled by this app
@@ -562,6 +563,26 @@ private:
 
     // prevent standard constructor from being used
     QSlotRacingEventQualifying();
+};
+
+/// @brief End package event
+class QSlotRacingEventEnd :
+        public QSlotRacingEvent
+{
+private:
+public:
+    /// @param virtual time timestamp
+    QSlotRacingEventEnd(const QTime &a_timestamp):
+            QSlotRacingEvent(e_QSlotRacingEvent_End, a_timestamp)
+    {}
+
+    ~QSlotRacingEventEnd()
+    {}
+
+private:
+
+    // prevent standard constructor from being used
+    QSlotRacingEventEnd();
 };
 
 #endif // QSLOTRACINGEVENT_H
