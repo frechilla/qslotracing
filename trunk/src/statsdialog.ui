@@ -29,58 +29,6 @@
     <set>QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QTabWidget" name="tabWidget">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>771</width>
-     <height>461</height>
-    </rect>
-   </property>
-   <property name="tabShape">
-    <enum>QTabWidget::Triangular</enum>
-   </property>
-   <property name="currentIndex">
-    <number>0</number>
-   </property>
-   <widget class="QWidget" name="tab">
-    <attribute name="title">
-     <string>Position</string>
-    </attribute>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>130</y>
-       <width>151</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Position chart: available soon...</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_2">
-    <attribute name="title">
-     <string>Times</string>
-    </attribute>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>100</y>
-       <width>221</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Times: available soon...</string>
-     </property>
-    </widget>
-   </widget>
-  </widget>
  </widget>
  <resources/>
  <connections>

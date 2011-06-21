@@ -10,12 +10,49 @@
 #include <qcolor.h>
 #include <qpainter.h>
 
+#include <QTabWidget>
 
 const int Size = 27;
 
 namespace Ui {
     class StatsDialog;
 }
+
+class GeneralTab : public QWidget
+ {
+     Q_OBJECT
+
+ public:
+     GeneralTab(QWidget *parent = 0);
+ protected:
+     virtual void paintEvent(QPaintEvent *);
+ private:
+     void DrawContents(QPainter* painter);
+     QwtScaleMap xMap;
+     QwtScaleMap yMap;
+     QwtPlotCurve curve;
+     double xval[Size];
+     double yval[Size];
+
+ };
+
+class OtherTab : public QWidget
+ {
+     Q_OBJECT
+
+ public:
+     OtherTab(QWidget *parent = 0);
+ protected:
+     virtual void paintEvent(QPaintEvent *);
+ private:
+     void DrawContents(QPainter* painter);
+     QwtScaleMap xMap;
+     QwtScaleMap yMap;
+     QwtPlotCurve curve;
+     double xval[Size];
+     double yval[Size];
+
+ };
 
 class StatsDialog : public QDialog
 {
@@ -24,19 +61,17 @@ class StatsDialog : public QDialog
 public:
     explicit StatsDialog(QWidget *parent = 0);
     ~StatsDialog();
-protected:
-    virtual void paintEvent(QPaintEvent *);
+
+    /// @brief Set the race finished flag, to manage the stats window
+    void SetRaceFinished(bool bFinished);
 
 private:
     Ui::StatsDialog *ui;
 
-    QwtScaleMap xMap;
-    QwtScaleMap yMap;
-    QwtPlotCurve curve;
-    double xval[Size];
-    double yval[Size];
+    QTabWidget *tabOne;
+    QTabWidget *tabTwo;
 
-    void DrawContents(QPainter* painter);
+
 
 private slots:
     void on_tabWidget_currentChanged(int index);
