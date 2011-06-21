@@ -9,4 +9,5 @@
 9) In C:\Qwt-6.0.1-svn
     - Copy all contents of the directory "include" into path/to/QSlotRacing/3rdParty/qwt/i386-win32/include
     - Copy all contents of the directory "libs" into path/to/QSlotRacing/3rdParty/qwt/i386-win32/lib
-    
+10) Get into the new lib directory (path/to/QSlotRacing/3rdParty/qwt/i386-win32/lib) and gzip all new libs
+    before committing them into the repository
