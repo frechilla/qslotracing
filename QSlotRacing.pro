@@ -10,9 +10,9 @@ TARGET = QSlotRacing
 TEMPLATE = app
 
 CONFIG += qwt
-INCLUDEPATH += "C:/Qwt-6.0.1/include"
-LIBS += "C:/Qwt-6.0.1/lib/libqwt.a"
-LIBS += "C:/Qwt-6.0.1/lib/libqwtmathml.a"
+INCLUDEPATH += "$$OUT_PWD/include/qwt"
+LIBS += "$$OUT_PWD/lib/libqwt.a"
+LIBS += "$$OUT_PWD/lib/libqwtmathml.a"
 
 include(src/src.pri)
 include(src/qserialdevice/qserialdevice.pri)
