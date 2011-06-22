@@ -10,13 +10,13 @@ TARGET = QSlotRacing
 TEMPLATE = app
 
 CONFIG += qwt
-INCLUDEPATH += "$$OUT_PWD/include/qwt"
-LIBS += "$$OUT_PWD/lib/libqwt.a"
-LIBS += "$$OUT_PWD/lib/libqwtmathml.a"
+INCLUDEPATH += "$$PWD/3rdParty/qwt/include"
+LIBS += "$$PWD/3rdParty/qwt/i386-win32/lib/libqwt.a"
+LIBS += "$$PWD/3rdParty/qwt/i386-win32/lib/libqwtmathml.a"
 
-INCLUDEPATH += "$$OUT_PWD/include/qserialdevice/qserialdevice"
-INCLUDEPATH += "$$OUT_PWD/include/qserialdevice/qserialdeviceenumerator"
-LIBS += "$$OUT_PWD/lib/libqserialdevice.a"
+INCLUDEPATH += "$$PWD/3rdParty/qserialdevice/include/qserialdevice"
+INCLUDEPATH += "$$PWD/3rdParty/qserialdevice/include/qserialdeviceenumerator"
+LIBS += "$$PWD/3rdParty/qserialdevice/i386-win32/lib/libqserialdevice.a"
 
 include(src/src.pri)
 
