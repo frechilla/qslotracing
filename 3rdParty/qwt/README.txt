@@ -30,14 +30,9 @@
 8) make
 9) make install
 10) Get into the path used for QWT_INSTALL_PREFIX in step 2. In the lib/ directory there will 
-   be 2 .a files (the static libraries). Run the following commands (on that lib/ directory)
-    $ cp libqwt.a libqwtd.a
-    $ cp libqwtmathml.a libqwtmathmld.a
-    $ strip libqwt.a
-    $ strip libqwtmathml.a
-11) You will have then 4 different files, 2 release and 2 debug libraries. Copy them into the 3rdParty directory:
+   be 2 .a files (the static libraries). Copy them into the 3rdParty directory:
     $ cp QWT_INSTALL_PREFIX/lib/*.a path/to/QSlotRacing/3rdParty/qwt/i386-linux/lib
-12) gzip the .a library files you just copied before committing them to the repository
+11) gzip the .a library files you just copied before committing them to the repository
 
 
 ##########################

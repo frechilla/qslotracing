@@ -10,7 +10,7 @@
 
 #define STATS_TIMER_EXPIRE_MSEC 10000 // 10 seconds
 
-// start the testing. a byte will be read each 25ms
+// start the testing. a byte will be read each 2ms
 #define ASCII_SNIFFER_DELAY 2
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -96,7 +96,7 @@ void MainWindow::InitializeProtoStack()
 ///////////
 //TODO This is DEBUG code. File(s) should be read from some sort of GUI element
 #if defined (Q_OS_UNIX)
-    m_asciiSniffer.AddAsciiFile("/home/frechilla/workspace/headless/QSlotRacing/doc/ascii-sniffer-example");
+    m_asciiSniffer.AddAsciiFile("/home/frechilla/workspace/headless/QSlotRacing/doc/ascii-sniffer-real-traffic");
 #elif defined (Q_OS_WIN)
     m_asciiSniffer.AddAsciiFile("C:\\file");
 #endif
