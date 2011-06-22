@@ -28,9 +28,7 @@ public:
     bool nativeOpen(AbstractSerial::OpenMode mode);
     bool nativeClose();
 
-    bool nativeSetBaudRate(AbstractSerial::BaudRate baudRate);
-    bool nativeSetInputBaudRate(AbstractSerial::BaudRate baudRate);
-    bool nativeSetOutputBaudRate(AbstractSerial::BaudRate baudRate);
+    bool nativeSetBaudRate(qint32 baudRate, AbstractSerial::BaudRateDirection baudDir);
     bool nativeSetDataBits(AbstractSerial::DataBits dataBits);
     bool nativeSetParity(AbstractSerial::Parity parity);
     bool nativeSetStopBits(AbstractSerial::StopBits stopBits);
@@ -92,6 +90,8 @@ private:
     TTYLocker locker;
     void prepareTimeouts(int msecs);
     bool updateTermious();
+    bool setStandartBaud(AbstractSerial::BaudRateDirection, speed_t speed);
+    bool setCustomBaud(qint32 speed);
 #endif
 
     void initVariables();

@@ -64,15 +64,11 @@ public:
     void setDeviceName(const QString &deviceName);
     QString deviceName() const;
 
-    virtual bool open(AbstractSerial::OpenMode mode) = 0;
+    virtual bool open(QIODevice::OpenMode mode) = 0;
     virtual void close() = 0;
 
-    virtual bool setBaudRate(AbstractSerial::BaudRate baudRate) = 0;
-    virtual bool setInputBaudRate(AbstractSerial::BaudRate baudRate) = 0;
-    virtual bool setOutputBaudRate(AbstractSerial::BaudRate baudRate) = 0;
-    AbstractSerial::BaudRate baudRate() const;
-    AbstractSerial::BaudRate inputBaudRate() const;
-    AbstractSerial::BaudRate outputBaudRate() const;
+    virtual bool setBaudRate(qint32 baudRate, AbstractSerial::BaudRateDirection baudDir) = 0;
+    qint32 baudRate(AbstractSerial::BaudRateDirection baudDir) const;
 
     virtual bool setDataBits(AbstractSerial::DataBits dataBits) = 0;
     AbstractSerial::DataBits dataBits() const;
