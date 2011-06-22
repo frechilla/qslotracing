@@ -11,16 +11,17 @@ GeneralTab::GeneralTab(QWidget *parent)
  {
     int i;
 
-    xMap.setScaleInterval(-0.5, 10.5);
-    yMap.setScaleInterval(-1.1, 1.1);
+    xMap.setScaleInterval(0, Size);
+    yMap.setScaleInterval(6, 1);
 
     //
     // Calculate values
     //
+
     for(i=0; i<Size;i++)
     {
-        xval[i] = double(i) * 10.0 / double(Size - 1);
-        yval[i] = qSin(xval[i]) * qCos(2.0 * xval[i]);
+        xval[i] = i;
+        yval[i] = i;
     }
 
     curve.setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
@@ -29,14 +30,13 @@ GeneralTab::GeneralTab(QWidget *parent)
     curve.setStyle(QwtPlotCurve::Lines);
     curve.setCurveAttribute(QwtPlotCurve::Fitted);
 
+
     curve.setRawSamples(xval, yval, Size);
 
 
-    QLabel *fileNameLabel = new QLabel(tr("File Name:"));
+     QLabel *fileNameLabel = new QLabel(tr("File Name:"));
      QLabel *fileNameEdit = new QLabel(tr("File Name:"));
-
      QLabel *pathLabel = new QLabel(tr("Path:"));
-
      QLabel *sizeLabel = new QLabel(tr("Size:"));
 
      QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -98,18 +98,112 @@ void OtherTab::paintEvent(QPaintEvent *event)
 
 void OtherTab::DrawContents(QPainter* painter)
 {
-    plot1->show();
+    //plot1->show();
 }
 
 StatsDialog::StatsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::StatsDialog)
 {
+    int i;
+
     ui->setupUi(this);
 
 
     tabOne = new QTabWidget;
-    tabOne->addTab(new GeneralTab(), tr("General"));
+
+    plot1 = new QwtPlot(QwtText("prueba"));
+    plot1->insertLegend(new QwtLegend(), QwtPlot::RightLegend);
+
+     plot1->setFixedSize(700,400);
+     plot1->setAxisScale(QwtPlot::xBottom,0, 100);
+     plot1->setAxisTitle(QwtPlot::xBottom,"Vueltas");
+     plot1->setAxisScale(QwtPlot::yLeft,6,1);
+     plot1->setAxisTitle(QwtPlot::yLeft,"Posicion");
+
+     curve1 = new QwtPlotCurve("player 1");
+     curve2 = new QwtPlotCurve("player 2");
+
+     for (i=0;i<10;i++)
+     {
+         yval[i] = 1;
+     }
+     for (i=10;i<23;i++)
+     {
+         yval[i] = 3;
+     }
+     for (i=23;i<30;i++)
+     {
+         yval[i] = 2;
+     }
+     for (i=30;i<60;i++)
+     {
+         yval[i] = 4;
+     }
+     for (i=60;i<77;i++)
+     {
+         yval[i] = 3;
+     }
+     for (i=77;i<89;i++)
+     {
+         yval[i] = 2;
+     }
+     for (i=89;i<100;i++)
+     {
+         yval[i] = 1;
+     }
+     for(i=0; i<Size;i++)
+     {
+         xval[i] = i;
+     }
+     curve1->setRawSamples(xval, yval, Size);
+     curve1->setPen(QPen(QColor::fromRgb(20, 125, 190), 3));
+
+     curve1->setLegendAttribute(QwtPlotCurve::LegendShowLine, true);
+
+     curve1->attach(plot1);
+
+
+     for (i=0;i<20;i++)
+     {
+         yval2[i] = 4;
+     }
+     for (i=20;i<32;i++)
+     {
+         yval2[i] = 2;
+     }
+     for (i=32;i<40;i++)
+     {
+         yval2[i] = 3;
+     }
+     for (i=40;i<63;i++)
+     {
+         yval2[i] = 1;
+     }
+     for (i=63;i<70;i++)
+     {
+         yval2[i] = 2;
+     }
+     for (i=70;i<91;i++)
+     {
+         yval2[i] = 6;
+     }
+     for (i=91;i<100;i++)
+     {
+         yval2[i] = 4;
+     }
+     for(i=0; i<Size;i++)
+     {
+         xval2[i] = i;
+     }
+     curve2->setRawSamples(xval2, yval2, Size);
+     curve2->setPen(QPen(QColor::fromRgb(220, 125, 20), 3));
+     curve2->setLegendAttribute(QwtPlotCurve::LegendShowLine, true);
+
+     curve2->attach(plot1);
+
+     tabOne->addTab(plot1, tr("Prueba grafica"));
+    //tabOne->addTab(new GeneralTab(), tr("General"));
     tabOne->addTab(new OtherTab(), tr("General"));
 
 
