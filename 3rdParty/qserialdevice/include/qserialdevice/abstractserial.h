@@ -59,6 +59,18 @@ Q_SIGNALS:
 public:
 
     /*! \~english
+        \enum BaudRateDirectionFlag
+        Directions baud rate that supports the class AbstractSerial.
+        \note Windows support only \a AllBaud.
+    */
+    enum BaudRateDirectionFlag {
+        InputBaud = 0x0001,  /*!< \~english Input baud rate. */
+        OutputBaud = 0x0002, /*!< \~english Output baud rate. */
+        AllBaud = InputBaud | OutputBaud, /*!< \~english Input and output baud rate equal. */
+    };
+    Q_DECLARE_FLAGS(BaudRateDirection, BaudRateDirectionFlag)
+
+    /*! \~english
         \enum BaudRate
         Standard types of speed serial device that supports the class AbstractSerial.
     */
@@ -99,7 +111,7 @@ public:
         BaudRate2500000,  /*!< \~english Speed 2500000 bauds. */    //enhanced speed (experimental)
         BaudRate3000000,  /*!< \~english Speed 3000000 bauds. */    //enhanced speed (experimental)
         BaudRate3500000,  /*!< \~english Speed 3500000 bauds. */    //enhanced speed (experimental)
-        BaudRate4000000   /*!< \~english Speed 4000000 bauds. */    //enhanced speed (experimental)
+        BaudRate4000000,  /*!< \~english Speed 4000000 bauds. */    //enhanced speed (experimental)
     };
     /*! \~english
         \enum DataBits
@@ -111,7 +123,7 @@ public:
         DataBits5,  /*!< \~english 5 data bits. */
         DataBits6,  /*!< \~english 6 data bits. */
         DataBits7,  /*!< \~english 7 data bits. */
-        DataBits8   /*!< \~english 8 data bits. */
+        DataBits8,  /*!< \~english 8 data bits. */
     };
     /*! \~english
         \enum Parity
@@ -120,11 +132,11 @@ public:
     enum Parity {
         ParityUndefined = -1,   /*!< \~english Parity undefined. */
 
-        ParityNone, /*!< \~english "None" parity. */
-        ParityOdd,  /*!< \~english "Odd" parity. */
-        ParityEven, /*!< \~english "Even" parity. */
-        ParityMark, /*!< \~english "Mark" parity. */
-        ParitySpace /*!< \~english "Space" parity. */
+        ParityNone,  /*!< \~english "None" parity. */
+        ParityOdd,   /*!< \~english "Odd" parity. */
+        ParityEven,  /*!< \~english "Even" parity. */
+        ParityMark,  /*!< \~english "Mark" parity. */
+        ParitySpace, /*!< \~english "Space" parity. */
     };
     /*! \~english
         \enum StopBits
@@ -135,7 +147,7 @@ public:
 
         StopBits1,      /*!< \~english One stop bit. */
         StopBits1_5,    /*!< \~english Half stop bit. */
-        StopBits2       /*!< \~english Two stop bit. */
+        StopBits2,      /*!< \~english Two stop bit. */
     };
     /*! \~english
         \enum Flow
@@ -146,7 +158,7 @@ public:
 
         FlowControlOff,         /*!< \~english Flow control "Off". */
         FlowControlHardware,    /*!< \~english Flow control "Hardware". */
-        FlowControlXonXoff      /*!< \~english Flow control "Xon/Xoff". */
+        FlowControlXonXoff,     /*!< \~english Flow control "Xon/Xoff". */
     };
     /*! \~english
         \enum Status
@@ -167,52 +179,57 @@ public:
         ENoneSetDtr                 = 9,    /*!< \~english DTR successfully changed. */
         ENoneSetRts                 = 10,   /*!< \~english RTS successfully changed.  */
         ENoneLineStatus             = 11,   /*!< \~english Status lines successfully get. */
-        // 12-14 reserved
+        ENoneSendBreak              = 12,   /*!< \~english Send break successfully. */
+        ENoneSetBreak               = 13,   /*!< \~english Set break successfully. */
+        ENoneFlush                  = 14,   /*!< \~english Flush successfully. */
+        ENoneReset                  = 15,   /*!< \~english Reset successfully. */
+        // 16-31 reserved
 
         /* Groups of "ERROR STATES" */
 
         //group of "OPEN"
-        EOpen                       = 15,   /*!< \~english Error opening. */
-        EDeviceIsNotOpen            = 16,   /*!< \~english Not open. */
-        EOpenModeUnsupported        = 17,   /*!< \~english Open mode is not supported. */
-        EOpenModeUndefined          = 18,   /*!< \~english Opening mode undefined. */
-        EOpenInvalidFD              = 19,   /*!< \~english Not Actual descriptor. */
-        EOpenOldSettingsNotSaved    = 20,   /*!< \~english Failed saving the old parameters when opening. */
-        EOpenGetCurrentSettings     = 21,   /*!< \~english Failed to get the current settings when you open. */
-        EOpenSetDefaultSettings     = 22,   /*!< \~english Error changing the default settings when you open. */
-        EDeviceIsOpen               = 23,   /*!< \~english Already open. */
+        EOpen                       = 32,   /*!< \~english Error opening. */
+        EDeviceIsNotOpen            = 33,   /*!< \~english Not open. */
+        EOpenModeUnsupported        = 34,   /*!< \~english Open mode is not supported. */
+        EOpenModeUndefined          = 35,   /*!< \~english Opening mode undefined. */
+        EOpenInvalidFD              = 36,   /*!< \~english Not Actual descriptor. */
+        EOpenOldSettingsNotSaved    = 37,   /*!< \~english Failed saving the old parameters when opening. */
+        EOpenGetCurrentSettings     = 38,   /*!< \~english Failed to get the current settings when you open. */
+        EOpenSetDefaultSettings     = 39,   /*!< \~english Error changing the default settings when you open. */
+        EDeviceIsOpen               = 40,   /*!< \~english Already open. */
 
         //group of "CLOSE"
-        ECloseSetOldSettings        = 24,   /*!< \~english Failed saving the old settings when closing. */
-        ECloseFD                    = 25,   /*!< \~english Error closing descriptor. */
-        EClose                      = 26,   /*!< \~english Error closing. */
-        // 27-31 reserved
+        ECloseSetOldSettings        = 41,   /*!< \~english Failed saving the old settings when closing. */
+        ECloseFD                    = 42,   /*!< \~english Error closing descriptor. */
+        EClose                      = 43,   /*!< \~english Error closing. */
+        // 44-63 reserved
 
         //group of "SETTINGS"
-        ESetBaudRate                = 32,   /*!< \~english Error change the type of speed. */
-        ESetDataBits                = 33,   /*!< \~english Error change the type of data bits. */
-        ESetParity                  = 34,   /*!< \~english Error changing the type of parity. */
-        ESetStopBits                = 35,   /*!< \~english Error changing the type of stop bits. */
-        ESetFlowControl             = 36,   /*!< \~english Error changing the type of flow control. */
-        ESetCharIntervalTimeout     = 37,   /*!< \~english Error changing the maximum time allowed to elapse between the arrival of two bytes on the communications line. */
-        ESetReadTotalTimeout        = 38,   /*!< \~english Error changing the constant used to calculate the total time-out period for read operations. */
-        // 39 reserved
+        ESetBaudRate                = 64,   /*!< \~english Error change the type of speed. */
+        ESetDataBits                = 65,   /*!< \~english Error change the type of data bits. */
+        ESetParity                  = 66,   /*!< \~english Error changing the type of parity. */
+        ESetStopBits                = 67,   /*!< \~english Error changing the type of stop bits. */
+        ESetFlowControl             = 68,   /*!< \~english Error changing the type of flow control. */
+        ESetCharIntervalTimeout     = 69,   /*!< \~english Error changing the maximum time allowed to elapse between the arrival of two bytes on the communications line. */
+        ESetReadTotalTimeout        = 70,   /*!< \~english Error changing the constant used to calculate the total time-out period for read operations. */
+        // 71-95 reserved
 
         //group of "CONTROL"
-        EBytesAvailable             = 40,   /*!< \~english Failed to get number of bytes from the buffer ready for reading. */
-        ESetDtr                     = 41,   /*!< \~english Error changing DTR. */
-        ESetRts                     = 42,   /*!< \~english Error changing RTS. */
-        ELineStatus                 = 43,   /*!< \~english Failed to get status lines. */
-        EWaitReadyReadIO            = 44,   /*!< \~english Error I/O waiting to receive data. */
-        EWaitReadyReadTimeout       = 45,   /*!< \~english Timeout waiting to receive data. */
-        EWaitReadyWriteIO           = 46,   /*!< \~english Error I/O waiting to transfer data.  */
-        EWaitReadyWriteTimeout      = 47,   /*!< \~english Timeout waiting to transfer data. */
-        EReadDataIO                 = 48,   /*!< \~english Error reading data. */
-        EWriteDataIO                = 49,   /*!< \~english Error writing data. */
-        EFlush                      = 50,   /*!< \~english Error clearing transmission queue buffer. */
-        ESendBreak                  = 51,   /*!< \~english Transmission error of a continuous flow of zero bits. */
-        ESetBreak                   = 52    /*!< \~english Error changing signal discontinuity line. */
-        // 53-55 reserved
+        EBytesAvailable             = 96,   /*!< \~english Failed to get number of bytes from the buffer ready for reading. */
+        ESetDtr                     = 97,   /*!< \~english Error changing DTR. */
+        ESetRts                     = 98,   /*!< \~english Error changing RTS. */
+        ELineStatus                 = 99,   /*!< \~english Failed to get status lines. */
+        EWaitReadyReadIO            = 100,  /*!< \~english Error I/O waiting to receive data. */
+        EWaitReadyReadTimeout       = 101,  /*!< \~english Timeout waiting to receive data. */
+        EWaitReadyWriteIO           = 102,  /*!< \~english Error I/O waiting to transfer data.  */
+        EWaitReadyWriteTimeout      = 103,  /*!< \~english Timeout waiting to transfer data. */
+        EReadDataIO                 = 104,  /*!< \~english Error reading data. */
+        EWriteDataIO                = 105,  /*!< \~english Error writing data. */
+        EFlush                      = 106,  /*!< \~english Error clearing transmission queue buffer. */
+        ESendBreak                  = 107,  /*!< \~english Transmission error of a continuous flow of zero bits. */
+        ESetBreak                   = 108,  /*!< \~english Error changing signal discontinuity line. */
+        EReset                      = 109,  /*!< \~english Error reset transmission queue buffer. */
+        // 110-128 reserved
     };
     /*! \~english
         \enum LineStatusFlag
@@ -232,7 +249,7 @@ public:
         LineRI    = 0x0080, /*!< \~english Line RNG (ring). */
         LineDSR   = 0x0100, /*!< \~english Line DSR (data set ready). */
 
-        LineErr   = 0x8000  /*!< \~english Error get line status. */
+        LineErr   = 0x8000, /*!< \~english Error get line status. */
     };
     Q_DECLARE_FLAGS(LineStatus, LineStatusFlag)
 
@@ -246,15 +263,10 @@ public:
     void close();
 
     //baud rate
-    bool setBaudRate(BaudRate baudRate);
-    bool setInputBaudRate(BaudRate baudRate);
-    bool setOutputBaudRate(BaudRate baudRate);
-    bool setBaudRate(const QString &baudRate);//overload
-    bool setInputBaudRate(const QString &baudRate);//overload
-    bool setOutputBaudRate(const QString &baudRate);//overload
-    QString baudRate() const;
-    QString inputBaudRate() const;
-    QString outputBaudRate() const;
+    bool setBaudRate(qint32 baudRate, BaudRateDirection baudDir = AbstractSerial::AllBaud);
+    bool setBaudRate(BaudRate baudRate, BaudRateDirection baudDir = AbstractSerial::AllBaud);//overload
+    bool setBaudRate(const QString &baudRate, BaudRateDirection baudDir = AbstractSerial::AllBaud);//overload
+    QString baudRate(BaudRateDirection baudDir = AbstractSerial::AllBaud) const;
     QStringList listBaudRate() const;
     QMap<AbstractSerial::BaudRate, QString> baudRateMap() const;
     //data bits
@@ -286,9 +298,6 @@ public:
     int charIntervalTimeout() const;
     void setTotalReadConstantTimeout(int msecs = 0);
     int totalReadConstantTimeout() const;
-
-
-
     //Lines statuses
     bool setDtr(bool set);
     bool setRts(bool set);
@@ -308,7 +317,7 @@ public:
     bool waitForReadyRead(int msecs = 5000);
     bool waitForBytesWritten(int msecs = 5000);
 
-    //Turns the emit signal change of status (state) devices see enum Status
+    //Turns the emit signal change of status (state) devices see enum Status.
     void enableEmitStatus(bool enable);
 
     qint64 readBufferSize() const;
@@ -328,13 +337,26 @@ private:
     bool canEmitStatusString() const;
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractSerial::BaudRateDirection)
+
 #ifndef QT_NO_DEBUG_STREAM
-QDebug operator<<(QDebug debug, AbstractSerial::BaudRate value);
-QDebug operator<<(QDebug debug, AbstractSerial::DataBits value);
-QDebug operator<<(QDebug debug, AbstractSerial::Parity value);
-QDebug operator<<(QDebug debug, AbstractSerial::StopBits value);
-QDebug operator<<(QDebug debug, AbstractSerial::Flow value);
-QDebug operator<<(QDebug debug, AbstractSerial::LineStatus value);
+#if defined(QSERIALDEVICE_EXPORT)
+  //QSERIALDEVICE_EXPORT QDebug operator<<(QDebug debug, quint32 value);
+  QSERIALDEVICE_EXPORT QDebug operator<<(QDebug debug, AbstractSerial::BaudRate value);
+  QSERIALDEVICE_EXPORT QDebug operator<<(QDebug debug, AbstractSerial::DataBits value);
+  QSERIALDEVICE_EXPORT QDebug operator<<(QDebug debug, AbstractSerial::Parity value);
+  QSERIALDEVICE_EXPORT QDebug operator<<(QDebug debug, AbstractSerial::StopBits value);
+  QSERIALDEVICE_EXPORT QDebug operator<<(QDebug debug, AbstractSerial::Flow value);
+  QSERIALDEVICE_EXPORT QDebug operator<<(QDebug debug, AbstractSerial::LineStatus value);
+#else
+  //QDebug operator<<(QDebug debug, quint32 value);
+  QDebug operator<<(QDebug debug, AbstractSerial::BaudRate value);
+  QDebug operator<<(QDebug debug, AbstractSerial::DataBits value);
+  QDebug operator<<(QDebug debug, AbstractSerial::Parity value);
+  QDebug operator<<(QDebug debug, AbstractSerial::StopBits value);
+  QDebug operator<<(QDebug debug, AbstractSerial::Flow value);
+  QDebug operator<<(QDebug debug, AbstractSerial::LineStatus value);
+#endif //QSERIALDEVICE_EXPORT
 #endif
 
 #endif // ABSTRACTSERIAL_H

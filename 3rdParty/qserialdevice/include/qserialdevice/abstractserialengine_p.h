@@ -12,8 +12,8 @@ public:
     static const char defaultDeviceName[];
 
     QString deviceName;
-    AbstractSerial::BaudRate ibaudRate;
-    AbstractSerial::BaudRate obaudRate;
+    qint32 ibaudRate;
+    qint32 obaudRate;
     AbstractSerial::DataBits dataBits;
     AbstractSerial::Parity parity;
     AbstractSerial::StopBits stopBits;
@@ -26,8 +26,7 @@ public:
     AbstractSerialEngineReceiver *receiver;
     bool isAutoCalcReadTimeoutConstant;
 
-    quint32 currInBaudRateToValue() const;
-    int currOutBaudRateToValue() const;
+    //For auto recalc timeout value
     int currDataBitsToValue() const;
     int currParityToValue() const;
     int currStopBitsToValue() const;
