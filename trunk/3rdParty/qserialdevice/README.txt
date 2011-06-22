@@ -15,6 +15,26 @@
 7) Get into the new lib directory (path/to/QSlotRacing/3rdParty/qserialdevice/i386-win32/lib) and compress all new libs
    before committing them into the repository
 
+    
+#############
+# GNU/Linux #
+#############
+1) You must ensure libudev for developers is installed in your system
+  1a) For instance, in ubuntu run `sudo apt-get install libudev-dev`
+2) Download latest version of qserialdevice from http://qt-apps.org/content/show.php?content=112039
+  2a) Note: You can also use version 0.4.0 uploaded here
+3) Uncompress the file somewhere in your filesystem (path/to/qserialdevice)
+4) Open the project with QT Creator 
+  The .pri file is located under path/to/qserialdevice/qserialdevice-qserialdevice/src/src.pro)
+5) In both debug and release mode build all (selecting in the menu "build->build all")
+6) In this project's working directory (typically something like 
+   path/to/qserialdevice/qserialdevice-qserialdevice/src-build-desktop)
+  The debug library is located in (WORKING-DIR)/build/debug/libqserialdeviced.a
+  The release library is located in (WORKING-DIR)/build/release/libqserialdevice.a
+7) Copy both libraries into path/to/QSlotRacing/3rdParty/qserialdevice/i386-linux/lib
+8) Get into the new lib directory (path/to/QSlotRacing/3rdParty/qserialdevice/i386-linux/lib) and compress all new libs
+   before committing them into the repository
+
 
 ##########################
 # The include/ directory #
