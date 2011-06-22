@@ -21,7 +21,7 @@
 
 #include <QTabWidget>
 
-const int Size = 27;
+const int Size = 100;
 
 namespace Ui {
     class StatsDialog;
@@ -79,6 +79,14 @@ public:
 
 private:
     Ui::StatsDialog *ui;
+    QwtPlot* plot1;
+    QwtPlotCurve* curve1;
+    QwtPlotCurve* curve2;
+    QwtPlotCurve* curve3;
+    double xval[Size];
+    double yval[Size];
+    double xval2[Size];
+    double yval2[Size];
 
     QTabWidget *tabOne;
     QTabWidget *tabTwo;
