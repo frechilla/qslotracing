@@ -172,6 +172,9 @@ private:
     /// @brief Race status
     QSlotRacingRaceStatusType_t m_RaceMode;
 
+    /// @brief Players ranking list
+    quint8 m_PlayersRanking[6];
+
     /// @brief initialize all objects related to sniffing and protocol decoding
     /// Connects also all signals to the expected slots
     /// WARNING: should be ONLY called once

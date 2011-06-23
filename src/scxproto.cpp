@@ -397,9 +397,31 @@ void SCXProtoAnalyzer::ProcessMsgQualifying(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
+    quint8  byte0;
+    quint8  byte1;
+    quint8  byte2;
+    quint16 num_laps;
+
     // this is the event that will be pass through to upper layers
     QSharedPointer<QSlotRacingEventQualifying> event(
             new QSlotRacingEventQualifying(a_msg->GetTimestamp()));
+
+    // move past the message type
+    a_pData ++;
+
+    // Get laps data bytes
+    a_pData ++;
+    byte2 = (static_cast<quint8>(*a_pData)) & 0x0F;
+    a_pData ++;
+    byte1 = (static_cast<quint8>(*a_pData)) & 0x0F;
+    a_pData ++;
+    byte0 = (static_cast<quint8>(*a_pData)) & 0x0F;
+
+    // Calculate number of qualifying laps
+    num_laps = (byte2 * 256) + (byte1 * 16) + byte0;
+
+    // Set number of laps
+    event->SetNumberOfLaps(num_laps);
 
     // notify the event to upper layers (whoever that might be)
     emit ProtoEvent(event);

@@ -81,6 +81,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Initialize timing strings
     InitTimingStrings();
+
+    // Disable stats button
+    ui->btnStats->setEnabled(false);
+
+    // Initialize players ranking
+    m_PlayersRanking[0] = 0;
+    m_PlayersRanking[1] = 0;
+    m_PlayersRanking[2] = 0;
+    m_PlayersRanking[3] = 0;
+    m_PlayersRanking[4] = 0;
+    m_PlayersRanking[5] = 0;
 }
 
 MainWindow::~MainWindow()
@@ -332,6 +343,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         {
         case e_QSlotRacingPlayer1:
             {
+                qDebug()<<"pos1";
                 // Set laps counter display
                 ui->editLaps1->setText(text);
 
@@ -397,6 +409,9 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         {
             // Race end
             UpdateRaceStatus(e_QSlotRacingFinishMode);
+
+            // Enable stats button
+            ui->btnStats->setEnabled(true);
         }
         else
         {
@@ -421,6 +436,12 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
     }
     case e_QSlotRacingEvent_Qualifying:
     {
+        QSharedPointer<QSlotRacingEventQualifying> lapQualifying =
+                a_event.staticCast<QSlotRacingEventQualifying>();
+
+        m_LapsCounter = lapQualifying->GetNumberOfLaps();
+        UpdateLaps();
+
         // Update status
         m_RaceMode = e_QSlotRacingQualyMode;
         UpdateRaceStatus(m_RaceMode);
@@ -468,37 +489,31 @@ void MainWindow::on_BtnConfigure_clicked()
 
         // Get configuration data
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 1);
-        //qDebug()<<"Player 1:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer1(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 2);
-        //qDebug()<<"Player 2:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer2(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 3);
-        //qDebug()<<"Player 3:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer3(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 4);
-        //qDebug()<<"Player 4:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer4(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 5);
-        //qDebug()<<"Player 5:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer5(PlayerName, PlayerFlag, PlayerCar);
 
         m_config.GetPlayer(PlayerName, PlayerFlag, PlayerCar, 6);
-        //qDebug()<<"Player 6:"<<PlayerName<<" "<<PlayerFlag<<" "<<PlayerCar;
 
         // Configure players
         ConfigurePlayer6(PlayerName, PlayerFlag, PlayerCar);
@@ -1967,6 +1982,9 @@ void MainWindow::ConfigurePlayer1(QString player, bool flag, int car)
                 break;
             }
         }
+
+        // Set player to stats dialog
+        m_statsdlg.SetPlayer1Data(true, player);
     }
     else
     {
@@ -2037,6 +2055,9 @@ void MainWindow::ConfigurePlayer2(QString player, bool flag, int car)
                 break;
             }
         }
+
+        // Set player to stats dialog
+        m_statsdlg.SetPlayer2Data(true, player);
     }
     else
     {
@@ -2105,6 +2126,9 @@ void MainWindow::ConfigurePlayer3(QString player, bool flag, int car)
                 break;
             }
         }
+
+        // Set player to stats dialog
+        m_statsdlg.SetPlayer3Data(true, player);
     }
     else
     {
@@ -2174,6 +2198,9 @@ void MainWindow::ConfigurePlayer4(QString player, bool flag, int car)
                 break;
             }
         }
+
+        // Set player to stats dialog
+        m_statsdlg.SetPlayer4Data(true, player);
     }
     else
     {
@@ -2241,6 +2268,9 @@ void MainWindow::ConfigurePlayer5(QString player, bool flag, int car)
                 break;
             }
         }
+
+        // Set player to stats dialog
+        m_statsdlg.SetPlayer5Data(true, player);
     }
     else
     {
@@ -2312,6 +2342,9 @@ void MainWindow::ConfigurePlayer6(QString player, bool flag, int car)
                 break;
             }
         }
+
+        // Set player to stats dialog
+        m_statsdlg.SetPlayer6Data(true, player);
     }
     else
     {
@@ -2392,6 +2425,12 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
         {
         case 1:
             {
+                if (carFlag == true)
+                {
+                    qDebug()<<"ranking1";
+                    m_PlayersRanking[carId-1] = pos;
+                }
+
                 ui->editPos1->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
                 if (carFlag == false)
@@ -2425,6 +2464,11 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
             }
         case 2:
             {
+                if (carFlag == true)
+                {
+                    m_PlayersRanking[carId-1] = pos;
+                }
+
                 ui->editPos2->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
                 if (carFlag == false)
@@ -2454,6 +2498,11 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
             }
         case 3:
             {
+                if (carFlag == true)
+                {
+                    m_PlayersRanking[carId-1] = pos;
+                }
+
                 ui->editPos3->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
                 if (carFlag == false)
@@ -2482,6 +2531,11 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
             }
         case 4:
             {
+                if (carFlag == true)
+                {
+                    m_PlayersRanking[carId-1] = pos;
+                }
+
                 ui->editPos4->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
                 if (carFlag == false)
@@ -2510,6 +2564,11 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
             }
         case 5:
             {
+                if (carFlag == true)
+                {
+                    m_PlayersRanking[carId-1] = pos;
+                }
+
                 ui->editPos5->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
                 if (carFlag == false)
@@ -2538,6 +2597,11 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
             }
         case 6:
             {
+                if (carFlag == true)
+                {
+                    m_PlayersRanking[carId-1] = pos;
+                }
+
                 ui->editPos6->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
                 if (carFlag == false)
