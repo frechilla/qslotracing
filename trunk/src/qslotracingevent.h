@@ -559,7 +559,24 @@ public:
     ~QSlotRacingEventQualifying()
     {}
 
+    /// @brief store number of qualifying laps
+    /// @param number of laps
+    void SetNumberOfLaps(quint16 laps)
+    {
+        // Set number of laps
+        m_NumberOfLaps = laps;
+    }
+
+    /// @return number of laps
+    inline qint16 GetNumberOfLaps() const
+    {
+        return m_NumberOfLaps;
+    }
+
 private:
+
+    /// @brief lap time in milliseconds
+    qint16 m_NumberOfLaps;
 
     // prevent standard constructor from being used
     QSlotRacingEventQualifying();

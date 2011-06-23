@@ -2117,9 +2117,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>25</y>
        <width>86</width>
-       <height>36</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="text">
@@ -2142,19 +2142,29 @@
      </font>
     </property>
     <property name="title">
-     <string>Stats (beta)</string>
+     <string>Race statistics</string>
     </property>
     <widget class="QPushButton" name="btnStats">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>25</y>
        <width>86</width>
-       <height>36</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="text">
-      <string>Stats (beta)</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="pics/tool.qrc">
+       <normaloff>:/pics/stats_btn</normaloff>:/pics/stats_btn</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>33</width>
+       <height>33</height>
+      </size>
      </property>
     </widget>
    </widget>

@@ -109,6 +109,13 @@ StatsDialog::StatsDialog(QWidget *parent) :
 
     ui->setupUi(this);
 
+    // Initialize enabled players list
+    m_PlayersEnables[0] = false;
+    m_PlayersEnables[1] = false;
+    m_PlayersEnables[2] = false;
+    m_PlayersEnables[3] = false;
+    m_PlayersEnables[4] = false;
+    m_PlayersEnables[5] = false;
 
     tabOne = new QTabWidget;
 
@@ -227,5 +234,56 @@ void StatsDialog::on_tabWidget_currentChanged(int index)
     }
 }
 
+void StatsDialog::SetPlayer1Data(bool bEnabled, QString name)
+{
+    // Set player flag
+    m_PlayersEnables[0] = true;
 
+    // Set player name
+    m_PlayersName[0] = name;
+}
 
+void StatsDialog::SetPlayer2Data(bool bEnabled, QString name)
+{
+    // Set player flag
+    m_PlayersEnables[1] = true;
+
+    // Set player name
+    m_PlayersName[1] = name;
+}
+
+void StatsDialog::SetPlayer3Data(bool bEnabled, QString name)
+{
+    // Set player flag
+    m_PlayersEnables[2] = true;
+
+    // Set player name
+    m_PlayersName[2] = name;
+}
+
+void StatsDialog::SetPlayer4Data(bool bEnabled, QString name)
+{
+    // Set player flag
+    m_PlayersEnables[3] = true;
+
+    // Set player name
+    m_PlayersName[3] = name;
+}
+
+void StatsDialog::SetPlayer5Data(bool bEnabled, QString name)
+{
+    // Set player flag
+    m_PlayersEnables[4] = true;
+
+    // Set player name
+    m_PlayersName[4] = name;
+}
+
+void StatsDialog::SetPlayer6Data(bool bEnabled, QString name)
+{
+    // Set player flag
+    m_PlayersEnables[5] = true;
+
+    // Set player name
+    m_PlayersName[5] = name;
+}

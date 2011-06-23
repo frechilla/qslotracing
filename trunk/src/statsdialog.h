@@ -77,6 +77,23 @@ public:
     /// @brief Set the race finished flag, to manage the stats window
     void SetRaceFinished(bool bFinished);
 
+    /// @brief Set player 1 data
+    void SetPlayer1Data(bool bEnabled, QString name);
+
+    /// @brief Set player 2 data
+    void SetPlayer2Data(bool bEnabled, QString name);
+
+    /// @brief Set player 3 data
+    void SetPlayer3Data(bool bEnabled, QString name);
+
+    /// @brief Set player 4 data
+    void SetPlayer4Data(bool bEnabled, QString name);
+
+    /// @brief Set player 5 data
+    void SetPlayer5Data(bool bEnabled, QString name);
+
+    /// @brief Set player 6 data
+    void SetPlayer6Data(bool bEnabled, QString name);
 private:
     Ui::StatsDialog *ui;
     QwtPlot* plot1;
@@ -91,6 +108,11 @@ private:
     QTabWidget *tabOne;
     QTabWidget *tabTwo;
 
+    /// @brief Players enabled flag
+    bool m_PlayersEnables[6];
+
+    /// @brief Players names
+    QString m_PlayersName[6];
 
 
 private slots:
