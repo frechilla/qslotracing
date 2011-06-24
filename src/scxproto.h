@@ -20,30 +20,41 @@ public:
     {
         eStatEntry_MsgTotal = 0, // first enum element MUST be set to 0
 
+        // total messages received by type (and duplicated)
         eStatEntry_MsgTypeController,
+        eStatEntry_MsgTypeControllerDup,
         eStatEntry_MsgTypeId,
+        eStatEntry_MsgTypeIdDup,
         eStatEntry_MsgTypeBusClearance,
+        eStatEntry_MsgTypeBusClearanceDup,
         eStatEntry_MsgTypeFinishLine,
+        eStatEntry_MsgTypeFinishLineDup,
         eStatEntry_MsgTypeRanking,
+        eStatEntry_MsgTypeRankingDup,
         eStatEntry_MsgTypeLapTime,
+        eStatEntry_MsgTypeLapTimeDup,
         eStatEntry_MsgTypeLapCounter,
+        eStatEntry_MsgTypeLapCounterDup,
         eStatEntry_MsgTypeQualifying,
+        eStatEntry_MsgTypeQualifyingDup,
         eStatEntry_MsgTypeReset,
+        eStatEntry_MsgTypeResetDup,
         eStatEntry_MsgTypeStart,
+        eStatEntry_MsgTypeStartDup,
         eStatEntry_MsgTypeEnd,
+        eStatEntry_MsgTypeEndDup,
         eStatEntry_MsgTypeFuel,
+        eStatEntry_MsgTypeFuelDup,
         eStatEntry_MsgTypeRefreshDisplay,
+        eStatEntry_MsgTypeRefreshDisplayDup,
         eStatEntry_MsgTypeBrake,
+        eStatEntry_MsgTypeBrakeDup,
 
         eStatEntry_MsgBadType,
         eStatEntry_MsgBadHeader,
 
         eStatEntry_Count // this value MUST be at the end of the enum
     } eStatEntries_t;
-
-    /// @brief stat counter type
-    typedef QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)> SCXProtoStatCounter_t;
-
 
     /// @brief types of SCX messages
     typedef enum
@@ -65,6 +76,7 @@ public:
 
     } SCXProtoMsgType_t;
 
+
     /// @brief SCXProtoAnalyzer class constructor
     SCXProtoAnalyzer(QObject *parent = 0);
 
@@ -72,14 +84,66 @@ public:
     virtual ~SCXProtoAnalyzer();
 
     /// @return the stat counter of this particular object
-    const SCXProtoStatCounter_t& GetStatCounters() const
+    const QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)>& GetStatCounters() const
     {
         return m_statCounters;
     }
 
 private:
     /// @brief this object's stat counters
-    SCXProtoStatCounter_t m_statCounters;
+    QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)> m_statCounters;
+
+    /// @brief pointer to the latest "Controller" message
+    QSharedPointer<QSlotRacingMsg> m_lastControllerMsg;
+
+    /// @brief pointer to the latest "Id" message
+    QSharedPointer<QSlotRacingMsg> m_lastIdMsg;
+
+    /// @brief pointer to the latest "BusClearance" message
+    QSharedPointer<QSlotRacingMsg> m_lastBusClearanceMsg;
+
+    /// @brief pointer to the latest "FinishLine" message
+    QSharedPointer<QSlotRacingMsg> m_lastFinishLineMsg;
+
+    /// @brief pointer to the latest "Ranking" message
+    QSharedPointer<QSlotRacingMsg> m_lastRankingMsg;
+
+    /// @brief pointer to the latest "LapTime" message
+    QSharedPointer<QSlotRacingMsg> m_lastLapTimeMsg;
+
+    /// @brief pointer to the latest "LapCounter" message
+    QSharedPointer<QSlotRacingMsg> m_lastLapCounterMsg;
+
+    /// @brief pointer to the latest "Qualifying" message
+    QSharedPointer<QSlotRacingMsg> m_lastQualifyingMsg;
+
+    /// @brief pointer to the latest "Reset" message
+    QSharedPointer<QSlotRacingMsg> m_lastResetMsg;
+
+    /// @brief pointer to the latest "Start" message
+    QSharedPointer<QSlotRacingMsg> m_lastStartMsg;
+
+    /// @brief pointer to the latest "End" message
+    QSharedPointer<QSlotRacingMsg> m_lastEndMsg;
+
+    /// @brief pointer to the latest "Fuel" message
+    QSharedPointer<QSlotRacingMsg> m_lastFuelMsg;
+
+    /// @brief pointer to the latest "RefreshDisplay" message
+    QSharedPointer<QSlotRacingMsg> m_lastRefreshDisplayMsg;
+
+    /// @brief pointer to the latest "Brake" message
+    QSharedPointer<QSlotRacingMsg> m_lastBrakeMsg;
+
+
+    /// Two messages are duplicated if their timestamps are less
+    /// than a certain amount of milliseconds apart and they contain
+    /// exactly the same data
+    /// @param a_msgNew New message, the one that is being checked as duplicate
+    /// @param a_msgOld Old message
+    /// @return true if these two messages are duplicated. False otherwise
+    bool IsDuplicatedMsg(QSharedPointer<QSlotRacingMsg> &a_msgNew,
+                         QSharedPointer<QSlotRacingMsg> &a_msgOld);
 
     /// @brief Method for controller message processing
     /// @param Message data bytes
