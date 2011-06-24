@@ -360,7 +360,6 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         {
         case e_QSlotRacingPlayer1:
             {
-                qDebug()<<"pos1";
                 // Set laps counter display
                 ui->editLaps1->setText(text);
 
@@ -2444,7 +2443,6 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
             {
                 if (carFlag == true)
                 {
-                    qDebug()<<"ranking1";
                     m_PlayersRanking[carId-1] = pos;
                 }
 
