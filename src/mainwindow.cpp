@@ -92,6 +92,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_PlayersRanking[3] = 0;
     m_PlayersRanking[4] = 0;
     m_PlayersRanking[5] = 0;
+
+    // Initialize laps counter
+    m_LapsCounter = 0;
 }
 
 MainWindow::~MainWindow()
@@ -296,12 +299,22 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 a_event.staticCast<QSlotRacingEventLapCounter>();
 
         quint8  retValue;
+        quint32 lapsCounter;
+        quint8  countDir;
 
         // Get event laps
-        retValue = lapCounterEvent->GetLapCounterData(m_CountingDir, m_LapsCounter);
+        retValue = lapCounterEvent->GetLapCounterData(countDir, lapsCounter);
 
-        // Update laps for all drivers
-        UpdateLaps();
+        // Update laps for all drivers, if number of laps is valid
+        if ((m_LapsCounter < 999) && (m_RaceMode != e_QSlotRacingQualyMode))
+        {
+            // Update member variables
+            m_LapsCounter = lapsCounter;
+            m_CountingDir = countDir;
+
+            // Update window
+            UpdateLaps();
+        }
         break;
     }
     case e_QSlotRacingEvent_Lap:
@@ -310,7 +323,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 a_event.staticCast<QSlotRacingEventLap>();
 
         QSlotRacingPlayer_t   player;
-        quint32                crossings;
+        quint32               crossings;
         quint32               time;
         QString               text;
         QString               timelap;
@@ -329,7 +342,11 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
         time = lapEvent->GetLapMillis();
 
         // Format crossings string
-        crossings = crossings - 1; // Initial crossing must not be counted
+        if (crossings > 0)
+        {
+            // Initial crossing must not be counted
+            crossings = crossings - 1;
+        }
         sprintf(data, "%d/%d", crossings,m_LapsCounter);
         text = QString::fromLocal8Bit(data);
 
