@@ -17,5 +17,6 @@
         <file alias="red_ball">red_ball.png</file>
         <file alias="stats_btn">stats_btn.png</file>
         <file alias="serial_btn">serial_btn.png</file>
+        <file alias="app_icon">flag_icon.png</file>
     </qresource>
 </RCC>

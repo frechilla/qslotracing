@@ -21,50 +21,14 @@
 
 #include <QTabWidget>
 
-const int Size = 100;
+const int Size = 30;
+
+typedef QMap<quint32, quint8> PlayersMapRankingType;
 
 namespace Ui {
     class StatsDialog;
 }
 
-class GeneralTab : public QWidget
- {
-     Q_OBJECT
-
- public:
-     GeneralTab(QWidget *parent = 0);
- protected:
-     virtual void paintEvent(QPaintEvent *);
- private:
-     void DrawContents(QPainter* painter);
-     QwtScaleMap xMap;
-     QwtScaleMap yMap;
-     QwtPlotCurve curve;
-     QwtPlot plot1;
-     double xval[Size];
-     double yval[Size];
-
- };
-
-class OtherTab : public QWidget
- {
-     Q_OBJECT
-
- public:
-     OtherTab(QWidget *parent = 0);
- protected:
-     virtual void paintEvent(QPaintEvent *);
- private:
-     void DrawContents(QPainter* painter);
-     QwtScaleMap xMap;
-     QwtScaleMap yMap;
-     QwtPlotCurve curve;
-     QwtPlot* plot1;
-
-     double xval[Size];
-     double yval[Size];
-
- };
 
 class StatsDialog : public QDialog
 {
@@ -94,14 +58,20 @@ public:
 
     /// @brief Set player 6 data
     void SetPlayer6Data(bool bEnabled, QString name);
+
+    /// @brief Set Player1 ranking data
+    void SetRankingPlayer1(PlayersMapRankingType* mapValues);
+
+    /// @brief Set Player2 ranking data
+    void SetRankingPlayer2(PlayersMapRankingType* mapValues);
 private:
     Ui::StatsDialog *ui;
     QwtPlot* plot1;
     QwtPlotCurve* curve1;
     QwtPlotCurve* curve2;
     QwtPlotCurve* curve3;
-    double xval[Size];
-    double yval[Size];
+    double xval[30];
+    double yval[30];
     double xval2[Size];
     double yval2[Size];
 

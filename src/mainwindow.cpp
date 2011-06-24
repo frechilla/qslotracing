@@ -10,6 +10,8 @@
 
 #define STATS_TIMER_EXPIRE_MSEC 10000 // 10 seconds
 
+#define DEMO_BTN 0
+
 // start the testing. a byte will be read each 2ms
 #define ASCII_SNIFFER_DELAY 2
 
@@ -103,6 +105,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Initialize laps counter
     m_LapsCounter = 0;
+
+    // Initialize race results flag
+    m_RaceResultsShown = false;
+
+#ifdef QT_NO_DEBUG
+    ui->pushButton->hide();
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -373,6 +382,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
                     m_PlayerCrossings[0] = crossings;
 
+                    m_Player1MapRanking[crossings] = m_PlayersRanking[0];
+
                     break;
                 }
             case e_QSlotRacingPlayer2:
@@ -381,6 +392,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                     ui->editLaps2->setText(text);
 
                     m_PlayerCrossings[1] = crossings;
+
+                    m_Player2MapRanking[crossings] = m_PlayersRanking[1];
 
                     break;
                 }
@@ -3319,5 +3332,15 @@ bool MainWindow::IsNewCrossing(QSlotRacingPlayer_t player, quint32 crossing)
 
 void MainWindow::ShowRaceResults()
 {
+    // Check flag for race results
+    if (m_RaceResultsShown == false)
+    {
+        // Show results: send data to stats
+        m_statsdlg.SetRankingPlayer1(&m_Player1MapRanking);
 
+        m_statsdlg.SetRankingPlayer2(&m_Player2MapRanking);
+
+        // Update flag
+        m_RaceResultsShown = true;
+    }
 }
