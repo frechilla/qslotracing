@@ -103,6 +103,9 @@ private:
 
     /// Class type definitions
     typedef QVector<quint32>  PlayersTimeContainerType_t;
+
+    typedef QMap<quint32, quint8> PlayersMapRankingType;
+
    // typedef QList<quint32> PlayersTimesType_t;
 
     typedef enum
@@ -160,6 +163,12 @@ private:
     /// @brief variable containing player number of crossings
     PlayersTimeContainerType_t m_PlayerCrossings;
 
+    /// @brief variable containing the players ranking map (lap, ranking)
+    PlayersMapRankingType m_Player1MapRanking;
+
+    /// @brief variable containing the players ranking map (lap, ranking)
+    PlayersMapRankingType m_Player2MapRanking;
+
     /// @brief Array of configured players flags
     bool m_PlayersConfigured[6];
 
@@ -174,6 +183,9 @@ private:
 
     /// @brief Race status
     QSlotRacingRaceStatusType_t m_RaceMode;
+
+    /// @brief Flag storing if race results have been shown
+    bool m_RaceResultsShown;
 
     /// @brief Players ranking list
     quint8 m_PlayersRanking[6];

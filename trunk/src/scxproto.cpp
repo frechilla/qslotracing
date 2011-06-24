@@ -6,7 +6,7 @@
 
 // Duplicates MUST be less than DUPLICATE_TIMEOUT_MSEC milliseconds apart
 // set to 0 if you want to disable the duplicate checks
-#define DUPLICATE_TIMEOUT_MSEC 500 // half a second
+#define DUPLICATE_TIMEOUT_MSEC 0 // half a second
 
 SCXProtoAnalyzer::SCXProtoAnalyzer(QObject *parent) :
         QObject(parent),

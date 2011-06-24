@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>QSlotRacing v0.1</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="pics/tool.qrc">
+    <normaloff>:/pics/app_icon</normaloff>:/pics/app_icon</iconset>
+  </property>
   <property name="animated">
    <bool>true</bool>
   </property>
