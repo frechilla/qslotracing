@@ -163,6 +163,9 @@ private:
     /// @brief Array of configured players flags
     bool m_PlayersConfigured[6];
 
+    /// @brief Players finish line flag
+    bool m_PlayersFinishLine[6];
+
     /// @brief Race configured counting direction
     quint8 m_CountingDir;
 
@@ -277,7 +280,6 @@ private slots:
     /// events will be processed by the window and the GUI will be
     /// updated accordingly
     /// @param shared pointer wrapping the event
-    void on_btnQualy_clicked();
     void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
 
     /// @brief update synchro status
