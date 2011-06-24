@@ -430,19 +430,34 @@ public:
     /// @param lap counter data
     void AddLapCounterData(quint8 dir, quint8 byte2, quint8 byte1, quint8 byte0)
     {
-        quint8 temp2;
-        quint8 temp1;
-        quint8 temp0;
-
-        // Set lap counter direction
-        m_LapCounterData.count_direction = dir;
+        quint8  temp2;
+        quint8  temp1;
+        quint8  temp0;
+        quint32 laps;
 
         // Calculate laps
         temp2 = byte2 & 0x0F;
         temp1 = byte1 & 0x0F;
         temp0 = byte0 & 0x0F;
 
-        m_LapCounterData.laps = (temp2 * 256) + (temp1 * 16) + temp0;
+        laps = (temp2 * 256) + (temp1 * 16) + temp0;
+
+        // Check laps
+        if (laps < 999)
+        {
+            // Update laps data
+            m_LapCounterData.laps = laps;
+
+            // Set lap counter direction
+            m_LapCounterData.count_direction = dir;
+        }
+        else
+        {
+            // Set null data
+            m_LapCounterData.laps = 0;
+            m_LapCounterData.count_direction = 0;
+        }
+
     }
 
     /// @return lap counter data

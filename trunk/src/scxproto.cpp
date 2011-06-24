@@ -410,7 +410,6 @@ void SCXProtoAnalyzer::ProcessMsgQualifying(
     a_pData ++;
 
     // Get laps data bytes
-    a_pData ++;
     byte2 = (static_cast<quint8>(*a_pData)) & 0x0F;
     a_pData ++;
     byte1 = (static_cast<quint8>(*a_pData)) & 0x0F;
