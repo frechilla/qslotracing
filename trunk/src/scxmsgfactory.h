@@ -29,9 +29,6 @@ public:
         eStatEntry_Count // this value MUST be at the end of the enum
     } eStatEntries_t;
 
-    // stat counter type
-    typedef QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)> SCXMsgFactoryStatCounter_t;
-
     
     SCXMsgFactory(QObject *parent = 0);
     virtual ~SCXMsgFactory();
@@ -43,14 +40,14 @@ public:
     void Parse(QByteArray a_dataBuffer);
 
     /// @return the stat counter of this particular object
-    const SCXMsgFactoryStatCounter_t& GetStatCounters() const
+    const QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)>& GetStatCounters() const
     {
         return m_statCounters;
     }
 
 private:
     /// @brief this object's stat counters
-    SCXMsgFactoryStatCounter_t m_statCounters;
+    QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)> m_statCounters;
     
     /// @brief current SCX message
     quint8 m_currentMsg[SCX_PROTO_MSG_LENGTH];

@@ -4,9 +4,27 @@
 // first byte MUST always be 0x55
 #define SCX_PROTO_START_HEADER 0x55
 
+// Duplicates MUST be less than DUPLICATE_TIMEOUT_MSEC milliseconds apart
+// set to 0 if you want to disable the duplicate checks
+#define DUPLICATE_TIMEOUT_MSEC 500 // half a second
+
 SCXProtoAnalyzer::SCXProtoAnalyzer(QObject *parent) :
         QObject(parent),
-        m_statCounters()
+        m_statCounters(),
+        m_lastControllerMsg(),
+        m_lastIdMsg(),
+        m_lastBusClearanceMsg(),
+        m_lastFinishLineMsg(),
+        m_lastRankingMsg(),
+        m_lastLapTimeMsg(),
+        m_lastLapCounterMsg(),
+        m_lastQualifyingMsg(),
+        m_lastResetMsg(),
+        m_lastStartMsg(),
+        m_lastEndMsg(),
+        m_lastFuelMsg(),
+        m_lastRefreshDisplayMsg(),
+        m_lastBrakeMsg()
 {
     // set stat entries' names
     m_statCounters.SetEntryTitle(eStatEntry_MsgTotal,
@@ -14,32 +32,60 @@ SCXProtoAnalyzer::SCXProtoAnalyzer(QObject *parent) :
 
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeController,
                                  QString("MsgTypeController"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeControllerDup,
+                                 QString("MsgTypeControllerDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeId,
                                  QString("MsgTypeId"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeIdDup,
+                                 QString("MsgTypeIdDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeBusClearance,
                                  QString("MsgTypeBusClearance"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeBusClearanceDup,
+                                 QString("MsgTypeBusClearanceDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeFinishLine,
                                  QString("MsgTypeFinishLine"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeFinishLineDup,
+                                 QString("MsgTypeFinishLineDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeRanking,
                                  QString("MsgTypeRanking"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeRankingDup,
+                                 QString("MsgTypeRankingDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeLapTime,
                                  QString("MsgTypeLapTime"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeLapTimeDup,
+                                 QString("MsgTypeLapTimeDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeLapCounter,
                                  QString("MsgTypeLapCounter"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeLapCounterDup,
+                                 QString("MsgTypeLapCounterDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeQualifying,
                                  QString("MsgTypeQualifying"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeQualifyingDup,
+                                 QString("MsgTypeQualifyingDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeReset,
                                  QString("MsgTypeReset"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeResetDup,
+                                 QString("MsgTypeResetDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeStart,
                                  QString("MsgTypeStart"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeStartDup,
+                                 QString("MsgTypeStartDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeEnd,
                                  QString("MsgTypeEnd"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeEndDup,
+                                 QString("MsgTypeEndDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeFuel,
                                  QString("MsgTypeFuel"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeFuelDup,
+                                 QString("MsgTypeFuelDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeRefreshDisplay,
                                  QString("MsgTypeRefreshDisplay"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeRefreshDisplayDup,
+                                 QString("MsgTypeRefreshDisplayDup"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgTypeBrake,
                                  QString("MsgTypeBrake"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgTypeBrakeDup,
+                                 QString("MsgTypeBrakeDup"));
 
     m_statCounters.SetEntryTitle(eStatEntry_MsgBadHeader,
                                  QString("MsgBadHeader"));
@@ -75,98 +121,258 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
     case e_SCXMsgTypeController:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeController, 1);
-        ProcessMsgController(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastControllerMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastControllerMsg = a_msg;
+            ProcessMsgController(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeControllerDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeId:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeId, 1);
-        ProcessMsgId(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastIdMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastIdMsg = a_msg;
+            ProcessMsgId(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeIdDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeBusClearance:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeBusClearance, 1);
-        ProcessMsgBusClearance(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastBusClearanceMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastBusClearanceMsg = a_msg;
+            ProcessMsgBusClearance(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeBusClearanceDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeFinishLine:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeFinishLine, 1);
-        ProcessMsgFinishLine(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastFinishLineMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastFinishLineMsg = a_msg;
+
+            // per new Finish line message received at least one
+            // lap time message must be processed. Force it here
+            // clearing pointer to the last lap time message received
+            m_lastLapTimeMsg.clear();
+
+            ProcessMsgFinishLine(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeFinishLineDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeRanking:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeRanking, 1);
-        ProcessMsgRanking(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastRankingMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastRankingMsg = a_msg;
+            ProcessMsgRanking(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeRankingDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeLapTime:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeLapTime, 1);
-        ProcessMsgLapTime(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastLapTimeMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastLapTimeMsg = a_msg;
+            ProcessMsgLapTime(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeLapTimeDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeLapCounter:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeLapCounter, 1);
-        ProcessMsgLapCounter(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastLapCounterMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastLapCounterMsg = a_msg;
+            ProcessMsgLapCounter(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeLapCounterDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeQualifying:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeQualifying, 1);
-        ProcessMsgQualifying(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastQualifyingMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastQualifyingMsg = a_msg;
+            ProcessMsgQualifying(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeQualifyingDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeReset:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeReset, 1);
-        ProcessMsgReset(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastResetMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastResetMsg = a_msg;
+            ProcessMsgReset(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeResetDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeStart:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeStart, 1);
-        ProcessMsgStart(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastStartMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastStartMsg = a_msg;
+            ProcessMsgStart(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeStartDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeEnd:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeEnd, 1);
-        ProcessMsgEnd(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastEndMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastEndMsg = a_msg;
+            ProcessMsgEnd(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeEndDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeFuel:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeFuel, 1);
-        ProcessMsgFuel(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastFuelMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastFuelMsg = a_msg;
+            ProcessMsgFuel(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeFuelDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeRefreshDisplay:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeRefreshDisplay, 1);
-        ProcessMsgRefreshDisplay(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastRefreshDisplayMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastRefreshDisplayMsg = a_msg;
+            ProcessMsgRefreshDisplay(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeRefreshDisplayDup, 1);
+        }
+
         break;
     }
 
     case e_SCXMsgTypeBrake:
     {
         m_statCounters.Increment(eStatEntry_MsgTypeBrake, 1);
-        ProcessMsgBrake(pData, a_msg);
+
+        if (!IsDuplicatedMsg(a_msg, m_lastBrakeMsg))
+        {
+            // this message is not duplicated. Update latest received msg
+            m_lastBrakeMsg = a_msg;
+            ProcessMsgBrake(pData, a_msg);
+        }
+        else
+        {
+            m_statCounters.Increment(eStatEntry_MsgTypeBrakeDup, 1);
+        }
+
         break;
     }
 
@@ -179,6 +385,50 @@ void SCXProtoAnalyzer::ProcessMsg(QSharedPointer<QSlotRacingMsg> a_msg)
         return;
     } // switch (*pData)
 
+}
+
+bool SCXProtoAnalyzer::IsDuplicatedMsg(
+        QSharedPointer<QSlotRacingMsg> &a_msgNew,
+        QSharedPointer<QSlotRacingMsg> &a_msgOld)
+{
+    Q_ASSERT(a_msgNew.isNull() == false);
+
+    if (a_msgOld.isNull())
+    {
+        // latest message contains nothing. Can't be a duplicate
+        return false;
+    }
+
+    int msecDiff =
+            a_msgOld->GetTimestamp().msecsTo(a_msgNew->GetTimestamp());
+
+    Q_ASSERT(msecDiff >= 0);
+
+    if (msecDiff > DUPLICATE_TIMEOUT_MSEC)
+    {
+        // these two messages are too many milliseconds apart
+        // they can't be duplicated
+        return false;
+    }
+
+    Q_ASSERT(a_msgOld->GetMsgSize() == a_msgNew->GetMsgSize());
+
+    const quint8* pDataOld = a_msgOld->GetBuffer();
+    const quint8* pDataNew = a_msgNew->GetBuffer();
+    for (qint32 i = 0; i < a_msgOld->GetMsgSize(); i++)
+    {
+        if ((*pDataOld) != (*pDataNew))
+        {
+            // can't be duplicated. They don't contain the same data
+            return false;
+        }
+
+        pDataOld++;
+        pDataNew++;
+    }
+
+    // All previous checks passed through. Must be a ducplicated message
+    return true;
 }
 
 void SCXProtoAnalyzer::ProcessMsgController(
