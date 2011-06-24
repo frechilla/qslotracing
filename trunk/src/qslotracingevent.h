@@ -15,7 +15,8 @@ typedef enum
     e_QSlotRacingEvent_LapCounter, // lap counter package
     e_QSlotRacingEvent_Start,      // start package
     e_QSlotRacingEvent_Qualifying, // qualifying package
-    e_QSlotRacingEvent_End         // end package
+    e_QSlotRacingEvent_End,        // end package
+    e_QSlotRacingEvent_FinishLine  // end package
 } QSlotRacingEventType_t;
 
 /// Players handled by this app
@@ -615,6 +616,89 @@ private:
 
     // prevent standard constructor from being used
     QSlotRacingEventEnd();
+};
+
+/// @brief Finish line package event
+class QSlotRacingEventFinishLine :
+        public QSlotRacingEvent
+{
+private:
+public:
+    /// @param virtual time timestamp
+    QSlotRacingEventFinishLine(const QTime &a_timestamp):
+            QSlotRacingEvent(e_QSlotRacingEvent_FinishLine, a_timestamp)
+    {}
+
+    ~QSlotRacingEventFinishLine()
+    {}
+
+    /// @brief Set car finish line crossings flags
+    /// @param car 1 flag
+    /// @param car 2 flag
+    /// @param car 3 flag
+    /// @param car 4 flag
+    /// @param car 5 flag
+    /// @param car 6 flag
+    void SetFinishLineFlags(quint8 car1, quint8 car2, quint8 car3, quint8 car4, quint8 car5, quint8 car6)
+    {
+        // Reset all finish line flags
+        m_FinishLineFlags[0] = false;
+        m_FinishLineFlags[1] = false;
+        m_FinishLineFlags[2] = false;
+        m_FinishLineFlags[3] = false;
+        m_FinishLineFlags[4] = false;
+        m_FinishLineFlags[5] = false;
+
+        // Check each car flag
+        if (car1 == 0xE7)
+        {
+            m_FinishLineFlags[0] = true;
+        }
+
+        if (car2 == 0xE7)
+        {
+            m_FinishLineFlags[1] = true;
+        }
+
+        if (car3 == 0xE7)
+        {
+            m_FinishLineFlags[2] = true;
+        }
+
+        if (car4 == 0xE7)
+        {
+            m_FinishLineFlags[3] = true;
+        }
+
+        if (car5 == 0xE7)
+        {
+            m_FinishLineFlags[4] = true;
+        }
+
+        if (car6 == 0xE7)
+        {
+            m_FinishLineFlags[5] = true;
+        }
+    }
+
+    /// @return finish line flags
+    inline void GetFinishLineFlags(bool& flags1, bool& flags2, bool& flags3, bool& flags4, bool& flags5, bool& flags6) const
+    {
+        flags1 = m_FinishLineFlags[0];
+        flags2 = m_FinishLineFlags[1];
+        flags3 = m_FinishLineFlags[2];
+        flags4 = m_FinishLineFlags[3];
+        flags5 = m_FinishLineFlags[4];
+        flags6 = m_FinishLineFlags[5];
+    }
+
+private:
+
+    /// @brief cars finish line flags
+    bool m_FinishLineFlags[6];
+
+    // prevent standard constructor from being used
+    QSlotRacingEventFinishLine();
 };
 
 #endif // QSLOTRACINGEVENT_H

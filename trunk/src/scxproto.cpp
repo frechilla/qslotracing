@@ -491,8 +491,54 @@ void SCXProtoAnalyzer::ProcessMsgFinishLine(
         const quint8* a_pData,
         const QSharedPointer<QSlotRacingMsg> &a_msg)
 {
+    quint8 Car1Byte;
+    quint8 Car2Byte;
+    quint8 Car3Byte;
+    quint8 Car4Byte;
+    quint8 Car5Byte;
+    quint8 Car6Byte;
+
     // move past the message type
     a_pData ++;
+
+    // this is the event that will be pass through to upper layers
+    QSharedPointer<QSlotRacingEventFinishLine> event(
+            new QSlotRacingEventFinishLine(a_msg->GetTimestamp()));
+
+    // The following 6 bytes indicates current finish line crossings
+    // Byte 0: car 1 data
+    // Byte 1: car 2 data
+    // Byte 2: car 3 data
+    // Byte 3: car 4 data
+    // Byte 4: car 5 data
+    // Byte 5: car 6 data
+    // If data == 0xE7, the car has crossed the finish line
+
+    // Get car bytes
+    Car1Byte = *a_pData;
+
+    // Next car
+    a_pData++;
+    Car2Byte = *a_pData;
+
+    // Next car
+    a_pData++;
+    Car3Byte = *a_pData;
+
+    // Next car
+    a_pData++;
+    Car4Byte = *a_pData;
+
+    // Next car
+    a_pData++;
+    Car5Byte = *a_pData;
+
+    // Next car
+    a_pData++;
+    Car6Byte = *a_pData;
+
+    // notify the event to upper layers (whoever that might be)
+    emit ProtoEvent(event);
 }
 
 void SCXProtoAnalyzer::ProcessMsgRanking(
@@ -538,7 +584,6 @@ void SCXProtoAnalyzer::ProcessMsgRanking(
 
     // notify the event to upper layers (whoever that might be)
     emit ProtoEvent(event);
-
 }
 
 void SCXProtoAnalyzer::ProcessMsgLapTime(

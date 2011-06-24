@@ -93,6 +93,14 @@ MainWindow::MainWindow(QWidget *parent) :
     m_PlayersRanking[4] = 0;
     m_PlayersRanking[5] = 0;
 
+    // Initialize players finish line crossed flag
+    m_PlayersFinishLine[0] = false;
+    m_PlayersFinishLine[1] = false;
+    m_PlayersFinishLine[2] = false;
+    m_PlayersFinishLine[3] = false;
+    m_PlayersFinishLine[4] = false;
+    m_PlayersFinishLine[5] = false;
+
     // Initialize laps counter
     m_LapsCounter = 0;
 }
@@ -174,307 +182,315 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 {
     switch (a_event->EventType())
     {
-    case e_QSlotRacingEvent_Fuel:
-    {
-        QSharedPointer<QSlotRacingEventFuel> fuelEvent =
-                a_event.staticCast<QSlotRacingEventFuel>();
-
-        // GetPlayersFuel returns a value from 0 to 8
-        quint8 value;
-        value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer1);
-        SetCar1Fuel(value);
-        value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer2);
-        SetCar2Fuel(value);
-        value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer3);
-        SetCar3Fuel(value);
-        value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer4);
-        SetCar4Fuel(value);
-        value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer5);
-        SetCar5Fuel(value);
-        value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer6);
-        SetCar6Fuel(value);
-
-        break;
-    } // case e_QSlotRacingEvent_Fuel
-    case e_QSlotRacingEvent_Controller:
-    {
-        QSharedPointer<QSlotRacingEventController> controllerEvent =
-                a_event.staticCast<QSlotRacingEventController>();
-
-        quint8 retValue;
-        bool   lights = false;
-        bool   lane_change = false;
-        bool   valid = false;
-        quint8 speed = 0;
-
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer1, valid, lights, lane_change, speed);
-        if (valid == true)
+        case e_QSlotRacingEvent_Fuel:
         {
-            SetController1(lights, lane_change, speed);
+            QSharedPointer<QSlotRacingEventFuel> fuelEvent =
+                    a_event.staticCast<QSlotRacingEventFuel>();
+
+            // GetPlayersFuel returns a value from 0 to 8
+            quint8 value;
+            value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer1);
+            SetCar1Fuel(value);
+            value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer2);
+            SetCar2Fuel(value);
+            value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer3);
+            SetCar3Fuel(value);
+            value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer4);
+            SetCar4Fuel(value);
+            value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer5);
+            SetCar5Fuel(value);
+            value = fuelEvent->GetPlayersFuel(e_QSlotRacingPlayer6);
+            SetCar6Fuel(value);
+
+            break;
+        } // case e_QSlotRacingEvent_Fuel
+        case e_QSlotRacingEvent_Controller:
+        {
+            QSharedPointer<QSlotRacingEventController> controllerEvent =
+                    a_event.staticCast<QSlotRacingEventController>();
+
+            quint8 retValue;
+            bool   lights = false;
+            bool   lane_change = false;
+            bool   valid = false;
+            quint8 speed = 0;
+
+            retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer1, valid, lights, lane_change, speed);
+            if (valid == true)
+            {
+                SetController1(lights, lane_change, speed);
+            }
+
+            retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer2, valid, lights, lane_change, speed);
+            if (valid == true)
+            {
+                SetController2(lights, lane_change, speed);
+            }
+
+            retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer3, valid, lights, lane_change, speed);
+            if (valid == true)
+            {
+                SetController3(lights, lane_change, speed);
+            }
+
+            retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer4, valid, lights, lane_change, speed);
+            if (valid == true)
+            {
+                SetController4(lights, lane_change, speed);
+            }
+
+            retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer5, valid, lights, lane_change, speed);
+            if (valid == true)
+            {
+                SetController5(lights, lane_change, speed);
+            }
+
+            retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer6, valid, lights, lane_change, speed);
+            if (valid == true)
+            {
+                SetController6(lights, lane_change, speed);
+            }
+            break;
+        } // case e_QSlotRacingEvent_Controller
+        case e_QSlotRacingEvent_Ranking:
+        {
+            QSharedPointer<QSlotRacingEventRanking> rankingEvent =
+                    a_event.staticCast<QSlotRacingEventRanking>();
+
+            quint8 pos;
+            quint8 retValue;
+            bool   moreThan15;
+            bool   carFlag;
+            quint8 lapsBehind;
+
+            // Get data from position 1
+            retValue = rankingEvent->GetRankingDataByCar(0, pos, moreThan15, carFlag, lapsBehind);
+
+            // Update position from retrieved carId
+            UpdateCarPosition(1, pos, carFlag, moreThan15, lapsBehind);
+
+            // Get data from position 2
+            retValue = rankingEvent->GetRankingDataByCar(1, pos, moreThan15, carFlag, lapsBehind);
+
+            // Update position from retrieved carId
+            UpdateCarPosition(2, pos, carFlag, moreThan15, lapsBehind);
+
+            // Get data from position 3
+            retValue = rankingEvent->GetRankingDataByCar(2, pos, moreThan15, carFlag, lapsBehind);
+
+            // Update position from retrieved carId
+            UpdateCarPosition(3, pos, carFlag, moreThan15, lapsBehind);
+
+            // Get data from position 4
+            retValue = rankingEvent->GetRankingDataByCar(3, pos, moreThan15, carFlag, lapsBehind);
+
+            // Update position from retrieved carId
+            UpdateCarPosition(4, pos, carFlag, moreThan15, lapsBehind);
+
+            // Get data from position 5
+            retValue = rankingEvent->GetRankingDataByCar(4, pos, moreThan15, carFlag, lapsBehind);
+
+            // Update position from retrieved carId
+            UpdateCarPosition(5, pos, carFlag, moreThan15, lapsBehind);
+
+            // Get data from position 6
+            retValue = rankingEvent->GetRankingDataByCar(5, pos, moreThan15, carFlag, lapsBehind);
+
+            // Update position from retrieved carId
+            UpdateCarPosition(6, pos, carFlag, moreThan15, lapsBehind);
+
+            break;
+        } // case e_QSlotRacingEvent_Ranking
+        case e_QSlotRacingEvent_LapCounter:
+        {
+            QSharedPointer<QSlotRacingEventLapCounter> lapCounterEvent =
+                    a_event.staticCast<QSlotRacingEventLapCounter>();
+
+            quint8  retValue;
+            quint32 lapsCounter;
+            quint8  countDir;
+
+            // Get event laps
+            retValue = lapCounterEvent->GetLapCounterData(countDir, lapsCounter);
+
+            // Update laps for all drivers, if number of laps is valid
+            if ((m_LapsCounter < 999) && (m_RaceMode != e_QSlotRacingQualyMode))
+            {
+                // Update member variables
+                m_LapsCounter = lapsCounter;
+                m_CountingDir = countDir;
+
+                // Update window
+                UpdateLaps();
+            }
+            break;
         }
-
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer2, valid, lights, lane_change, speed);
-        if (valid == true)
+        case e_QSlotRacingEvent_Lap:
         {
-            SetController2(lights, lane_change, speed);
+            QSharedPointer<QSlotRacingEventLap> lapEvent =
+                    a_event.staticCast<QSlotRacingEventLap>();
+
+            QSlotRacingPlayer_t   player;
+            quint32               crossings;
+            quint32               time;
+            QString               text;
+            QString               timelap;
+            char                  data[20];
+            bool                  bestOwnTime;
+            bool                  bestRaceLapTime;
+
+            // Initialization
+            memset(data, 0, 20);
+            bestOwnTime = false;
+            bestRaceLapTime = false;
+
+            // Get event data
+            player = lapEvent->GetWho();
+            crossings = lapEvent->GetCrossingTimes();
+            time = lapEvent->GetLapMillis();
+
+            // Format crossings string
+            if (crossings > 0)
+            {
+                // Initial crossing must not be counted
+                crossings = crossings - 1;
+            }
+            sprintf(data, "%d/%d", crossings,m_LapsCounter);
+            text = QString::fromLocal8Bit(data);
+
+            // Update race best lap time
+            UpdateRaceBestLapTime(player,time, crossings);
+
+            // Update player current lap time
+            UpdatePlayerLapTime(player, time, crossings);
+
+            switch(player)
+            {
+            case e_QSlotRacingPlayer1:
+                {
+                    // Set laps counter display
+                    ui->editLaps1->setText(text);
+
+                    m_PlayerCrossings[0] = crossings;
+
+                    break;
+                }
+            case e_QSlotRacingPlayer2:
+                {
+                    // Set laps counter display
+                    ui->editLaps2->setText(text);
+
+                    m_PlayerCrossings[1] = crossings;
+
+                    break;
+                }
+            case e_QSlotRacingPlayer3:
+                {
+                    // Set laps counter display
+                    ui->editLaps3->setText(text);
+
+                    m_PlayerCrossings[2] = crossings;
+
+                    break;
+                }
+            case e_QSlotRacingPlayer4:
+                {
+                    // Set laps counter display
+                    ui->editLaps4->setText(text);
+
+                    m_PlayerCrossings[3] = crossings;
+
+                    break;
+                }
+            case e_QSlotRacingPlayer5:
+                {
+                    // Set laps counter display
+                    ui->editLaps5->setText(text);
+
+                    m_PlayerCrossings[4] = crossings;
+
+                    break;
+                }
+            case e_QSlotRacingPlayer6:
+                {
+                    // Set laps counter display
+                    ui->editLaps6->setText(text);
+
+                    m_PlayerCrossings[5] = crossings;
+
+                    break;
+                }
+            case e_QSlotRacingNoPlayer:
+            default:
+                {
+                    // do nothing
+                    break;
+                }
+            }
+
+            // Update race status. If laps finished, show flag
+            if (crossings == m_LapsCounter)
+            {
+                // Race end
+                UpdateRaceStatus(e_QSlotRacingFinishMode);
+
+                // Enable stats button
+                ui->btnStats->setEnabled(true);
+            }
+            else
+            {
+                // Do nothing
+            }
+
+            break;
         }
-
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer3, valid, lights, lane_change, speed);
-        if (valid == true)
+        case e_QSlotRacingEvent_Start:
         {
-            SetController3(lights, lane_change, speed);
+            // Check if qualifying mode
+            if (m_RaceMode == e_QSlotRacingQualyMode)
+            {
+                // Do nothing, qualy mode
+            }
+            else
+            {
+                m_RaceMode = e_QSlotRacingRaceMode;
+                UpdateRaceStatus(m_RaceMode);
+            }
+            break;
         }
-
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer4, valid, lights, lane_change, speed);
-        if (valid == true)
+        case e_QSlotRacingEvent_Qualifying:
         {
-            SetController4(lights, lane_change, speed);
-        }
+            QSharedPointer<QSlotRacingEventQualifying> lapQualifying =
+                    a_event.staticCast<QSlotRacingEventQualifying>();
 
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer5, valid, lights, lane_change, speed);
-        if (valid == true)
-        {
-            SetController5(lights, lane_change, speed);
-        }
-
-        retValue = controllerEvent->GetPlayersControllerData(e_QSlotRacingPlayer6, valid, lights, lane_change, speed);
-        if (valid == true)
-        {
-            SetController6(lights, lane_change, speed);
-        }
-        break;
-    } // case e_QSlotRacingEvent_Controller
-    case e_QSlotRacingEvent_Ranking:
-    {
-        QSharedPointer<QSlotRacingEventRanking> rankingEvent =
-                a_event.staticCast<QSlotRacingEventRanking>();
-
-        quint8 pos;
-        quint8 retValue;
-        bool   moreThan15;
-        bool   carFlag;
-        quint8 lapsBehind;
-
-        // Get data from position 1
-        retValue = rankingEvent->GetRankingDataByCar(0, pos, moreThan15, carFlag, lapsBehind);
-
-        // Update position from retrieved carId
-        UpdateCarPosition(1, pos, carFlag, moreThan15, lapsBehind);
-
-        // Get data from position 2
-        retValue = rankingEvent->GetRankingDataByCar(1, pos, moreThan15, carFlag, lapsBehind);
-
-        // Update position from retrieved carId
-        UpdateCarPosition(2, pos, carFlag, moreThan15, lapsBehind);
-
-        // Get data from position 3
-        retValue = rankingEvent->GetRankingDataByCar(2, pos, moreThan15, carFlag, lapsBehind);
-
-        // Update position from retrieved carId
-        UpdateCarPosition(3, pos, carFlag, moreThan15, lapsBehind);
-
-        // Get data from position 4
-        retValue = rankingEvent->GetRankingDataByCar(3, pos, moreThan15, carFlag, lapsBehind);
-
-        // Update position from retrieved carId
-        UpdateCarPosition(4, pos, carFlag, moreThan15, lapsBehind);
-
-        // Get data from position 5
-        retValue = rankingEvent->GetRankingDataByCar(4, pos, moreThan15, carFlag, lapsBehind);
-
-        // Update position from retrieved carId
-        UpdateCarPosition(5, pos, carFlag, moreThan15, lapsBehind);
-
-        // Get data from position 6
-        retValue = rankingEvent->GetRankingDataByCar(5, pos, moreThan15, carFlag, lapsBehind);
-
-        // Update position from retrieved carId
-        UpdateCarPosition(6, pos, carFlag, moreThan15, lapsBehind);
-
-        break;
-    } // case e_QSlotRacingEvent_Ranking
-    case e_QSlotRacingEvent_LapCounter:
-    {
-        QSharedPointer<QSlotRacingEventLapCounter> lapCounterEvent =
-                a_event.staticCast<QSlotRacingEventLapCounter>();
-
-        quint8  retValue;
-        quint32 lapsCounter;
-        quint8  countDir;
-
-        // Get event laps
-        retValue = lapCounterEvent->GetLapCounterData(countDir, lapsCounter);
-
-        // Update laps for all drivers, if number of laps is valid
-        if ((m_LapsCounter < 999) && (m_RaceMode != e_QSlotRacingQualyMode))
-        {
-            // Update member variables
-            m_LapsCounter = lapsCounter;
-            m_CountingDir = countDir;
-
-            // Update window
+            m_LapsCounter = lapQualifying->GetNumberOfLaps();
             UpdateLaps();
-        }
-        break;
-    }
-    case e_QSlotRacingEvent_Lap:
-    {
-        QSharedPointer<QSlotRacingEventLap> lapEvent =
-                a_event.staticCast<QSlotRacingEventLap>();
 
-        QSlotRacingPlayer_t   player;
-        quint32               crossings;
-        quint32               time;
-        QString               text;
-        QString               timelap;
-        char                  data[20];
-        bool                  bestOwnTime;
-        bool                  bestRaceLapTime;
-
-        // Initialization
-        memset(data, 0, 20);
-        bestOwnTime = false;
-        bestRaceLapTime = false;
-
-        // Get event data
-        player = lapEvent->GetWho();
-        crossings = lapEvent->GetCrossingTimes();
-        time = lapEvent->GetLapMillis();
-
-        // Format crossings string
-        if (crossings > 0)
-        {
-            // Initial crossing must not be counted
-            crossings = crossings - 1;
-        }
-        sprintf(data, "%d/%d", crossings,m_LapsCounter);
-        text = QString::fromLocal8Bit(data);
-
-        // Update race best lap time
-        UpdateRaceBestLapTime(player,time, crossings);
-
-        // Update player current lap time
-        UpdatePlayerLapTime(player, time, crossings);
-
-        switch(player)
-        {
-        case e_QSlotRacingPlayer1:
-            {
-                // Set laps counter display
-                ui->editLaps1->setText(text);
-
-                m_PlayerCrossings[0] = crossings;
-
-                break;
-            }
-        case e_QSlotRacingPlayer2:
-            {
-                // Set laps counter display
-                ui->editLaps2->setText(text);
-
-                m_PlayerCrossings[1] = crossings;
-
-                break;
-            }
-        case e_QSlotRacingPlayer3:
-            {
-                // Set laps counter display
-                ui->editLaps3->setText(text);
-
-                m_PlayerCrossings[2] = crossings;
-
-                break;
-            }
-        case e_QSlotRacingPlayer4:
-            {
-                // Set laps counter display
-                ui->editLaps4->setText(text);
-
-                m_PlayerCrossings[3] = crossings;
-
-                break;
-            }
-        case e_QSlotRacingPlayer5:
-            {
-                // Set laps counter display
-                ui->editLaps5->setText(text);
-
-                m_PlayerCrossings[4] = crossings;
-
-                break;
-            }
-        case e_QSlotRacingPlayer6:
-            {
-                // Set laps counter display
-                ui->editLaps6->setText(text);
-
-                m_PlayerCrossings[5] = crossings;
-
-                break;
-            }
-        case e_QSlotRacingNoPlayer:
-        default:
-            {
-                // do nothing
-                break;
-            }
-        }
-
-        // Update race status. If laps finished, show flag
-        if (crossings == m_LapsCounter)
-        {
-            // Race end
-            UpdateRaceStatus(e_QSlotRacingFinishMode);
-
-            // Enable stats button
-            ui->btnStats->setEnabled(true);
-        }
-        else
-        {
-            // Do nothing
-        }
-
-        break;
-    }
-    case e_QSlotRacingEvent_Start:
-    {
-        // Check if qualifying mode
-        if (m_RaceMode == e_QSlotRacingQualyMode)
-        {
-            // Do nothing, qualy mode
-        }
-        else
-        {
-            m_RaceMode = e_QSlotRacingRaceMode;
+            // Update status
+            m_RaceMode = e_QSlotRacingQualyMode;
             UpdateRaceStatus(m_RaceMode);
+
+            break;
         }
-        break;
-    }
-    case e_QSlotRacingEvent_Qualifying:
-    {
-        QSharedPointer<QSlotRacingEventQualifying> lapQualifying =
-                a_event.staticCast<QSlotRacingEventQualifying>();
+        case e_QSlotRacingEvent_End:
+        {
+            ShowRaceResults();
+            break;
+        }
+        case e_QSlotRacingEvent_FinishLine:
+        {
+            QSharedPointer<QSlotRacingEventFinishLine> finishLine =
+                    a_event.staticCast<QSlotRacingEventFinishLine>();
 
-        m_LapsCounter = lapQualifying->GetNumberOfLaps();
-        UpdateLaps();
+            // Do nothing
 
-        // Update status
-        m_RaceMode = e_QSlotRacingQualyMode;
-        UpdateRaceStatus(m_RaceMode);
-
-        break;
-    }
-    case e_QSlotRacingEvent_End:
-    {
-        ShowRaceResults();
-        break;
-    }
-    default:
-    {
-        // highly unexpected
-        Q_ASSERT(0);
-    }
-
+            break;
+        }
+        default:
+        {
+            // highly unexpected
+            Q_ASSERT(0);
+        }
     } // switch (a_event->EventType())
 
     //TODO remove
@@ -3299,11 +3315,6 @@ bool MainWindow::IsNewCrossing(QSlotRacingPlayer_t player, quint32 crossing)
     }
 
     return bRet;
-}
-
-void MainWindow::on_btnQualy_clicked()
-{
-    UpdateRaceStatus(e_QSlotRacingQualyMode);
 }
 
 void MainWindow::ShowRaceResults()
