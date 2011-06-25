@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Serial Monitor</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="pics/tool.qrc">
+    <normaloff>:/pics/serial_btn</normaloff>:/pics/serial_btn</iconset>
+  </property>
   <widget class="QPushButton" name="start_capture">
    <property name="geometry">
     <rect>
@@ -81,6 +85,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="pics/tool.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -7,11 +7,15 @@
     <x>0</x>
     <y>0</y>
     <width>726</width>
-    <height>321</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Controller Setup</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="pics/tool.qrc">
+    <normaloff>:/pics/controller</normaloff>:/pics/controller</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
@@ -19,8 +23,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>280</y>
+     <x>240</x>
+     <y>270</y>
      <width>156</width>
      <height>23</height>
     </rect>
@@ -590,50 +594,10 @@
     </property>
    </widget>
   </widget>
-  <widget class="QSlider" name="horizontalSlider">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>290</y>
-     <width>160</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="maximum">
-    <number>15</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnchange">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>280</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Test normal</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>380</x>
-     <y>280</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Test clicked</string>
-   </property>
-  </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="pics/tool.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

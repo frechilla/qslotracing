@@ -395,6 +395,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
                     m_Player2MapRanking[crossings] = m_PlayersRanking[1];
 
+                    qDebug()<<"pl2 "<<crossings;
+
                     break;
                 }
             case e_QSlotRacingPlayer3:

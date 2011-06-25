@@ -31,16 +31,6 @@ ControllerDlg::~ControllerDlg()
     delete ui;
 }
 
-void ControllerDlg::on_horizontalSlider_valueChanged(int value)
-{
-    SetGas1(value);
-    SetGas2(value);
-    SetGas3(value);
-    SetGas4(value);
-    SetGas5(value);
-    SetGas6(value);
-}
-
 void ControllerDlg::SetGas1(int value)
 {
     if (this->isVisible() == true)
@@ -87,27 +77,6 @@ void ControllerDlg::SetGas6(int value)
     {
         ui->gas6->setValue(value);
     }
-}
-
-
-void ControllerDlg::on_btnchange_clicked()
-{
-    SetChange1(false);
-    SetChange2(false);
-    SetChange3(false);
-    SetChange4(false);
-    SetChange5(false);
-    SetChange6(false);
-}
-
-void ControllerDlg::on_pushButton_clicked()
-{
-    SetChange1(true);
-    SetChange2(true);
-    SetChange3(true);
-    SetChange4(true);
-    SetChange5(true);
-    SetChange6(true);
 }
 
 void ControllerDlg::SetChange1(bool change)
