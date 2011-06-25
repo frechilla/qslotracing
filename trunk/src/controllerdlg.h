@@ -31,10 +31,6 @@ public:
 private:
     Ui::ControllerDlg *ui;
 
-private slots:
-    void on_pushButton_clicked();
-    void on_btnchange_clicked();
-    void on_horizontalSlider_valueChanged(int value);
 };
 
 #endif // CONTROLLERDLG_H
