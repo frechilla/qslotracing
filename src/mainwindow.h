@@ -169,6 +169,18 @@ private:
     /// @brief variable containing the players ranking map (lap, ranking)
     PlayersMapRankingType m_Player2MapRanking;
 
+    /// @brief variable containing the players ranking map (lap, ranking)
+    PlayersMapRankingType m_Player3MapRanking;
+
+    /// @brief variable containing the players ranking map (lap, ranking)
+    PlayersMapRankingType m_Player4MapRanking;
+
+    /// @brief variable containing the players ranking map (lap, ranking)
+    PlayersMapRankingType m_Player5MapRanking;
+
+    /// @brief variable containing the players ranking map (lap, ranking)
+    PlayersMapRankingType m_Player6MapRanking;
+
     /// @brief Array of configured players flags
     bool m_PlayersConfigured[6];
 
