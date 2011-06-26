@@ -702,6 +702,34 @@ void MainWindow::SetCar1Fuel(quint8 value)
 
     switch(value)
     {
+    case 0:
+        {
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm1_1->setPalette( palette );
+            ui->FuelSegm1_1->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm1_2->setPalette( palette );
+            ui->FuelSegm1_2->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm1_3->setPalette( palette );
+            ui->FuelSegm1_3->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm1_4->setPalette( palette );
+            ui->FuelSegm1_4->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm1_5->setPalette( palette );
+            ui->FuelSegm1_5->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm1_6->setPalette( palette );
+            ui->FuelSegm1_6->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm1_7->setPalette( palette );
+            ui->FuelSegm1_7->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm1_8->setPalette( palette );
+            ui->FuelSegm1_8->setAutoFillBackground( true );
+            break;
+        }
     case 1:
         {
             palette.setColor( backgroundRole(), Qt::red );
@@ -910,6 +938,34 @@ void MainWindow::SetCar2Fuel(quint8 value)
 
     switch(value)
     {
+    case 0:
+        {
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm2_1->setPalette( palette );
+            ui->FuelSegm2_1->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm2_2->setPalette( palette );
+            ui->FuelSegm2_2->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm2_3->setPalette( palette );
+            ui->FuelSegm2_3->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm2_4->setPalette( palette );
+            ui->FuelSegm2_4->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm2_5->setPalette( palette );
+            ui->FuelSegm2_5->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm2_6->setPalette( palette );
+            ui->FuelSegm2_6->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm2_7->setPalette( palette );
+            ui->FuelSegm2_7->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm2_8->setPalette( palette );
+            ui->FuelSegm2_8->setAutoFillBackground( true );
+            break;
+        }
     case 1:
         {
             palette.setColor( backgroundRole(), Qt::red );
@@ -1119,6 +1175,34 @@ void MainWindow::SetCar3Fuel(quint8 value)
 
     switch(value)
     {
+    case 0:
+        {
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm3_1->setPalette( palette );
+            ui->FuelSegm3_1->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm3_2->setPalette( palette );
+            ui->FuelSegm3_2->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm3_3->setPalette( palette );
+            ui->FuelSegm3_3->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm3_4->setPalette( palette );
+            ui->FuelSegm3_4->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm3_5->setPalette( palette );
+            ui->FuelSegm3_5->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm3_6->setPalette( palette );
+            ui->FuelSegm3_6->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm3_7->setPalette( palette );
+            ui->FuelSegm3_7->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm3_8->setPalette( palette );
+            ui->FuelSegm3_8->setAutoFillBackground( true );
+            break;
+        }
     case 1:
         {
             palette.setColor( backgroundRole(), Qt::red );
@@ -1327,6 +1411,34 @@ void MainWindow::SetCar4Fuel(quint8 value)
 
     switch(value)
     {
+    case 0:
+        {
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm4_1->setPalette( palette );
+            ui->FuelSegm4_1->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm4_2->setPalette( palette );
+            ui->FuelSegm4_2->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm4_3->setPalette( palette );
+            ui->FuelSegm4_3->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm4_4->setPalette( palette );
+            ui->FuelSegm4_4->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm4_5->setPalette( palette );
+            ui->FuelSegm4_5->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm4_6->setPalette( palette );
+            ui->FuelSegm4_6->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm4_7->setPalette( palette );
+            ui->FuelSegm4_7->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm4_8->setPalette( palette );
+            ui->FuelSegm4_8->setAutoFillBackground( true );
+            break;
+        }
     case 1:
         {
             palette.setColor( backgroundRole(), Qt::red );
@@ -1535,6 +1647,34 @@ void MainWindow::SetCar5Fuel(quint8 value)
 
     switch(value)
     {
+    case 0:
+        {
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm5_1->setPalette( palette );
+            ui->FuelSegm5_1->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm5_2->setPalette( palette );
+            ui->FuelSegm5_2->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm5_3->setPalette( palette );
+            ui->FuelSegm5_3->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm5_4->setPalette( palette );
+            ui->FuelSegm5_4->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm5_5->setPalette( palette );
+            ui->FuelSegm5_5->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm5_6->setPalette( palette );
+            ui->FuelSegm5_6->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm5_7->setPalette( palette );
+            ui->FuelSegm5_7->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm5_8->setPalette( palette );
+            ui->FuelSegm5_8->setAutoFillBackground( true );
+            break;
+        }
     case 1:
         {
             palette.setColor( backgroundRole(), Qt::red );
@@ -1743,6 +1883,34 @@ void MainWindow::SetCar6Fuel(quint8 value)
 
     switch(value)
     {
+    case 0:
+        {
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm6_1->setPalette( palette );
+            ui->FuelSegm6_1->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm6_2->setPalette( palette );
+            ui->FuelSegm6_2->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm6_3->setPalette( palette );
+            ui->FuelSegm6_3->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm6_4->setPalette( palette );
+            ui->FuelSegm6_4->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm6_5->setPalette( palette );
+            ui->FuelSegm6_5->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm6_6->setPalette( palette );
+            ui->FuelSegm6_6->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm6_7->setPalette( palette );
+            ui->FuelSegm6_7->setAutoFillBackground( true );
+            palette.setColor( backgroundRole(), Qt::black );
+            ui->FuelSegm6_8->setPalette( palette );
+            ui->FuelSegm6_8->setAutoFillBackground( true );
+            break;
+        }
     case 1:
         {
             palette.setColor( backgroundRole(), Qt::red );
