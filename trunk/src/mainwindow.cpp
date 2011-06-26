@@ -406,6 +406,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
                     m_PlayerCrossings[2] = crossings;
 
+                    m_Player3MapRanking[crossings] = m_PlayersRanking[2];
+
                     break;
                 }
             case e_QSlotRacingPlayer4:
@@ -414,6 +416,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                     ui->editLaps4->setText(text);
 
                     m_PlayerCrossings[3] = crossings;
+
+                    m_Player4MapRanking[crossings] = m_PlayersRanking[3];
 
                     break;
                 }
@@ -424,6 +428,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
                     m_PlayerCrossings[4] = crossings;
 
+                    m_Player5MapRanking[crossings] = m_PlayersRanking[4];
+
                     break;
                 }
             case e_QSlotRacingPlayer6:
@@ -432,6 +438,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                     ui->editLaps6->setText(text);
 
                     m_PlayerCrossings[5] = crossings;
+
+                    m_Player6MapRanking[crossings] = m_PlayersRanking[5];
 
                     break;
                 }
@@ -3506,9 +3514,36 @@ void MainWindow::ShowRaceResults()
     if (m_RaceResultsShown == false)
     {
         // Show results: send data to stats
-        m_statsdlg.SetRankingPlayer1(&m_Player1MapRanking);
 
-        m_statsdlg.SetRankingPlayer2(&m_Player2MapRanking);
+        if (m_PlayersConfigured[0] == true)
+        {
+            m_statsdlg.SetRankingPlayer1(&m_Player1MapRanking);
+        }
+
+        if (m_PlayersConfigured[1] == true)
+        {
+            m_statsdlg.SetRankingPlayer2(&m_Player2MapRanking);
+        }
+
+        if (m_PlayersConfigured[2] == true)
+        {
+            m_statsdlg.SetRankingPlayer3(&m_Player3MapRanking);
+        }
+
+        if (m_PlayersConfigured[3] == true)
+        {
+            m_statsdlg.SetRankingPlayer4(&m_Player4MapRanking);
+        }
+
+        if (m_PlayersConfigured[4] == true)
+        {
+            m_statsdlg.SetRankingPlayer5(&m_Player5MapRanking);
+        }
+
+        if (m_PlayersConfigured[5] == true)
+        {
+            m_statsdlg.SetRankingPlayer6(&m_Player6MapRanking);
+        }
 
         // Update flag
         m_RaceResultsShown = true;
