@@ -2895,6 +2895,12 @@ void MainWindow::UpdateLaps()
     {
         ui->editLaps6->setText(text);
     }
+
+    // Init timing strings
+    InitTimingStrings();
+
+    // Init laps
+    InitPlayerTimesLaps();
 }
 
 void MainWindow::UpdateStats()
@@ -3548,4 +3554,34 @@ void MainWindow::ShowRaceResults()
         // Update flag
         m_RaceResultsShown = true;
     }
+}
+
+void MainWindow::InitPlayerTimesLaps()
+{
+    // Players best times initialization
+    m_PlayersBestTimes[0] = 0;
+    m_PlayersBestTimes[1] = 0;
+    m_PlayersBestTimes[2] = 0;
+    m_PlayersBestTimes[3] = 0;
+    m_PlayersBestTimes[4] = 0;
+    m_PlayersBestTimes[5] = 0;
+
+    // Initialize last players lap time
+    m_PlayerLastLapTime[0] = 0;
+    m_PlayerLastLapTime[1] = 0;
+    m_PlayerLastLapTime[2] = 0;
+    m_PlayerLastLapTime[3] = 0;
+    m_PlayerLastLapTime[4] = 0;
+    m_PlayerLastLapTime[5] = 0;
+
+    // Initialize player number of crossings
+    m_PlayerCrossings[0] = 0;
+    m_PlayerCrossings[1] = 0;
+    m_PlayerCrossings[2] = 0;
+    m_PlayerCrossings[3] = 0;
+    m_PlayerCrossings[4] = 0;
+    m_PlayerCrossings[5] = 0;
+
+    // Initialize current player with best race time
+    m_CurPlayerBestLapTime = e_QSlotRacingNoPlayer;
 }
