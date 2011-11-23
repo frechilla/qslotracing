@@ -274,6 +274,9 @@ private:
     /// @brief Initialize timing strings
     void InitTimingStrings();
 
+    /// @brief Initialize player timings and laps
+    void InitPlayerTimesLaps();
+
     /// @brief This method updates the status of the player best time edit box
     void UpdateRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing);
 
