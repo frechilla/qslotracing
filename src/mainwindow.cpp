@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_CurPlayerBestLapTime = e_QSlotRacingNoPlayer;
 
     // Initialize race mode
-    m_RaceMode = e_QSlotRacingConfigMode;
+    m_RaceMode = e_QSlotRacingRaceIdleMode;
 
     // Initialize timing strings
     InitTimingStrings();
@@ -452,7 +452,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
             }
 
             // Update race status. If laps finished, show flag
-            if (crossings == m_LapsCounter)
+            if ((crossings == m_LapsCounter) && (m_RaceMode != e_QSlotRacingRaceIdleMode))
             {
                 // Race end
                 UpdateRaceStatus(e_QSlotRacingFinishMode);
@@ -478,6 +478,9 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
             {
                 m_RaceMode = e_QSlotRacingRaceMode;
                 UpdateRaceStatus(m_RaceMode);
+
+                // Restart player positions
+                RestartPlayerPos();
             }
             break;
         }
@@ -2655,7 +2658,12 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
 
                 ui->editPos1->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
-                if (carFlag == false)
+                if ((carFlag == false) && (m_RaceMode == e_QSlotRacingRaceMode))
+                {
+                    // No car at this position
+                    ui->editPos1->setText("");
+                }
+                else if (carFlag == false)
                 {
                     // No car at this position
                     ui->editPos1->setText("E");
@@ -2693,7 +2701,12 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
 
                 ui->editPos2->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
-                if (carFlag == false)
+                if ((carFlag == false) && (m_RaceMode == e_QSlotRacingRaceMode))
+                {
+                    // No car at this position
+                    ui->editPos2->setText("");
+                }
+                else if (carFlag == false)
                 {
                     // No car at this position
                     ui->editPos2->setText("E");
@@ -2727,7 +2740,12 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
 
                 ui->editPos3->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
-                if (carFlag == false)
+                if ((carFlag == false) && (m_RaceMode == e_QSlotRacingRaceMode))
+                {
+                    // No car at this position
+                    ui->editPos3->setText("");
+                }
+                else if (carFlag == false)
                 {
                     // No car at this position
                     ui->editPos3->setText("E");
@@ -2760,7 +2778,12 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
 
                 ui->editPos4->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
-                if (carFlag == false)
+                if ((carFlag == false) && (m_RaceMode == e_QSlotRacingRaceMode))
+                {
+                    // No car at this position
+                    ui->editPos4->setText("");
+                }
+                else if (carFlag == false)
                 {
                     // No car at this position
                     ui->editPos4->setText("E");
@@ -2793,7 +2816,12 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
 
                 ui->editPos5->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
-                if (carFlag == false)
+                if ((carFlag == false) && (m_RaceMode == e_QSlotRacingRaceMode))
+                {
+                    // No car at this position
+                    ui->editPos5->setText("");
+                }
+                else if (carFlag == false)
                 {
                     // No car at this position
                     ui->editPos5->setText("E");
@@ -2826,7 +2854,12 @@ void MainWindow::UpdateCarPosition(quint8 carId, quint8 pos, bool carFlag, bool 
 
                 ui->editPos6->setStyleSheet("color: rgb(0, 0, 0);");
                 // Check position status
-                if (carFlag == false)
+                if ((carFlag == false) && (m_RaceMode == e_QSlotRacingRaceMode))
+                {
+                    // No car at this position
+                    ui->editPos6->setText("");
+                }
+                else if (carFlag == false)
                 {
                     // No car at this position
                     ui->editPos6->setText("E");
@@ -3031,6 +3064,12 @@ void MainWindow::InitTimingStrings()
     ui->labelTime4->setText("--:--.---");
     ui->labelTime5->setText("--:--.---");
     ui->labelTime6->setText("--:--.---");
+    ui->labelTime1->setStyleSheet("");
+    ui->labelTime2->setStyleSheet("");
+    ui->labelTime3->setStyleSheet("");
+    ui->labelTime4->setStyleSheet("");
+    ui->labelTime5->setStyleSheet("");
+    ui->labelTime6->setStyleSheet("");
 
     ui->labelBest1->setText("--:--.---");
     ui->labelBest2->setText("--:--.---");
@@ -3038,6 +3077,12 @@ void MainWindow::InitTimingStrings()
     ui->labelBest4->setText("--:--.---");
     ui->labelBest5->setText("--:--.---");
     ui->labelBest6->setText("--:--.---");
+    ui->labelBest1->setStyleSheet("");
+    ui->labelBest2->setStyleSheet("");
+    ui->labelBest3->setStyleSheet("");
+    ui->labelBest4->setStyleSheet("");
+    ui->labelBest5->setStyleSheet("");
+    ui->labelBest6->setStyleSheet("");
 }
 
 void MainWindow::UpdateRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing)
@@ -3584,4 +3629,15 @@ void MainWindow::InitPlayerTimesLaps()
 
     // Initialize current player with best race time
     m_CurPlayerBestLapTime = e_QSlotRacingNoPlayer;
+}
+
+void MainWindow::RestartPlayerPos()
+{
+    // Restart all players positions. Set the empty string
+    ui->editPos1->setText("");
+    ui->editPos2->setText("");
+    ui->editPos3->setText("");
+    ui->editPos4->setText("");
+    ui->editPos5->setText("");
+    ui->editPos6->setText("");
 }
