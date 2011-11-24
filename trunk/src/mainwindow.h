@@ -277,6 +277,9 @@ private:
     /// @brief Initialize player timings and laps
     void InitPlayerTimesLaps();
 
+    /// @brief Restart player positions
+    void RestartPlayerPos();
+
     /// @brief This method updates the status of the player best time edit box
     void UpdateRaceBestLapTime(QSlotRacingPlayer_t player, quint32 curtime, quint32 crossing);
 
