@@ -323,8 +323,10 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
             retValue = lapCounterEvent->GetLapCounterData(countDir, lapsCounter);
 
             // Update laps for all drivers, if number of laps is valid
-            if ((m_LapsCounter < 999) && (m_RaceMode != e_QSlotRacingQualyMode))
+            //if ((m_LapsCounter < 999) && (m_RaceMode != e_QSlotRacingQualyMode))
+            if (m_LapsCounter < 999)
             {
+                QMessageBox::about(0, "num vueltas", "num vueltas");
                 // Update member variables
                 m_LapsCounter = lapsCounter;
                 m_CountingDir = countDir;
@@ -332,6 +334,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                 // Update window
                 UpdateLaps();
             }
+
             break;
         }
         case e_QSlotRacingEvent_Lap:
@@ -454,8 +457,14 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
             // Update race status. If laps finished, show flag
             if ((crossings == m_LapsCounter) && (m_RaceMode != e_QSlotRacingRaceIdleMode))
             {
+                // Updata race mode
+                m_RaceMode = e_QSlotRacingFinishMode;
+
                 // Race end
-                UpdateRaceStatus(e_QSlotRacingFinishMode);
+                UpdateRaceStatus(m_RaceMode);
+
+                // Reset number of crossings
+                crossings = 0;
 
                 // Enable stats button
                 ui->btnStats->setEnabled(true);
@@ -473,11 +482,13 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
             if (m_RaceMode == e_QSlotRacingQualyMode)
             {
                 // Do nothing, qualy mode
+                QMessageBox::about(0, "start", "qualy");
             }
             else
             {
                 m_RaceMode = e_QSlotRacingRaceMode;
                 UpdateRaceStatus(m_RaceMode);
+                QMessageBox::about(0, "start", "carrera");
 
                 // Restart player positions
                 RestartPlayerPos();
@@ -495,6 +506,9 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
             // Update status
             m_RaceMode = e_QSlotRacingQualyMode;
             UpdateRaceStatus(m_RaceMode);
+
+            // Restart player positions
+            RestartPlayerPos();
 
             break;
         }
@@ -2898,6 +2912,9 @@ void MainWindow::UpdateLaps()
 
     // Initialization
     memset(data, 0, 10);
+
+    if (m_LapsCounter == 0)
+        QMessageBox::about(0, "update laps", "laps cero");
 
     // Format string
     sprintf(data, "0/%d", m_LapsCounter);
