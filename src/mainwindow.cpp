@@ -343,6 +343,7 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
                     a_event.staticCast<QSlotRacingEventLap>();
 
             QSlotRacingPlayer_t   player;
+            PlayerPosType_t       player_pos;
             quint32               crossings;
             quint32               time;
             QString               text;
@@ -375,6 +376,10 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
 
             // Update player current lap time
             UpdatePlayerLapTime(player, time, crossings);
+
+
+            // Update player ranking data
+            UpdatePlayerRanking(player, crossings);
 
             switch(player)
             {
@@ -3657,4 +3662,44 @@ void MainWindow::RestartPlayerPos()
     ui->editPos4->setText("");
     ui->editPos5->setText("");
     ui->editPos6->setText("");
+}
+
+void MainWindow::UpdatePlayerRanking(QSlotRacingPlayer_t player, quint32 crossing)
+{
+    MapRankingsType_t::iterator itRanking;
+    PlayerPosType_t posElement;
+    quint8 a, b;
+
+    // Look for lap map item
+    itRanking = m_MapPlayersRanking.find(crossing);
+
+    a = m_MapPlayersRanking.size();
+    b = posElement.size();
+
+    if (itRanking == m_MapPlayersRanking.end())
+    {
+        // Add new element
+        posElement[player] = m_PlayersRanking[player];
+        b = posElement.size();
+        m_MapPlayersRanking[crossing] = posElement;
+        a = m_MapPlayersRanking.size();
+    }
+    else
+    {
+        // Update exixting element
+        // Get associated map
+        posElement = itRanking.value();
+        posElement[player] = m_PlayersRanking[player];
+        b = posElement.size();
+        itRanking.value() = posElement;
+    }
+
+    /*
+    a = m_PlayersRanking[player];
+    player_pos[player] = m_PlayersRanking[player];
+    a = player_pos.size();
+    m_MapPlayersRanking[crossings] = player_pos;
+
+    m_MapPlayersRanking[23] = player_pos;
+    */
 }
