@@ -292,3 +292,35 @@ void StatsDialog::SetRankingPlayer6(PlayersMapRankingType* mapValues)
     PositionPlot->replot();
 }
 
+void StatsDialog::SetRankingData(MapRankingsType_t* mapValues)
+{
+    MapRankingsType_t::iterator itRanking;
+    PlayerPosType_t::iterator   itLap;
+    PlayerPosType_t             lapMap;
+    quint16             curLap;
+    quint8              curPos;
+    quint8              curPlayer;
+
+    itRanking = mapValues->begin();
+    while (itRanking != mapValues->end())
+    {
+        // Get current lap
+        curLap = itRanking.key();
+
+        // Get current lap data
+        lapMap = itRanking.value();
+
+        itLap = lapMap.begin();
+        while (itLap != lapMap.end())
+        {
+            curPlayer = itLap.key();
+            curPos = itLap.value();
+
+            // Next item
+            itLap++;
+        }
+
+        // Next item
+        itRanking++;
+    }
+}

@@ -3588,6 +3588,9 @@ void MainWindow::ShowRaceResults()
     {
         // Show results: send data to stats
 
+        m_statsdlg.SetRankingData(&m_MapPlayersRanking);
+
+        /*
         if (m_PlayersConfigured[0] == true)
         {
             m_statsdlg.SetRankingPlayer1(&m_Player1MapRanking);
@@ -3617,6 +3620,7 @@ void MainWindow::ShowRaceResults()
         {
             m_statsdlg.SetRankingPlayer6(&m_Player6MapRanking);
         }
+        */
 
         // Update flag
         m_RaceResultsShown = true;
