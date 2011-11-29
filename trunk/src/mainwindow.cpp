@@ -323,8 +323,8 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
             retValue = lapCounterEvent->GetLapCounterData(countDir, lapsCounter);
 
             // Update laps for all drivers, if number of laps is valid
-            //if ((m_LapsCounter < 999) && (m_RaceMode != e_QSlotRacingQualyMode))
-            if (m_LapsCounter < 999)
+            if ((m_LapsCounter < 999) && (m_RaceMode != e_QSlotRacingQualyMode))
+            //if (m_LapsCounter < 999)
             {
                 QMessageBox::about(0, "num vueltas", "num vueltas");
                 // Update member variables
