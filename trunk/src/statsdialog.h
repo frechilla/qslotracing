@@ -157,7 +157,7 @@ private:
     double yval6[MAX_LAPS];
 
     /// @brief Players enabled flag
-    bool m_PlayersEnables[6];
+    bool m_PlayersEnabled[6];
 
     /// @brief Players names
     QString m_PlayersName[6];

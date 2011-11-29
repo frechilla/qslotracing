@@ -106,6 +106,12 @@ private:
 
     typedef QMap<quint32, quint8> PlayersMapRankingType;
 
+    // Nested maps for player positions at each lap
+    // Map: [<lap>,[<player>,<pos>]]
+    typedef QMap<quint8, quint8> PlayerPosType_t;
+    typedef QMap<quint16, PlayerPosType_t> MapRankingsType_t;
+
+
    // typedef QList<quint32> PlayersTimesType_t;
 
     typedef enum
@@ -180,6 +186,9 @@ private:
 
     /// @brief variable containing the players ranking map (lap, ranking)
     PlayersMapRankingType m_Player6MapRanking;
+
+    /// @brief variable containing the players ranking map (lap, players_ranking)
+    MapRankingsType_t m_MapPlayersRanking;
 
     /// @brief Array of configured players flags
     bool m_PlayersConfigured[6];
@@ -303,6 +312,9 @@ private:
 
     /// @brief Show final results of race
     void ShowRaceResults();
+
+    /// @brief Updates players ranking data map
+    void UpdatePlayerRanking(QSlotRacingPlayer_t player, quint32 crossing);
 
 private slots:
 
