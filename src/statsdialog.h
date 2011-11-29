@@ -25,6 +25,9 @@
 
 typedef QMap<quint32, quint8> PlayersMapRankingType;
 
+typedef QMap<quint8, quint8> PlayerPosType_t;
+typedef QMap<quint16, PlayerPosType_t> MapRankingsType_t;
+
 namespace Ui {
     class StatsDialog;
 }
@@ -95,6 +98,8 @@ public:
     /// @brief Set Player 6 ranking data
     /// @param Player 6 ranking data map
     void SetRankingPlayer6(PlayersMapRankingType* mapValues);
+
+    void SetRankingData(MapRankingsType_t* mapValues);
 private:
     /// @brief Dialog resource
     Ui::StatsDialog *ui;
