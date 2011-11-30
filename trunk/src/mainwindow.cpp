@@ -134,19 +134,20 @@ void MainWindow::InitializeProtoStack()
 //
 ///////////
 
-    // SCXMsgFactory will be processing all bytes sniffed
-    // by the sniffers (both serial and ascii)
+    // SCXMsgFactory will process all bytes sniffered from ascii file sniffer.
+    m_msgFactory.connect(&m_asciiSniffer,
+                       SIGNAL(DataRead(QByteArray)),
+                       SLOT(Parse(QByteArray)));
 
-
+    // SCXMsgFactory will be also processing all bytes sniffed
+    // by the serial sniffer. It will also be handling the IdleWire event
     m_msgFactory.connect(&m_serialSniffer,
                        SIGNAL(DataRead(QByteArray)),
                        SLOT(Parse(QByteArray)));
 
-
-    // SCXMsgFactory will process all bytes snifferd from ascii file sniffer.
-    m_msgFactory.connect(&m_asciiSniffer,
-                       SIGNAL(DataRead(QByteArray)),
-                       SLOT(Parse(QByteArray)));
+    m_msgFactory.connect(&m_serialSniffer,
+                       SIGNAL(IdleWire(void)),
+                       SLOT(IdleWire(void)));
 
 
     // all sniffed bytes will also be notified into the serial monitor window
@@ -154,7 +155,6 @@ void MainWindow::InitializeProtoStack()
     m_monitor.connect(&m_serialSniffer,
                       SIGNAL(DataRead(QByteArray)),
                       SLOT(ReadData(QByteArray)));
-
 
     m_monitor.connect(&m_asciiSniffer,
                       SIGNAL(DataRead(QByteArray)),

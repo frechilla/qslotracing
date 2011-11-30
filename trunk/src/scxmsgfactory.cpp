@@ -42,10 +42,32 @@ SCXMsgFactory::SCXMsgFactory(QObject *parent) :
                                  QString("MsgDispatched"));
     m_statCounters.SetEntryTitle(eStatEntry_MsgBadCRC,
                                  QString("MsgBadCRC"));
+    m_statCounters.SetEntryTitle(eStatEntry_MsgDiscardedNoSync,
+                                 QString("MsgDiscardedNoSync"));
+    m_statCounters.SetEntryTitle(eStatEntry_ProtoSyncSignalCount,
+                                 QString("ProtoSyncSignalCount"));
+    m_statCounters.SetEntryTitle(eStatEntry_ProtoUnsyncSignalCount,
+                                 QString("ProtoUnsyncSignalCount"));
 }
 
 SCXMsgFactory::~SCXMsgFactory()
 {
+}
+
+void SCXMsgFactory::IdleWire()
+{
+    //TODO this is debug shite
+    qDebug("SCXMsgFactory: Wire has gone idle! Resetting parser...");    
+    
+    // Restart current message index and valid messages count. 
+    // We are no longer in sync, so everything that arrived before
+    // will be discarded
+    m_currentMsgIndex = 0;
+    m_nValidMessages  = 0;
+    
+    // tell the upper layers we're not in sync anymore
+    m_statCounters.Increment(eStatEntry_ProtoUnsyncSignalCount, 1);
+    emit ProtocolSynced(false);
 }
 
 void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
@@ -77,8 +99,13 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
                 // a msg MUST start with SCX_PROTO_START_HEADER
                 m_statCounters.Increment(eStatEntry_BytesDiscarded, 1);
 
-                // Restart valid messages count. We are no longer in sync
-                m_nValidMessages = 0;
+                // Restart current message index and valid messages count. 
+                // We are no longer in sync, so everything that arrived before
+                // must be discarded
+                m_currentMsgIndex = 0;
+                m_nValidMessages  = 0;
+                
+                m_statCounters.Increment(eStatEntry_ProtoUnsyncSignalCount, 1);
                 emit ProtocolSynced(false);
             }
         }
@@ -98,61 +125,78 @@ void SCXMsgFactory::Parse(QByteArray a_dataBuffer)
             if (m_nValidMessages < MIN_VALID_MSGS)
             {
                 // Increment number of valid messages
+                // No message is passed to upper layers until we reach
+                // the confidence level
                 m_nValidMessages++;
-            }
-            else if (m_nValidMessages == MIN_VALID_MSGS)
-            {
-                // increment number of valid messages so this signal is
-                // only issued once (the first time we get to the minimum
-                // amount of valid messages)
-                m_nValidMessages++;
-                
-                // emit signal. We are in sync
-                emit ProtocolSynced(true);
-            }
 
-            // check the CRC first
-            crc = CalculateCRC(m_currentMsg, SCX_PROTO_MSG_LENGTH);
-            if (crc == m_currentMsg[SCX_PROTO_CRC_POS])
-            {
-                m_statCounters.Increment(eStatEntry_MsgDispatched, 1);
-
-                // create a new QSlotMsg.
-                // Timestamp of this message is set at construction time
-                QSharedPointer<QSlotRacingMsg> newSlotRacingMsg(
-                        new QSlotRacingMsg(SCX_PROTO_MSG_LENGTH, m_currentMsg));
-
-                // send this new message somewhere beyond the sea...
-                emit MsgParsed(newSlotRacingMsg);
+                // this message is not passed to upper layers.
+                // we haven't got to the confidence threshold yet
+                m_statCounters.Increment(eStatEntry_MsgDiscardedNoSync, 1);
             }
             else
-            {                
-                m_statCounters.Increment(eStatEntry_MsgBadCRC, 1);
+            {
+                if (m_nValidMessages == MIN_VALID_MSGS)
+                {
+                    // increment number of valid messages so this signal is
+                    // only issued once (the first time we get to the minimum
+                    // amount of valid messages)
+                    m_nValidMessages++;
+                    
+                    // emit signal. We are in sync
+                    m_statCounters.Increment(eStatEntry_ProtoSyncSignalCount, 1);
+                    emit ProtocolSynced(true);
+                }
+                
+                // check the CRC first
+                crc = CalculateCRC(m_currentMsg, SCX_PROTO_MSG_LENGTH);
+                if (crc == m_currentMsg[SCX_PROTO_CRC_POS])
+                {
+                    m_statCounters.Increment(eStatEntry_MsgDispatched, 1);
 
-                ////////////////
-                //TODO this should be gone when the CRC is working correctly
-                qDebug("SCXMsgFactory: Bad CRC %02X (expected %02X)",
-                       m_currentMsg[SCX_PROTO_CRC_POS], crc);                
+                    // create a new QSlotMsg.
+                    // Timestamp of this message is set at construction time
+                    QSharedPointer<QSlotRacingMsg> newSlotRacingMsg(
+                            new QSlotRacingMsg(
+                                SCX_PROTO_MSG_LENGTH, 
+                                m_currentMsg));
 
-                qDebug("    %02X %02X %02X %02X %02X %02X %02X %02X %02X",
-                       m_currentMsg[0],
-                       m_currentMsg[1],
-                       m_currentMsg[2],
-                       m_currentMsg[3],
-                       m_currentMsg[4],
-                       m_currentMsg[5],
-                       m_currentMsg[6],
-                       m_currentMsg[7],
-                       m_currentMsg[8]);
+                    // send this new message somewhere beyond the sea...
+                    emit MsgParsed(newSlotRacingMsg);
+                }
+                else
+                {
+                    // Bad CRC. No need to restart the confidence counter
+                    // We discard this message, but we still trust the 
+                    // communication
+                    m_statCounters.Increment(eStatEntry_MsgBadCRC, 1);
 
-                // send this new message somewhere beyond the sea...
-                //QSharedPointer<QSlotRacingMsg> newSlotRacingMsg(
-                //        new QSlotRacingMsg(SCX_PROTO_MSG_LENGTH, m_currentMsg));
-                //emit MsgParsed(newSlotRacingMsg);
-                ////////////////
+                    ////////////////
+                    //TODO this should be gone when the CRC is working correctly
+                    qDebug("SCXMsgFactory: Bad CRC %02X (expected %02X)",
+                           m_currentMsg[SCX_PROTO_CRC_POS], crc);
+
+                    qDebug("    %02X %02X %02X %02X %02X %02X %02X %02X %02X",
+                           m_currentMsg[0],
+                           m_currentMsg[1],
+                           m_currentMsg[2],
+                           m_currentMsg[3],
+                           m_currentMsg[4],
+                           m_currentMsg[5],
+                           m_currentMsg[6],
+                           m_currentMsg[7],
+                           m_currentMsg[8]);
+
+                    // send this new message somewhere beyond the sea...
+                    //QSharedPointer<QSlotRacingMsg> newSlotRacingMsg(
+                    //        new QSlotRacingMsg(
+                    //            SCX_PROTO_MSG_LENGTH, 
+                    //            m_currentMsg));
+                    //emit MsgParsed(newSlotRacingMsg);
+                    ////////////////
+                }
             }
         }
-    }
+    } // for (qint32 i = 0; i < a_dataBuffer.count(); i++)
 }
 
 void SCXMsgFactory::BuildTableCRC()
