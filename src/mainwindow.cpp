@@ -377,7 +377,6 @@ void MainWindow::ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event)
             // Update player current lap time
             UpdatePlayerLapTime(player, time, crossings);
 
-
             // Update player ranking data
             UpdatePlayerRanking(player, crossings);
 
@@ -3588,7 +3587,9 @@ void MainWindow::ShowRaceResults()
     {
         // Show results: send data to stats
 
-        m_statsdlg.SetRankingData(&m_MapPlayersRanking);
+        m_statsdlg.SetRankingData(&m_MapPlayersRanking, m_PlayersConfigured);
+
+        m_statsdlg.ConfigurePlot(m_PlayersConfigured, m_LapsCounter);
 
         /*
         if (m_PlayersConfigured[0] == true)
@@ -3672,21 +3673,16 @@ void MainWindow::UpdatePlayerRanking(QSlotRacingPlayer_t player, quint32 crossin
 {
     MapRankingsType_t::iterator itRanking;
     PlayerPosType_t posElement;
-    quint8 a, b;
 
     // Look for lap map item
     itRanking = m_MapPlayersRanking.find(crossing);
 
-    a = m_MapPlayersRanking.size();
-    b = posElement.size();
-
+    // Check if element exists
     if (itRanking == m_MapPlayersRanking.end())
     {
         // Add new element
         posElement[player] = m_PlayersRanking[player];
-        b = posElement.size();
         m_MapPlayersRanking[crossing] = posElement;
-        a = m_MapPlayersRanking.size();
     }
     else
     {
@@ -3694,16 +3690,8 @@ void MainWindow::UpdatePlayerRanking(QSlotRacingPlayer_t player, quint32 crossin
         // Get associated map
         posElement = itRanking.value();
         posElement[player] = m_PlayersRanking[player];
-        b = posElement.size();
+
+        // Add element
         itRanking.value() = posElement;
     }
-
-    /*
-    a = m_PlayersRanking[player];
-    player_pos[player] = m_PlayersRanking[player];
-    a = player_pos.size();
-    m_MapPlayersRanking[crossings] = player_pos;
-
-    m_MapPlayersRanking[23] = player_pos;
-    */
 }

@@ -99,7 +99,11 @@ public:
     /// @param Player 6 ranking data map
     void SetRankingPlayer6(PlayersMapRankingType* mapValues);
 
-    void SetRankingData(MapRankingsType_t* mapValues);
+    /// @brief Update ranking data for all 6 players
+    /// @param Players ranking data and enabled flags
+    void SetRankingData(MapRankingsType_t* mapValues, bool flags[]);
+
+    void ConfigurePlot(bool flags[], quint32 laps);
 private:
     /// @brief Dialog resource
     Ui::StatsDialog *ui;
