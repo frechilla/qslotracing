@@ -102,6 +102,9 @@ private:
 signals:
     /// @brief a singal sent when data has been sniffed off the serial interface
     void DataRead(QByteArray ba);
+    
+    /// @brief a signal sent when no data has been received for more than 1 second
+    void IdleWire();
 
 private slots:
     /// @brief keep this thread stuck in an infinite loop

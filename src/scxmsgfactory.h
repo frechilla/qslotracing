@@ -25,6 +25,9 @@ public:
         eStatEntry_BytesTotal,
         eStatEntry_MsgDispatched,
         eStatEntry_MsgBadCRC,
+        eStatEntry_MsgDiscardedNoSync,
+        eStatEntry_ProtoSyncSignalCount,
+        eStatEntry_ProtoUnsyncSignalCount,
         
         eStatEntry_Count // this value MUST be at the end of the enum
     } eStatEntries_t;
@@ -38,6 +41,11 @@ public:
     /// emitting the MsgParsed signal(s)
     /// @param a_dataBuffer byte buffer to be parsed
     void Parse(QByteArray a_dataBuffer);
+    
+    /// @brief to be called when the wire being sniffed goes idle
+    /// resets the communication so that the confidence level must be reached
+    /// again before new QSlotRacingMsg objects are amitted
+    void IdleWire();
 
     /// @return the stat counter of this particular object
     const QSlotRacingStatsCounter<static_cast<int>(eStatEntry_Count)>& GetStatCounters() const

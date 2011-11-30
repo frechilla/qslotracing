@@ -2,8 +2,9 @@
 #include <QMutex>
 #include <QWaitCondition>
 
-#define READFOREVER_BUFFER_LEN 10
-#define READFOREVER_WAIT_MSEC  250
+#define READFOREVER_BUFFER_LEN       10
+#define READFOREVER_WAIT_MSEC       250
+#define READFOREVER_IDLE_WIRE_MSEC 1000 // 1 second
 
 SnifferSerial::SnifferSerial(QObject *parent) :
     QObject(parent),
@@ -236,6 +237,8 @@ void SnifferSerial::ReadForever()
     QMutex mutex;
     QWaitCondition sleep;
 
+    quint32 idleTime = 0;
+    bool    idleWire = false;
     while (m_threadAlive)
     {
         if (m_interfaceOpened && m_snifferOn && m_port)
@@ -243,10 +246,25 @@ void SnifferSerial::ReadForever()
             if ((m_port->bytesAvailable() > 0) ||
                  m_port->waitForReadyRead(READFOREVER_WAIT_MSEC))
             {
+                // reset idleTime
+                idleTime = 0;
+                idleWire = false;
+                
                 QByteArray data(READFOREVER_BUFFER_LEN + 1, '\0');
                 data = m_port->read(READFOREVER_BUFFER_LEN);
 
                 emit DataRead(data);
+            }
+            else
+            {
+                idleTime += READFOREVER_WAIT_MSEC;
+                
+                if (!idleWire && (idleTime > READFOREVER_IDLE_WIRE_MSEC))
+                {
+                    // idle wire detected!
+                    idleWire = true;
+                    emit IdleWire();
+                }
             }
         }
         else
