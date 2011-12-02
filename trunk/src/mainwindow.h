@@ -322,6 +322,7 @@ private slots:
     /// events will be processed by the window and the GUI will be
     /// updated accordingly
     /// @param shared pointer wrapping the event
+    void on_pushButton_2_clicked();
     void ProcessEvent(QSharedPointer<QSlotRacingEvent> a_event);
 
     /// @brief update synchro status

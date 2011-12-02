@@ -7,6 +7,7 @@
 #include <qpixmap.h>
 #include <qbitmap.h>
 #include <qmessagebox.h>
+ #include <Phonon>
 
 #define STATS_TIMER_EXPIRE_MSEC 10000 // 10 seconds
 
@@ -3693,5 +3694,24 @@ void MainWindow::UpdatePlayerRanking(QSlotRacingPlayer_t player, quint32 crossin
 
         // Add element
         itRanking.value() = posElement;
+    }
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QDir::setCurrent(QCoreApplication::applicationDirPath());
+    Phonon::MediaObject *music =
+         Phonon::createPlayer(Phonon::MusicCategory,
+                              Phonon::MediaSource("c:\\lobato01.mp3"));
+    if (music != NULL)
+    {
+        Phonon::State st = music->state();
+        while (st == Phonon::LoadingState)
+        {st = music->state();
+        }
+
+        music->play();
+        st = music->state();
+        st = music->state();
     }
 }
